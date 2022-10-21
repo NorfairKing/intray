@@ -1,15 +1,13 @@
-{ sources ? import ./sources.nix
-, pkgs ? import ./pkgs.nix { inherit sources; }
-, intrayReleasePackages ? pkgs.intrayReleasePackages
+{ pkgs
+, home-manager
+, intray-nixos-module-factory
+, intray-home-manager-module
 }:
 let
-  intray-production = import (./nixos-module.nix) {
-    inherit sources;
-    inherit pkgs;
-    inherit intrayReleasePackages;
+  intray-production = intray-nixos-module-factory {
     envname = "production";
+    intrayReleasePackages = pkgs.intrayReleasePackages;
   };
-  home-manager = import (pkgs.home-manager.src + "/nixos/default.nix");
 
   api-port = 8000;
   web-port = 8080;
@@ -53,12 +51,12 @@ pkgs.nixosTest (
           useGlobalPkgs = true;
           users.testuser = { pkgs, ... }: {
             imports = [
-              ./home-manager-module.nix
+              intray-home-manager-module
             ];
             xdg.enable = true;
             programs.intray = {
               enable = true;
-              inherit intrayReleasePackages;
+              intrayReleasePackages = pkgs.intrayReleasePackages;
               sync = {
                 enable = true;
                 url = "http://apiserver:${builtins.toString api-port}";
