@@ -21,11 +21,13 @@ in
     (_: pkg: justStaticExecutables (doCheck pkg))
     final.haskellPackages.intrayPackages;
 
-  intrayRelease =
-    final.symlinkJoin {
-      name = "intray-release";
-      paths = attrValues final.intrayReleasePackages;
+  intrayRelease = final.symlinkJoin {
+    name = "intray-release";
+    paths = attrValues final.intrayReleasePackages;
+    passthru = {
+      notification = final.intrayNotification;
     };
+  };
 
   intrayNotification = final.callPackage ./notification.nix { };
 
