@@ -27,7 +27,7 @@ in
       paths = attrValues final.intrayReleasePackages;
     };
 
-  intrayNotification = import ./notification.nix { pkgs = final; };
+  intrayNotification = final.callPackage ./notification.nix { };
 
   generatedIntrayStripeCode = generatedStripe;
 

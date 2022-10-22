@@ -1,4 +1,5 @@
-{ pkgs ? import ./pkgs.nix
+{ writeShellScript
+, intrayReleasePackages
 }:
 { userName
 , accessKey
@@ -6,9 +7,9 @@
 }:
 
 let
-  cli = pkgs.intrayReleasePackages.intray-cli;
+  cli = intrayReleasePackages.intray-cli;
 in
-pkgs.writeShellScript "intray-notification" ''
+writeShellScript "intray-notification" ''
   set -eou pipefail
   tempDir="$(mktemp --tmpdir=/tmp --directory intray-notification-XXXXXXXX)"
   export INTRAY_CACHE_DIR="$tempDir"
