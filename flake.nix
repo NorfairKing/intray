@@ -15,12 +15,16 @@
     sydtest.flake = false;
     mergeless.url = "github:NorfairKing/mergeless?ref=flake";
     mergeless.flake = false;
-    linkcheck.url = "github:NorfairKing/linkcheck";
-    linkcheck.flake = false;
-    seocheck.url = "github:NorfairKing/seocheck";
-    seocheck.flake = false;
+    yesod-autoreload.url = "github:NorfairKing/yesod-autoreload?ref=flake";
+    yesod-autoreload.flake = false;
+    yesod-static-remote.url = "github:NorfairKing/yesod-static-remote?ref=flake";
+    yesod-static-remote.flake = false;
     openapi-code-generator.url = "github:Haskell-OpenAPI-Code-Generator/Haskell-OpenAPI-Client-Code-Generator?ref=flake";
     openapi-code-generator.flake = false;
+    linkcheck.url = "github:NorfairKing/linkcheck?ref=flake";
+    linkcheck.flake = false;
+    seocheck.url = "github:NorfairKing/seocheck?ref=flake";
+    seocheck.flake = false;
   };
 
   outputs =
@@ -34,6 +38,8 @@
     , sydtest
     , autodocodec
     , mergeless
+    , yesod-autoreload
+    , yesod-static-remote
     , openapi-code-generator
     , linkcheck
     , seocheck
@@ -51,6 +57,8 @@
             (import (sydtest + "/nix/overlay.nix"))
             (import (mergeless + "/nix/overlay.nix"))
             (import (validity + "/nix/overlay.nix"))
+            (import (yesod-autoreload + "/nix/overlay.nix"))
+            (import (yesod-static-remote + "/nix/overlay.nix"))
             (import (openapi-code-generator + "/nix/overlay.nix"))
             (import (linkcheck + "/nix/overlay.nix"))
             (import (seocheck + "/nix/overlay.nix"))
@@ -61,15 +69,14 @@
       in
       {
         overlays = import ./nix/overlay.nix;
-        packages.release = pkgs.intrayRelease;
-        packages.default = self.packages.${system}.release;
+        packages.default = pkgs.intrayRelease;
         checks = {
-          # nixos-module-test = import ./nix/nixos-module-test.nix {
-          #   inherit pkgs;
-          #   home-manager = home-manager.nixosModules.home-manager;
-          #   intray-nixos-module-factory = self.nixosModuleFactories.${system}.default;
-          #   intray-home-manager-module = self.homeManagerModules.${system}.default;
-          # };
+          nixos-module-test = import ./nix/nixos-module-test.nix {
+            inherit pkgs;
+            home-manager = home-manager.nixosModules.home-manager;
+            intray-nixos-module-factory = self.nixosModuleFactories.${system}.default;
+            intray-home-manager-module = self.homeManagerModules.${system}.default;
+          };
           pre-commit = pre-commit-hooks.lib.${system}.run {
             src = ./.;
             hooks = {

@@ -1,3 +1,5 @@
+{ intrayReleasePackages
+}:
 { lib, pkgs, config, ... }:
 
 with lib;
@@ -16,7 +18,7 @@ in
           enable = mkEnableOption "Intray cli";
           intrayReleasePackages = mkOption {
             description = "The intrayReleasePackages attribute defined in the nix/overlay.nix file in the intray repository.";
-            default = (import ./pkgs.nix { }).intrayReleasePackages;
+            default = intrayReleasePackages;
           };
           config = mkOption {
             default = { };
