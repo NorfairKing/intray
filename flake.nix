@@ -15,6 +15,12 @@
     sydtest.flake = false;
     mergeless.url = "github:NorfairKing/mergeless?ref=flake";
     mergeless.flake = false;
+    linkcheck.url = "github:NorfairKing/linkcheck";
+    linkcheck.flake = false;
+    seocheck.url = "github:NorfairKing/seocheck";
+    seocheck.flake = false;
+    openapi-code-generator.url = "github:Haskell-OpenAPI-Code-Generator/Haskell-OpenAPI-Client-Code-Generator?ref=flake";
+    openapi-code-generator.flake = false;
   };
 
   outputs =
@@ -28,6 +34,9 @@
     , sydtest
     , autodocodec
     , mergeless
+    , openapi-code-generator
+    , linkcheck
+    , seocheck
     }:
     flake-utils.lib.eachSystem [ "x86_64-linux" ]
       (system:
@@ -42,6 +51,9 @@
             (import (sydtest + "/nix/overlay.nix"))
             (import (mergeless + "/nix/overlay.nix"))
             (import (validity + "/nix/overlay.nix"))
+            (import (openapi-code-generator + "/nix/overlay.nix"))
+            (import (linkcheck + "/nix/overlay.nix"))
+            (import (seocheck + "/nix/overlay.nix"))
           ];
         };
         pkgs = pkgsFor nixpkgs;

@@ -3,11 +3,14 @@ with final.lib;
 with final.haskell.lib;
 
 let
-  generateOpenAPIClient = import (sources.openapi-code-generator + "/nix/generate-client.nix") { pkgs = final; };
-  generatedStripe = generateOpenAPIClient {
+  stripe-spec = builtins.fetchGit {
+    url = "https://github.com/stripe/openapi";
+    rev = "c48cf54aab65f4966ba285bdfaf86ed52f5fb70c";
+  };
+  generatedStripe = final.generateOpenAPIClient {
     name = "intray-stripe-client";
     configFile = ../stripe-client-gen.yaml;
-    src = sources.stripe-spec + "/openapi/spec3.yaml";
+    src = stripe-spec + "/openapi/spec3.yaml";
   };
 
 in
@@ -151,7 +154,7 @@ in
 
                             export INTRAY_WEB_SERVER_API_URL=http://localhost:8000 # dummy
 
-                            ${final.intrayPackages.intray-server}/bin/intray-server --port 8000 &
+                            ${self.intrayPackages.intray-server}/bin/intray-server --port 8000 &
                             $out/bin/intray-web-server --port 8080 &
 
                             sleep 0.5

@@ -2,6 +2,7 @@ outputDir: intray-stripe-client
 packageName: intray-stripe-client
 moduleName: StripeClient
 logLevel: INFO
+generateNixFiles: true
 force: true
 convertToCamelCase: true
 propertyTypeSuffix: "'"
