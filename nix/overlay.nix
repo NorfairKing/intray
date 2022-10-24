@@ -171,8 +171,6 @@ in
                 };
             in
             {
-              yesod-static-remote = dontCheck (self.callCabal2nix "yesod-static-remote" sources.yesod-static-remote { });
-              yesod-autoreload = self.callCabal2nix "yesod-autoreload" sources.yesod-autoreload { };
               inherit intrayPackages;
             } // intrayPackages
         );

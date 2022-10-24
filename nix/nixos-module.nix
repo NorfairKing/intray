@@ -1,7 +1,5 @@
-{ sources ? import ./sources.nix
-, pkgs ? import ./pkgs.nix { inherit sources; }
-, intrayReleasePackages ? pkgs.intrayReleasePackages
-, envname
+{ envname
+, intrayReleasePackages
 }:
 { lib, pkgs, config, ... }:
 with lib;
