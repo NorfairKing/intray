@@ -6,7 +6,6 @@
 let
   intray-production = intray-nixos-module-factory {
     envname = "production";
-    intrayReleasePackages = pkgs.intrayReleasePackages;
   };
 
   api-port = 8000;

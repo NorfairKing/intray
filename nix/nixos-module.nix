@@ -1,5 +1,7 @@
+{ intray-server
+, intray-web-server
+}:
 { envname
-, intrayReleasePackages
 }:
 { lib, pkgs, config, ... }:
 with lib;
@@ -163,7 +165,7 @@ in
             ''
               mkdir -p "${workingDir}"
               cd "${workingDir}"
-              ${intrayReleasePackages.intray-server}/bin/intray-server
+              ${intray-server}/bin/intray-server
             '';
           serviceConfig =
             {
@@ -208,7 +210,7 @@ in
             ''
               mkdir -p "${workingDir}"
               cd "${workingDir}"
-              ${intrayReleasePackages.intray-web-server}/bin/intray-web-server
+              ${intray-web-server}/bin/intray-web-server
             '';
           serviceConfig =
             {
