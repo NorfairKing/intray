@@ -1,5 +1,9 @@
 {
   description = "intray";
+  nixConfig = {
+    extra-substituters = "https://intray.cachix.org";
+    extra-trusted-public-keys = "intray.cachix.org-1:qD7I/NQLia2iy6cbzZvFuvn09iuL4AkTmHvjxrQlccQ=";
+  };
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs?ref=nixos-22.05";
     home-manager.url = "github:nix-community/home-manager?ref=release-22.05";
