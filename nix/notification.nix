@@ -22,7 +22,7 @@ writeShellScript "intray-notification" ''
   export INTRAY_USERNAME="${userName}"
   export INTRAY_SYNC_STRATEGY="NeverSync"
   ${optionalString (!builtins.isNull accessKey) ("export INTRAY_PASSWORD=${accessKey}")}
-  ${optionalString (!builtins.isNull accessKeyFile) ("export INTRAY_PASSWORD=\"$(cat ${accessKeyFile})\"")}
+  ${optionalString (!builtins.isNull accessKeyFile) ("export INTRAY_PASSWORD_FILE=${accessKeyFile}")}
   ${cli}/bin/intray login
   ${cli}/bin/intray add --stdin --remote "$@"
   rm -rf $tempDir

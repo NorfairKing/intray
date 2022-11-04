@@ -22,6 +22,7 @@ where
 import Autodocodec.Yaml
 import Control.Monad.Logger
 import qualified Data.Text as T
+import qualified Data.Text.IO as T
 import qualified Env
 import Import
 import Intray.Cli.OptParse.Types
@@ -67,18 +68,29 @@ combineToInstructions (Arguments cmd Flags {..}) Environment {..} mConf =
       let setAutoOpen = fromMaybe (AutoOpenWith "xdg-open") (flagAutoOpen <|> envAutoOpen <|> mc configAutoOpen)
       let setLogLevel = fromMaybe LevelWarn (flagLogLevel <|> envLogLevel <|> mc configLogLevel)
       pure Settings {..}
+    mPass mPassword mPasswordFile = case mPassword of
+      Just password -> pure $ Just (T.pack password)
+      Nothing -> case mPasswordFile of
+        Nothing -> pure Nothing
+        Just passwordFile -> Just . T.strip <$> T.readFile passwordFile
     getDispatch =
       case cmd of
-        CommandRegister RegisterArgs {..} ->
+        CommandRegister RegisterArgs {..} -> do
+          flagMPass <- mPass registerArgPassword registerArgPasswordFile
+          envMPass <- mPass envPassword envPasswordFile
+          confMPass <- mPass (mc configPassword) (mc configPasswordFile)
           pure $
             DispatchRegister
               RegisterSettings
                 { registerSetUsername =
                     (T.pack <$> (registerArgUsername <|> envUsername <|> mc configUsername))
                       >>= parseUsername,
-                  registerSetPassword = T.pack <$> (registerArgPassword <|> envPassword)
+                  registerSetPassword = flagMPass <|> envMPass <|> confMPass
                 }
-        CommandLogin LoginArgs {..} ->
+        CommandLogin LoginArgs {..} -> do
+          flagMPass <- mPass loginArgPassword loginArgPasswordFile
+          envMPass <- mPass envPassword envPasswordFile
+          confMPass <- mPass (mc configPassword) (mc configPasswordFile)
           pure $
             DispatchLogin
               LoginSettings
@@ -86,7 +98,7 @@ combineToInstructions (Arguments cmd Flags {..}) Environment {..} mConf =
                     (T.pack <$> (loginArgUsername <|> envUsername <|> mc configUsername))
                       >>= parseUsername,
                   loginSetPassword =
-                    T.pack <$> (loginArgPassword <|> envPassword <|> mc configPassword)
+                    flagMPass <|> envMPass <|> confMPass
                 }
         CommandAddItem AddArgs {..} ->
           pure $
@@ -134,6 +146,7 @@ environmentParser =
       <*> optional (Env.var Env.str "URL" (Env.help "sync server url"))
       <*> optional (Env.var Env.str "USERNAME" (Env.help "Sync username"))
       <*> optional (Env.var Env.str "PASSWORD" (Env.help "Sync password"))
+      <*> optional (Env.var Env.str "PASSWORD_FILE" (Env.help "Sync password file"))
       <*> optional (Env.var Env.str "CACHE_DIR" (Env.help "cache directory"))
       <*> optional (Env.var Env.str "DATA_DIR" (Env.help "data directory"))
       <*> optional (Env.var Env.auto "SYNC_STRATEGY" (Env.help "Sync strategy"))
@@ -188,20 +201,9 @@ parseCommandRegister = info parser modifier
     parser =
       CommandRegister
         <$> ( RegisterArgs
-                <$> option
-                  (Just <$> str)
-                  ( mconcat
-                      [long "username", help "The username to register", value Nothing, metavar "USERNAME"]
-                  )
-                <*> option
-                  (Just <$> str)
-                  ( mconcat
-                      [ long "password",
-                        help "The password to register with. If absent, a prompt will ask for the password.",
-                        value Nothing,
-                        metavar "PASSWORD"
-                      ]
-                  )
+                <$> parseUsernameOption
+                <*> parsePasswordOption
+                <*> parsePasswordFileOption
             )
 
 parseCommandLogin :: ParserInfo Command
@@ -211,15 +213,43 @@ parseCommandLogin = info parser modifier
     parser =
       CommandLogin
         <$> ( LoginArgs
-                <$> option
-                  (Just <$> str)
-                  (mconcat [long "username", help "The username to login", value Nothing, metavar "USERNAME"])
-                <*> option
-                  (Just <$> str)
-                  ( mconcat
-                      [long "password", help "The password to login with", value Nothing, metavar "PASSWORD"]
-                  )
+                <$> parseUsernameOption
+                <*> parsePasswordOption
+                <*> parsePasswordFileOption
             )
+
+parseUsernameOption :: Parser (Maybe String)
+parseUsernameOption =
+  optional $
+    strOption
+      ( mconcat
+          [ long "username",
+            help "The username to register",
+            metavar "USERNAME"
+          ]
+      )
+
+parsePasswordOption :: Parser (Maybe String)
+parsePasswordOption =
+  optional $
+    strOption
+      ( mconcat
+          [ long "password",
+            help "The password to register with. If both password and password-file are absent, a prompt will ask for the password.",
+            metavar "PASSWORD"
+          ]
+      )
+
+parsePasswordFileOption :: Parser (Maybe FilePath)
+parsePasswordFileOption =
+  optional $
+    strOption
+      ( mconcat
+          [ long "password-file",
+            help "The path to the password to register with. If both password and password-file are absent, a prompt will ask for the password.",
+            metavar "PASSWORD"
+          ]
+      )
 
 parseCommandPostPostAddItem :: ParserInfo Command
 parseCommandPostPostAddItem = info parser modifier

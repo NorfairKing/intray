@@ -37,13 +37,15 @@ data Command
 
 data RegisterArgs = RegisterArgs
   { registerArgUsername :: Maybe String,
-    registerArgPassword :: Maybe String
+    registerArgPassword :: Maybe String,
+    registerArgPasswordFile :: Maybe FilePath
   }
   deriving (Show, Eq, Generic)
 
 data LoginArgs = LoginArgs
   { loginArgUsername :: Maybe String,
-    loginArgPassword :: Maybe String
+    loginArgPassword :: Maybe String,
+    loginArgPasswordFile :: Maybe FilePath
   }
   deriving (Show, Eq, Generic)
 
@@ -70,6 +72,7 @@ data Environment = Environment
     envUrl :: Maybe String,
     envUsername :: Maybe String,
     envPassword :: Maybe String,
+    envPasswordFile :: Maybe FilePath,
     envCacheDir :: Maybe FilePath,
     envDataDir :: Maybe FilePath,
     envSyncStrategy :: Maybe SyncStrategy,
@@ -82,6 +85,7 @@ data Configuration = Configuration
   { configUrl :: Maybe String,
     configUsername :: Maybe String,
     configPassword :: Maybe String,
+    configPasswordFile :: Maybe FilePath,
     configCacheDir :: Maybe FilePath,
     configDataDir :: Maybe FilePath,
     configSyncStrategy :: Maybe SyncStrategy,
@@ -101,6 +105,10 @@ instance HasCodec Configuration where
           "password"
           "The password to log in with. Note that leaving your password in plaintext in a config file is not safe. Only use this for automation."
           .= configPassword
+        <*> optionalFieldOrNull
+          "password-file"
+          "The path to a file containing the password to log in with. Note that leaving your password in plaintext in a config file is not safe. Only use this for automation."
+          .= configPasswordFile
         <*> optionalFieldOrNull
           "cache-dir"
           "The directory to store cache information. You can remove this directory as necessary."
