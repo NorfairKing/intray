@@ -21,5 +21,4 @@ mkDerivation {
   ];
   description = "Intray API";
   license = "unknown";
-  hydraPlatforms = lib.platforms.none;
 }

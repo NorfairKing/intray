@@ -38,5 +38,4 @@ mkDerivation {
   ];
   description = "Test utils for intray-server";
   license = "unknown";
-  hydraPlatforms = lib.platforms.none;
 }

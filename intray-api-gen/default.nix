@@ -23,5 +23,4 @@ mkDerivation {
   testToolDepends = [ sydtest-discover ];
   description = "Generators for intray-api";
   license = "unknown";
-  hydraPlatforms = lib.platforms.none;
 }

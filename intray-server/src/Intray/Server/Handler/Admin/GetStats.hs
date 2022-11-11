@@ -24,7 +24,7 @@ serveAdminGetStats _ = do
   let day :: NominalDiffTime
       day = 86400
   let activeUsers time =
-        fmap fromIntegral $ runDB $ count [UserLastLogin >=. Just (addUTCTime (- time) now)]
+        fmap fromIntegral $ runDB $ count [UserLastLogin >=. Just (addUTCTime (-time) now)]
   activeUsersDaily <- activeUsers day
   activeUsersWeekly <- activeUsers $ 7 * day
   activeUsersMonthly <- activeUsers $ 30 * day

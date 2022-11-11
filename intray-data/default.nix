@@ -17,5 +17,4 @@ mkDerivation {
   ];
   description = "Intray Data";
   license = "unknown";
-  hydraPlatforms = lib.platforms.none;
 }

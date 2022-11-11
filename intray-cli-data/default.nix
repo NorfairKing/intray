@@ -22,5 +22,4 @@ mkDerivation {
     typed-process unliftio validity yaml
   ];
   license = "unknown";
-  hydraPlatforms = lib.platforms.none;
 }

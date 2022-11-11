@@ -26,5 +26,5 @@ mkDerivation {
   executableHaskellDepends = [ base ];
   description = "Intray Server";
   license = "unknown";
-  hydraPlatforms = lib.platforms.none;
+  mainProgram = "intray-server";
 }

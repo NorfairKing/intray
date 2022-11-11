@@ -16,5 +16,4 @@ mkDerivation {
   ];
   description = "Intray Client";
   license = "unknown";
-  hydraPlatforms = lib.platforms.none;
 }
