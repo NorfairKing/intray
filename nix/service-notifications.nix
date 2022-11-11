@@ -1,3 +1,4 @@
+{ intrayRelease }:
 { lib, config, ... }:
 with lib;
 
@@ -38,9 +39,8 @@ in
     {
       systemd.services =
         let
-          intrayPkgs = import ./pkgs.nix { };
           notificationScript =
-            intrayPkgs.intrayNotification {
+            intrayRelease.notification {
               inherit (cfg) userName accessKey intrayUrl;
             };
 

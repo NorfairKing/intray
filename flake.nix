@@ -115,6 +115,7 @@
           shellHook = self.checks.${system}.pre-commit.shellHook;
         };
         nixosModules.default = mkNixosModule { envname = "production"; };
+        nixosModules.serviceNotifications = import ./nix/service-notifications.nix { inherit (pkgs) intrayRelease; };
         nixosModuleFactories.default = mkNixosModule;
         homeManagerModules.default = import ./nix/home-manager-module.nix { intrayReleasePackages = pkgs.intrayReleasePackages; };
       });
