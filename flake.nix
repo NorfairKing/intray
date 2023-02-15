@@ -11,13 +11,13 @@
     haskell-dependency-graph-nix.url = "github:NorfairKing/haskell-dependency-graph-nix";
     haskell-dependency-graph-nix.inputs.nixpkgs.follows = "nixpkgs";
     haskell-dependency-graph-nix.inputs.pre-commit-hooks.follows = "pre-commit-hooks";
-    validity.url = "github:NorfairKing/validity?ref=flake";
+    validity.url = "github:NorfairKing/validity";
     validity.flake = false;
-    autodocodec.url = "github:NorfairKing/autodocodec?ref=flake";
+    autodocodec.url = "github:NorfairKing/autodocodec";
     autodocodec.flake = false;
-    safe-coloured-text.url = "github:NorfairKing/safe-coloured-text?ref=flake";
+    safe-coloured-text.url = "github:NorfairKing/safe-coloured-text";
     safe-coloured-text.flake = false;
-    sydtest.url = "github:NorfairKing/sydtest?ref=flake";
+    sydtest.url = "github:NorfairKing/sydtest";
     sydtest.flake = false;
     mergeless.url = "github:NorfairKing/mergeless?ref=flake";
     mergeless.flake = false;

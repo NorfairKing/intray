@@ -31,7 +31,7 @@ extra-deps:
     - mergeless-persistent
 
 - github: NorfairKing/sydtest
-  commit: ff224861ea409a9ee08576adb0438bbbb948917f
+  commit: 2375dbc3b8cc34788dca2baea779f148c173f5b0
   subdirs:
     - sydtest
     - sydtest-aeson
@@ -43,7 +43,7 @@ extra-deps:
     - sydtest-yesod
 
 - github: NorfairKing/validity
-  commit: 2e9198bdaaa8c80a5dbe2b7b860b5c26558c6374
+  commit: a251897dc1eb7e851fd4d3dbc6fa976d22388f27
   subdirs:
   - genvalidity
   - genvalidity-aeson
@@ -95,13 +95,13 @@ extra-deps:
   commit: a634358ff274380a12360f7814c3aea46ea35b1b
 
 - github: NorfairKing/safe-coloured-text
-  commit: 675cb01fce5f46718416d7746de5b856ed90a63f
+  commit: f18578151d579c495eda46b8eeafcddb69adea07
   subdirs:
     - safe-coloured-text
     - safe-coloured-text-terminfo
 
 - github: NorfairKing/autodocodec
-  commit: e337d681109cac273f5b9ea2b54b174bce79d312
+  commit: dde958c53fffe86f0c43dc1c530df3cf73361d6a
   subdirs:
     - autodocodec
     - autodocodec-schema
