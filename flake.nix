@@ -82,6 +82,7 @@
         default = pkgs.intrayRelease;
         generatedIntrayStripeCode = pkgs.generatedIntrayStripeCode;
       };
+      apps.${system}.default = { type = "app"; program = "${pkgs.intrayReleasePackages.intray-cli}/bin/intray"; };
       checks.${system} = {
         coverage-report = pkgs.dekking.makeCoverageReport {
           name = "test-coverage-report";
