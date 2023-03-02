@@ -31,6 +31,8 @@
     linkcheck.flake = false;
     seocheck.url = "github:NorfairKing/seocheck?ref=flake";
     seocheck.flake = false;
+    feedback.url = "github:NorfairKing/feedback";
+    feedback.flake = false;
     dekking.url = "github:NorfairKing/dekking";
     dekking.flake = false;
   };
@@ -51,6 +53,7 @@
     , openapi-code-generator
     , linkcheck
     , seocheck
+    , feedback
     , dekking
     }:
     let
@@ -70,6 +73,7 @@
           (import (openapi-code-generator + "/nix/overlay.nix"))
           (import (linkcheck + "/nix/overlay.nix"))
           (import (seocheck + "/nix/overlay.nix"))
+          (import (feedback + "/nix/overlay.nix"))
           (import (dekking + "/nix/overlay.nix"))
         ];
       };
@@ -134,6 +138,7 @@
           niv
           zlib
           cabal-install
+          pkgs.feedback
         ]) ++ (with pre-commit-hooks.packages.${system};
           [
             hlint
@@ -142,7 +147,7 @@
             ormolu
             cabal2nix
           ]);
-        shellHook = self.checks.${system}.pre-commit.shellHook;
+        shellHook = self.checks.${system}.pre-commit.shellHook + pkgs.feedback.shellHook;
       };
       nixosModules.${system} = {
         default = mkNixosModule { envname = "production"; };

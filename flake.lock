@@ -32,6 +32,22 @@
         "type": "github"
       }
     },
+    "feedback": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1674569327,
+        "narHash": "sha256-gFjlU7OTdv+J61F+gfQMwysrXIh7VT/lO/7psEbB7rs=",
+        "owner": "NorfairKing",
+        "repo": "feedback",
+        "rev": "2a9b01b677fe2a272c15e63b10c8ed3d0b8faed8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NorfairKing",
+        "repo": "feedback",
+        "type": "github"
+      }
+    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -268,6 +284,7 @@
       "inputs": {
         "autodocodec": "autodocodec",
         "dekking": "dekking",
+        "feedback": "feedback",
         "haskell-dependency-graph-nix": "haskell-dependency-graph-nix",
         "home-manager": "home-manager",
         "linkcheck": "linkcheck",
