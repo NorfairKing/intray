@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell #-}
 
 module Intray.Web.Server.Handler.IncompletionList
@@ -5,10 +6,13 @@ module Intray.Web.Server.Handler.IncompletionList
   )
 where
 
+import Import
 import Intray.Web.Server.Foundation
 import Yesod
 
 getIncompletionListR :: Handler Html
 getIncompletionListR = do
   neverExpires
-  withNavBar $(widgetFile "incompletion-list")
+  withNavBar $ do
+    setTitle "Incompletion List"
+    $(widgetFile "incompletion-list")
