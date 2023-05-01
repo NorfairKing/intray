@@ -116,7 +116,7 @@
                 $of HasPaid end
                   Subscribed until
                   <div data-tooltip="#{prettyTimestamp now end}">
-                    #{prettyTimeAuto now end}
+                    #{prettyTimeAuto end now}
                 $of HasNotPaid _
                   Not Subscribed
           <td>
