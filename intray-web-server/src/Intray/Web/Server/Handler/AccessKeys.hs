@@ -82,7 +82,8 @@ makeNewAccessKeyForm (Just permissions) = do
 
 newAccessKeyForm :: Set Permission -> FormInput Handler AddAccessKey
 newAccessKeyForm ps =
-  AddAccessKey <$> ireq textField "name"
+  AddAccessKey
+    <$> ireq textField "name"
     <*> ( S.fromList . map fst . filter snd
             <$> traverse (\p -> (,) p <$> ireq checkBoxField (T.pack $ show p)) (S.toList ps)
         )

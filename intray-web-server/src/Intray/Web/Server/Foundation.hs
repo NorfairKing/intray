@@ -113,6 +113,7 @@ instance YesodAuth App where
 intrayAuthPluginName :: Text
 intrayAuthPluginName = "intray-auth-plugin"
 
+{-# ANN intrayAuthPlugin ("NOCOVER" :: String) #-}
 intrayAuthPlugin :: AuthPlugin App
 intrayAuthPlugin = AuthPlugin intrayAuthPluginName dispatch loginWidget
   where
@@ -260,7 +261,9 @@ postChangePasswordR = do
   ChangePassword {..} <-
     liftHandler $
       runInputPost $
-        ChangePassword <$> ireq passwordField "old" <*> ireq passwordField "new1"
+        ChangePassword
+          <$> ireq passwordField "old"
+          <*> ireq passwordField "new1"
           <*> ireq passwordField "new2"
   unless (changePasswordNewPassword1 == changePasswordNewPassword2) $
     invalidArgs ["Passwords do not match."]

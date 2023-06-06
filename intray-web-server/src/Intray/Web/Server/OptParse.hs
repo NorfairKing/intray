@@ -94,60 +94,60 @@ parseFlags =
     <$> option
       (Just <$> str)
       (mconcat [long "config-file", value Nothing, metavar "FILEPATH", help "The config file"])
-      <*> optional
-        ( option
-            auto
-            ( mconcat
-                [ long "port",
-                  metavar "PORT",
-                  help "the port to serve on"
-                ]
-            )
-        )
-      <*> optional
-        ( option
-            (eitherReader $ left show . parseBaseUrl)
-            ( mconcat
-                [ long "api-url",
-                  metavar "URL",
-                  help "the url to call the API server on"
-                ]
-            )
-        )
-      <*> optional
-        ( option
-            auto
-            ( mconcat
-                [ long "log-level",
-                  metavar "LOG_LEVEL",
-                  help "the minimal severity for log messages"
-                ]
-            )
-        )
-      <*> optional
-        ( strOption
-            ( mconcat
-                [ long "analytics-tracking-id",
-                  metavar "TRACKING_ID",
-                  help "The google analytics tracking ID"
-                ]
-            )
-        )
-      <*> optional
-        ( strOption
-            ( mconcat
-                [ long "search-console-verification",
-                  metavar "VERIFICATION_TAG",
-                  help "The contents of the google search console verification tag"
-                ]
-            )
-        )
-      <*> optional
-        ( strOption
-            ( mconcat
-                [ long "login-cache-file",
-                  metavar "FILEPATH",
-                  help "The file to store the login cache database in"
-                ]
-            )
-        )
+    <*> optional
+      ( option
+          auto
+          ( mconcat
+              [ long "port",
+                metavar "PORT",
+                help "the port to serve on"
+              ]
+          )
+      )
+    <*> optional
+      ( option
+          (eitherReader $ left show . parseBaseUrl)
+          ( mconcat
+              [ long "api-url",
+                metavar "URL",
+                help "the url to call the API server on"
+              ]
+          )
+      )
+    <*> optional
+      ( option
+          auto
+          ( mconcat
+              [ long "log-level",
+                metavar "LOG_LEVEL",
+                help "the minimal severity for log messages"
+              ]
+          )
+      )
+    <*> optional
+      ( strOption
+          ( mconcat
+              [ long "analytics-tracking-id",
+                metavar "TRACKING_ID",
+                help "The google analytics tracking ID"
+              ]
+          )
+      )
+    <*> optional
+      ( strOption
+          ( mconcat
+              [ long "search-console-verification",
+                metavar "VERIFICATION_TAG",
+                help "The contents of the google search console verification tag"
+              ]
+          )
+      )
+    <*> optional
+      ( strOption
+          ( mconcat
+              [ long "login-cache-file",
+                metavar "FILEPATH",
+                help "The file to store the login cache database in"
+              ]
+          )
+      )

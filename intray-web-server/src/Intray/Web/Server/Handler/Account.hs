@@ -78,7 +78,7 @@ adminSegment :: Maybe AccountInfo -> Widget
 adminSegment Nothing = mempty
 adminSegment (Just AccountInfo {..})
   | accountInfoAdmin =
-    [whamlet|
+      [whamlet|
           <div .columns .is-centered>
             <div .column .is-half>
               <div .content>

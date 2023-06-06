@@ -5,8 +5,8 @@
     extra-trusted-public-keys = "intray.cachix.org-1:qD7I/NQLia2iy6cbzZvFuvn09iuL4AkTmHvjxrQlccQ=";
   };
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs?ref=nixos-22.11";
-    home-manager.url = "github:nix-community/home-manager?ref=release-22.11";
+    nixpkgs.url = "github:NixOS/nixpkgs?ref=nixos-23.05";
+    home-manager.url = "github:nix-community/home-manager?ref=release-23.05";
     pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
     haskell-dependency-graph-nix.url = "github:NorfairKing/haskell-dependency-graph-nix";
     haskell-dependency-graph-nix.inputs.nixpkgs.follows = "nixpkgs";
@@ -19,17 +19,17 @@
     safe-coloured-text.flake = false;
     sydtest.url = "github:NorfairKing/sydtest";
     sydtest.flake = false;
-    mergeless.url = "github:NorfairKing/mergeless?ref=flake";
+    mergeless.url = "github:NorfairKing/mergeless";
     mergeless.flake = false;
-    yesod-autoreload.url = "github:NorfairKing/yesod-autoreload?ref=flake";
+    yesod-autoreload.url = "github:NorfairKing/yesod-autoreload";
     yesod-autoreload.flake = false;
-    yesod-static-remote.url = "github:NorfairKing/yesod-static-remote?ref=flake";
+    yesod-static-remote.url = "github:NorfairKing/yesod-static-remote";
     yesod-static-remote.flake = false;
     openapi-code-generator.url = "github:Haskell-OpenAPI-Code-Generator/Haskell-OpenAPI-Client-Code-Generator?ref=flake";
     openapi-code-generator.flake = false;
-    linkcheck.url = "github:NorfairKing/linkcheck?ref=flake";
+    linkcheck.url = "github:NorfairKing/linkcheck";
     linkcheck.flake = false;
-    seocheck.url = "github:NorfairKing/seocheck?ref=flake";
+    seocheck.url = "github:NorfairKing/seocheck";
     seocheck.flake = false;
     feedback.url = "github:NorfairKing/feedback";
     feedback.flake = false;

@@ -1,4 +1,4 @@
-snapshot: lts-19.32
+snapshot: lts-20.23
 packages:
 - intray-api
 - intray-api-gen
@@ -30,60 +30,6 @@ extra-deps:
     - genvalidity-mergeless
     - mergeless-persistent
 
-- github: NorfairKing/sydtest
-  commit: 2375dbc3b8cc34788dca2baea779f148c173f5b0
-  subdirs:
-    - sydtest
-    - sydtest-aeson
-    - sydtest-discover
-    - sydtest-persistent
-    - sydtest-persistent-sqlite
-    - sydtest-servant
-    - sydtest-wai
-    - sydtest-yesod
-
-- github: NorfairKing/validity
-  commit: a251897dc1eb7e851fd4d3dbc6fa976d22388f27
-  subdirs:
-  - genvalidity
-  - genvalidity-aeson
-  - genvalidity-bytestring
-  - genvalidity-containers
-  - genvalidity-criterion
-  - genvalidity-hspec
-  - genvalidity-hspec-aeson
-  - genvalidity-hspec-binary
-  - genvalidity-hspec-cereal
-  - genvalidity-hspec-hashable
-  - genvalidity-hspec-optics
-  - genvalidity-hspec-persistent
-  - genvalidity-path
-  - genvalidity-persistent
-  - genvalidity-property
-  - genvalidity-scientific
-  - genvalidity-sydtest
-  - genvalidity-sydtest-aeson
-  - genvalidity-sydtest-hashable
-  - genvalidity-sydtest-lens
-  - genvalidity-sydtest-persistent
-  - genvalidity-text
-  - genvalidity-time
-  - genvalidity-unordered-containers
-  - genvalidity-uuid
-  - genvalidity-vector
-  - validity
-  - validity-aeson
-  - validity-bytestring
-  - validity-containers
-  - validity-path
-  - validity-persistent
-  - validity-primitive
-  - validity-scientific
-  - validity-text
-  - validity-time
-  - validity-unordered-containers
-  - validity-uuid
-  - validity-vector
 
 - github: NorfairKing/typed-uuid
   commit: 00fbc7e0380ab2ff72e8fd02323e76f13b7d5b59

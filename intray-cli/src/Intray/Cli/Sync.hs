@@ -51,7 +51,8 @@ actuallySync clientEnv token = do
     mSi <- getShownItem
     runDB $
       fmap (join . join) $
-        forM mSi $ fmap (fmap clientItemServerIdentifier) . get
+        forM mSi $
+          fmap (fmap clientItemServerIdentifier) . get
   errOrSyncResponse <- liftIO $ runClientM (clientPostSync token syncRequest) clientEnv
   case errOrSyncResponse of
     Left err -> logErrorN $ T.pack $ unlines ["Failed to sync:", show err]

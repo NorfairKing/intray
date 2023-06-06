@@ -72,7 +72,7 @@ in
               });
               intrayPkgWithComp =
                 exeName: name:
-                generateOptparseApplicativeCompletion exeName (intrayPkg name);
+                self.generateOptparseApplicativeCompletions [ exeName ] (intrayPkg name);
               intrayPkgWithOwnComp = name: intrayPkgWithComp name name;
               intrayPackages =
                 {

@@ -1,6 +1,7 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DerivingStrategies #-}
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
@@ -57,8 +58,8 @@ instance Validity ClientItem
 instance ToBackendKey SqlBackend a => HasCodec (Sql.Key a) where
   codec = dimapCodec toSqlKey fromSqlKey codec
 
-instance (PersistEntity a, ToBackendKey SqlBackend a) => ToJSONKey (Sql.Key a) where
+instance ToBackendKey SqlBackend a => ToJSONKey (Sql.Key a) where
   toJSONKey = contramap fromSqlKey toJSONKey
 
-instance (PersistEntity a, ToBackendKey SqlBackend a) => FromJSONKey (Sql.Key a) where
+instance ToBackendKey SqlBackend a => FromJSONKey (Sql.Key a) where
   fromJSONKey = toSqlKey <$> fromJSONKey

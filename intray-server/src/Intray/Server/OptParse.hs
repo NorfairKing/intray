@@ -60,12 +60,14 @@ combineToSettings flags@Flags {..} env@Environment {..} mConf = do
               <$> (flagStripePlan <|> envStripePlan <|> mmc monetisationConfStripePlan)
       let secretKey =
             T.pack
-              <$> ( flagStripeSecretKey <|> envStripeSecretKey
+              <$> ( flagStripeSecretKey
+                      <|> envStripeSecretKey
                       <|> mmc monetisationConfStripeSecretKey
                   )
       let publicKey =
             T.pack
-              <$> ( flagStripePublishableKey <|> envStripePublishableKey
+              <$> ( flagStripePublishableKey
+                      <|> envStripePublishableKey
                       <|> mmc monetisationConfStripePublishableKey
                   )
       let maxItemsFree =
