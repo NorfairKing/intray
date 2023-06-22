@@ -25,7 +25,7 @@
     yesod-autoreload.flake = false;
     yesod-static-remote.url = "github:NorfairKing/yesod-static-remote";
     yesod-static-remote.flake = false;
-    openapi-code-generator.url = "github:Haskell-OpenAPI-Code-Generator/Haskell-OpenAPI-Client-Code-Generator?ref=flake";
+    openapi-code-generator.url = "github:Haskell-OpenAPI-Code-Generator/Haskell-OpenAPI-Client-Code-Generator";
     openapi-code-generator.flake = false;
     linkcheck.url = "github:NorfairKing/linkcheck";
     linkcheck.flake = false;
