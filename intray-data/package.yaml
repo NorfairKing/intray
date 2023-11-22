@@ -10,7 +10,6 @@ default-extensions:
 
 library:
   source-dirs: src
-
   dependencies:
   - aeson
   - autodocodec
@@ -22,7 +21,6 @@ library:
   - http-api-data
   - path-pieces
   - persistent
-  - persistent-template
   - random
   - text
   - time

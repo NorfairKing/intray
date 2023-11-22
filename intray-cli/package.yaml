@@ -8,8 +8,6 @@ library:
   - NoImplicitPrelude
 
   dependencies:
-  - aeson >=1.0
-  - aeson-pretty >=0.8
   - autodocodec
   - autodocodec-yaml
   - base >=4.9 && <5
@@ -35,15 +33,11 @@ library:
   - persistent
   - persistent-sqlite
   - pretty-relative-time
-  - servant >=0.9
   - servant-auth-client >=0.2
-  - servant-auth-server >=0.3
   - servant-client >=0.9
-  - servant-server >=0.9
   - text >=1.2
   - time
   - typed-process
-  - unliftio
   - validity
   - yaml >=0.8
 
@@ -71,7 +65,6 @@ tests:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - async
     - base
     - bytestring
     - filelock
@@ -79,23 +72,16 @@ tests:
     - genvalidity-sydtest
     - genvalidity-sydtest-aeson
     - http-client
-    - http-types
-    - intray-api
     - intray-api-gen
     - intray-cli
-    - intray-cli-data
     - intray-client
     - intray-data
     - intray-server-gen
-    - mergeless
     - monad-logger
     - mtl
     - path
     - path-io
-    - servant
-    - servant-client
     - sydtest
-    - sydtest-persistent-sqlite
     - sydtest-wai
     - text >=1.2
     - unliftio

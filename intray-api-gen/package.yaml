@@ -12,18 +12,12 @@ library:
   - bytestring
   - genvalidity
   - genvalidity-bytestring
-  - genvalidity-mergeless
   - genvalidity-text
   - genvalidity-time
   - genvalidity-uuid
   - intray-api
-  - intray-data
   - intray-data-gen
   - text
-  - validity
-  - validity-bytestring
-  - validity-text
-  - validity-time
 
 tests:
   intray-api-test:
@@ -43,8 +37,6 @@ tests:
     - sydtest
     - intray-api
     - intray-api-gen
-    - intray-data
-    - intray-data-gen
     - QuickCheck
     - text
     - bytestring

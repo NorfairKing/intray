@@ -1,12 +1,10 @@
 { mkDerivation, aeson, aeson-pretty, autodocodec, autodocodec-yaml
-, base, bytestring, conduit, containers, envparse, exceptions
-, file-embed, http-client, intray-api, intray-data
-, intray-stripe-client, jose, lib, markdown, mergeless
-, mergeless-persistent, monad-logger, mtl, optparse-applicative
-, path, path-io, persistent, persistent-sqlite, pretty-show
-, resourcet, safe, servant, servant-auth-server, servant-docs
-, servant-server, text, time, typed-uuid, unordered-containers, wai
-, wai-cors, warp, yaml
+, base, bytestring, containers, envparse, http-client, intray-api
+, intray-stripe-client, jose, lib, mergeless, mergeless-persistent
+, monad-logger, mtl, optparse-applicative, path, path-io
+, persistent, persistent-sqlite, pretty-show, resourcet
+, servant-auth-server, servant-server, text, time, typed-uuid, wai
+, wai-cors, warp
 }:
 mkDerivation {
   pname = "intray-server";
@@ -16,12 +14,11 @@ mkDerivation {
   isExecutable = true;
   libraryHaskellDepends = [
     aeson aeson-pretty autodocodec autodocodec-yaml base bytestring
-    conduit containers envparse exceptions file-embed http-client
-    intray-api intray-data intray-stripe-client jose markdown mergeless
-    mergeless-persistent monad-logger mtl optparse-applicative path
-    path-io persistent persistent-sqlite pretty-show resourcet safe
-    servant servant-auth-server servant-docs servant-server text time
-    typed-uuid unordered-containers wai wai-cors warp yaml
+    containers envparse http-client intray-api intray-stripe-client
+    jose mergeless mergeless-persistent monad-logger mtl
+    optparse-applicative path path-io persistent persistent-sqlite
+    pretty-show resourcet servant-auth-server servant-server text time
+    typed-uuid wai wai-cors warp
   ];
   executableHaskellDepends = [ base ];
   description = "Intray Server";

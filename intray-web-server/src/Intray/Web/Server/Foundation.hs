@@ -15,20 +15,15 @@ module Intray.Web.Server.Foundation
     module Intray.Web.Server.Widget,
     module Intray.Web.Server.Static,
     module Intray.Web.Server.Constants,
-    module Intray.Web.Server.DB,
   )
 where
 
 import Control.Monad.Except
-import Control.Monad.Trans.Maybe
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
-import Database.Persist.Sql
-import Database.Persist.Sqlite
 import Import
 import Intray.Client
 import Intray.Web.Server.Constants
-import Intray.Web.Server.DB
 import Intray.Web.Server.Static
 import Intray.Web.Server.Widget
 import qualified Network.HTTP.Client as Http
@@ -54,8 +49,7 @@ data App = App
     appStatic :: !EmbeddedStatic,
     appTracking :: !(Maybe Text),
     appVerification :: !(Maybe Text),
-    appAPIBaseUrl :: !BaseUrl,
-    appConnectionPool :: !ConnectionPool
+    appAPIBaseUrl :: !BaseUrl
   }
 
 mkYesodData "App" $(parseRoutesFile "routes")
@@ -87,28 +81,18 @@ instance Yesod App where
       |]
   errorHandler other = defaultErrorHandler other
 
-instance YesodPersist App where
-  type YesodPersistBackend App = SqlBackend
-  runDB func = do
-    pool <- getsYesod appConnectionPool
-    runSqlPool (retryOnBusy func) pool
-
 instance YesodAuth App where
-  type AuthId App = Username
+  type AuthId App = Text -- Actually Token, but in text form so it has a 'PathPiece' instance
   loginDest _ = AddR
   logoutDest _ = HomeR
   authHttpManager = getsYesod appHttpManager
   authenticate creds =
-    if credsPlugin creds == intrayAuthPluginName
-      then case parseUsername $ credsIdent creds of
-        Nothing -> pure $ UserError Msg.InvalidLogin
-        Just un -> pure $ Authenticated un
-      else pure $ ServerError $ T.unwords ["Unknown authentication plugin:", credsPlugin creds]
+    pure $
+      if credsPlugin creds == intrayAuthPluginName
+        then Authenticated $ credsIdent creds
+        else ServerError $ T.unwords ["Unknown authentication plugin:", credsPlugin creds]
   authPlugins _ = [intrayAuthPlugin]
-  maybeAuthId =
-    runMaybeT $ do
-      s <- MaybeT $ lookupSession credsKey
-      MaybeT $ return $ fromPathPiece s
+  maybeAuthId = lookupSession credsKey
 
 intrayAuthPluginName :: Text
 intrayAuthPluginName = "intray-auth-plugin"
@@ -145,20 +129,12 @@ loginFormPostTargetR = PluginR intrayAuthPluginName ["login"]
 postLoginR :: IntrayAuthHandler TypedContent
 postLoginR = do
   let loginInputForm = LoginData <$> ireq textField "userkey" <*> ireq passwordField "passphrase"
-  result <- runInputPostResult loginInputForm
-  muser <-
-    case result of
-      FormMissing -> invalidArgs ["Form is missing"]
-      FormFailure _ -> return $ Left Msg.InvalidLogin
-      FormSuccess (LoginData ukey pwd) ->
-        case parseUsername ukey of
-          Nothing -> pure $ Left Msg.InvalidUsernamePass
-          Just un -> do
-            liftHandler $ login LoginForm {loginFormUsername = un, loginFormPassword = pwd}
-            pure $ Right un
-  case muser of
-    Left err -> loginErrorMessageI LoginR err
-    Right un -> setCredsRedirect $ Creds intrayAuthPluginName (usernameText un) []
+  LoginData ukey pw <- runInputPost loginInputForm
+  case parseUsername ukey of
+    Nothing -> loginErrorMessageI LoginR Msg.InvalidUsernamePass
+    Just un -> do
+      session <- liftHandler $ login LoginForm {loginFormUsername = un, loginFormPassword = pw}
+      setCredsRedirect $ Creds intrayAuthPluginName session []
 
 registerR :: AuthRoute
 registerR = PluginR intrayAuthPluginName ["register"]
@@ -167,12 +143,10 @@ getNewAccountR :: IntrayAuthHandler Html
 getNewAccountR = do
   token <- genToken
   msgs <- getMessages
-  liftHandler $
-    defaultLayout $
-      do
-        setTitle "Intray Registration"
-        setDescriptionIdemp "Intray Registration: This is where you sign up for an intray account."
-        $(widgetFile "auth/register")
+  liftHandler $ defaultLayout $ do
+    setTitle "Intray Registration"
+    setDescriptionIdemp "Intray Registration: This is where you sign up for an intray account."
+    $(widgetFile "auth/register")
 
 data NewAccount = NewAccount
   { newAccountUsername :: Username,
@@ -199,27 +173,14 @@ postNewAccountR = do
             "username"
           <*> ireq passwordField "passphrase"
           <*> ireq passwordField "passphrase-confirm"
-  mr <- liftHandler getMessageRender
-  result <- liftHandler $ runInputPostResult newAccountInputForm
-  mdata <-
-    case result of
-      FormMissing -> invalidArgs ["Form is incomplete"]
-      FormFailure msgs -> pure $ Left msgs
-      FormSuccess d ->
-        pure $
-          if newAccountPassword1 d == newAccountPassword2 d
-            then
-              Right
-                Registration
-                  { registrationUsername = newAccountUsername d,
-                    registrationPassword = newAccountPassword1 d
-                  }
-            else Left [mr Msg.PassMismatch]
-  case mdata of
-    Left errs -> do
-      setMessage $ toHtml $ T.concat errs
-      liftHandler $ redirect $ AuthR registerR
-    Right reg -> do
+  d <- liftHandler $ runInputPost newAccountInputForm
+  if newAccountPassword1 d == newAccountPassword2 d
+    then do
+      let reg =
+            Registration
+              { registrationUsername = newAccountUsername d,
+                registrationPassword = newAccountPassword1 d
+              }
       errOrOk <- liftHandler $ runClient $ clientPostRegister reg
       case errOrOk of
         Left err -> do
@@ -232,13 +193,16 @@ postNewAccountR = do
           liftHandler $ redirect $ AuthR registerR
         Right NoContent ->
           liftHandler $ do
-            login
-              LoginForm
-                { loginFormUsername = registrationUsername reg,
-                  loginFormPassword = registrationPassword reg
-                }
-            setCredsRedirect $
-              Creds intrayAuthPluginName (usernameText $ registrationUsername reg) []
+            session <-
+              login
+                LoginForm
+                  { loginFormUsername = registrationUsername reg,
+                    loginFormPassword = registrationPassword reg
+                  }
+            setCredsRedirect $ Creds intrayAuthPluginName session []
+    else do
+      setMessage "Passwords do not match."
+      liftHandler $ redirect $ AuthR registerR
 
 changePasswordTargetR :: AuthRoute
 changePasswordTargetR = PluginR intrayAuthPluginName ["change-password"]
@@ -265,11 +229,9 @@ postChangePasswordR = do
           <$> ireq passwordField "old"
           <*> ireq passwordField "new1"
           <*> ireq passwordField "new2"
-  unless (changePasswordNewPassword1 == changePasswordNewPassword2) $
-    invalidArgs ["Passwords do not match."]
-  liftHandler $
-    withLogin $
-      \t -> do
+  if changePasswordNewPassword1 == changePasswordNewPassword2
+    then liftHandler $
+      withLogin $ \t -> do
         let cpp =
               ChangePassphrase
                 { changePassphraseOld = changePasswordOldPassword,
@@ -279,6 +241,7 @@ postChangePasswordR = do
         case mRes of
           Nothing -> invalidArgs ["Old password is not correct"]
           Just NoContent -> redirect AccountR
+    else invalidArgs ["Passwords do not match."]
 
 instance RenderMessage App FormMessage where
   renderMessage _ _ = defaultFormMessage
@@ -337,8 +300,14 @@ handleStandardServantErrs err func =
     ConnectionError e -> sendResponseStatus Http.status500 $ unwords ["Connection error while calling API:", show e]
     e -> sendResponseStatus Http.status500 $ unwords ["Error while calling API:", show e]
 
-login :: LoginForm -> Handler ()
+login :: LoginForm -> Handler Text
 login form = do
+  session <- loginToSession form
+  setCreds False $ Creds intrayAuthPluginName session []
+  pure session
+
+loginToSession :: LoginForm -> Handler Text
+loginToSession form = do
   errOrRes <- runClient $ clientPostLogin form
   case errOrRes of
     Left err ->
@@ -350,28 +319,35 @@ login form = do
           else sendResponseStatus Http.status500 $ show resp
     Right (Headers NoContent (HCons sessionHeader HNil)) ->
       case sessionHeader of
-        Header session -> recordLoginToken (loginFormUsername form) session
+        Header session -> pure session
         _ ->
           sendResponseStatus Http.status500 $
             unwords ["The server responded but with an invalid header for login", show sessionHeader]
 
 withLogin :: (Token -> Handler a) -> Handler a
 withLogin func = do
-  un <- requireAuthId
-  mLoginToken <- lookupToginToken un
-  case mLoginToken of
-    Nothing -> redirect $ AuthR LoginR
-    Just token -> func token
+  -- If username and access token are provided
+  -- log in using those.
+  let lookupUsernameParam = (>>= parseUsername) <$> lookupGetParam "username"
+  let lookupAccessKeySecretParam = (>>= parseAccessKeySecret) <$> lookupGetParam "access-key"
+  let lookupTuple = do
+        mUn <- lookupUsernameParam
+        mAcs <- lookupAccessKeySecretParam
+        pure $ (,) <$> mUn <*> mAcs
+  mTup <- lookupTuple
+  session <- case mTup of
+    Just (un, acs) ->
+      login
+        LoginForm
+          { loginFormUsername = un,
+            loginFormPassword = accessKeySecretText acs
+          }
+    -- If not require a login
+    Nothing -> requireAuthId
+  func $ sessionToToken session
 
-lookupToginToken :: Username -> Handler (Maybe Token)
-lookupToginToken un = runDB $ fmap (userTokenToken . entityVal) <$> getBy (UniqueUserToken un)
-
-recordLoginToken :: Username -> Text -> Handler ()
-recordLoginToken un session = do
-  let token = Token $ setCookieValue $ parseSetCookie $ TE.encodeUtf8 session
-  void $
-    runDB $
-      upsert UserToken {userTokenName = un, userTokenToken = token} [UserTokenToken =. token]
+sessionToToken :: Text -> Token
+sessionToToken = Token . setCookieValue . parseSetCookie . TE.encodeUtf8
 
 addInfoMessage :: Html -> Handler ()
 addInfoMessage = addMessage ""

@@ -38,7 +38,6 @@ combineToSettings Flags {..} Environment {..} mConf = do
   let setLogLevel = fromMaybe LevelInfo $ flagLogLevel <|> envLogLevel <|> mc confLogLevel
   let setTracking = flagTracking <|> envTracking <|> mc confTracking
   let setVerification = flagVerification <|> envVerification <|> mc confVerification
-  let setLoginCacheFile = fromMaybe "intray-web-server.db" $ flagLoginCacheFile <|> envLoginCacheFile <|> mc confLoginCacheFile
   pure Settings {..}
 
 getConfiguration :: Flags -> Environment -> IO (Maybe Configuration)
@@ -64,7 +63,6 @@ environmentParser =
       <*> optional (Env.var (left (Env.UnreadError . show) . parseBaseUrl) "API_URL" (Env.help "base url for the api server to call"))
       <*> optional (Env.var Env.str "ANALYTICS_TRACKING_ID" (Env.help "google analytics tracking id"))
       <*> optional (Env.var Env.str "SEARCH_CONSOLE_VERIFICATION" (Env.help "google search console verification id"))
-      <*> optional (Env.var Env.str "LOGIN_CACHE_FILE" (Env.help "google search console verification id"))
 
 getFlags :: IO Flags
 getFlags = do
@@ -139,15 +137,6 @@ parseFlags =
               [ long "search-console-verification",
                 metavar "VERIFICATION_TAG",
                 help "The contents of the google search console verification tag"
-              ]
-          )
-      )
-    <*> optional
-      ( strOption
-          ( mconcat
-              [ long "login-cache-file",
-                metavar "FILEPATH",
-                help "The file to store the login cache database in"
               ]
           )
       )

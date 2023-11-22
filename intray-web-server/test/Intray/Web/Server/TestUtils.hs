@@ -23,7 +23,6 @@ import Intray.Web.Server.Foundation
 import qualified Network.HTTP.Client as Http
 import qualified Network.HTTP.Types as Http
 import Servant.Client (ClientEnv (..))
-import Test.Syd.Persistent.Sqlite
 import Test.Syd.Yesod
 import TestImport
 import Yesod.Auth
@@ -34,16 +33,14 @@ intrayWebServerSpec :: YesodSpec App -> Spec
 intrayWebServerSpec = API.withIntrayServer . yesodSpecWithSiteSetupFunc' webServerSetupFunc
 
 webServerSetupFunc :: Http.Manager -> ClientEnv -> SetupFunc App
-webServerSetupFunc man cenv = do
-  pool <- connectionPoolSetupFunc migrateLoginCache
+webServerSetupFunc man cenv =
   pure $
     App
       { appHttpManager = man,
         appStatic = myStatic,
         appTracking = Nothing,
         appVerification = Nothing,
-        appAPIBaseUrl = baseUrl cenv,
-        appConnectionPool = pool
+        appAPIBaseUrl = baseUrl cenv
       }
 
 loginTo :: Username -> Text -> YesodExample App ()

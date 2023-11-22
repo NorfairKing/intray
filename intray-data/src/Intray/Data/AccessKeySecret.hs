@@ -10,6 +10,7 @@ module Intray.Data.AccessKeySecret
   ( AccessKeySecret,
     generateRandomAccessKeySecret,
     accessKeySecretText,
+    parseAccessKeySecret,
     parseAccessKeySecretText,
   )
 where
@@ -35,6 +36,12 @@ instance HasCodec AccessKeySecret where
 
 accessKeySecretText :: AccessKeySecret -> Text
 accessKeySecretText (AccessKeySecret bs) = TE.decodeUtf8 $ SB16.encode bs
+
+parseAccessKeySecret :: Text -> Maybe AccessKeySecret
+parseAccessKeySecret t =
+  case parseAccessKeySecretText t of
+    Left _ -> Nothing
+    Right acs -> Just acs
 
 parseAccessKeySecretText :: Text -> Either String AccessKeySecret
 parseAccessKeySecretText t =

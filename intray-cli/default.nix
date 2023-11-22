@@ -1,16 +1,13 @@
-{ mkDerivation, aeson, aeson-pretty, async, autodocodec
-, autodocodec-yaml, base, bytestring, containers, cookie, envparse
-, filelock, genvalidity-path, genvalidity-sydtest
-, genvalidity-sydtest-aeson, http-client, http-client-tls
-, http-types, intray-api, intray-api-gen, intray-cli-data
+{ mkDerivation, autodocodec, autodocodec-yaml, base, bytestring
+, containers, cookie, envparse, filelock, genvalidity-path
+, genvalidity-sydtest, genvalidity-sydtest-aeson, http-client
+, http-client-tls, intray-api, intray-api-gen, intray-cli-data
 , intray-client, intray-data, intray-server-gen, lib, mergeless
 , mergeless-persistent, monad-logger, mtl, network-uri
 , optparse-applicative, path, path-io, persistent
-, persistent-sqlite, pretty-relative-time, servant
-, servant-auth-client, servant-auth-server, servant-client
-, servant-server, sydtest, sydtest-discover
-, sydtest-persistent-sqlite, sydtest-wai, text, time, typed-process
-, unliftio, validity, yaml
+, persistent-sqlite, pretty-relative-time, servant-auth-client
+, servant-client, sydtest, sydtest-discover, sydtest-wai, text
+, time, typed-process, unliftio, validity, yaml
 }:
 mkDerivation {
   pname = "intray-cli";
@@ -19,23 +16,20 @@ mkDerivation {
   isLibrary = true;
   isExecutable = true;
   libraryHaskellDepends = [
-    aeson aeson-pretty autodocodec autodocodec-yaml base bytestring
-    containers cookie envparse filelock http-client http-client-tls
-    intray-api intray-cli-data intray-client intray-data mergeless
+    autodocodec autodocodec-yaml base bytestring containers cookie
+    envparse filelock http-client http-client-tls intray-api
+    intray-cli-data intray-client intray-data mergeless
     mergeless-persistent monad-logger mtl network-uri
     optparse-applicative path path-io persistent persistent-sqlite
-    pretty-relative-time servant servant-auth-client
-    servant-auth-server servant-client servant-server text time
-    typed-process unliftio validity yaml
+    pretty-relative-time servant-auth-client servant-client text time
+    typed-process validity yaml
   ];
   executableHaskellDepends = [ base ];
   testHaskellDepends = [
-    async base bytestring filelock genvalidity-path genvalidity-sydtest
-    genvalidity-sydtest-aeson http-client http-types intray-api
-    intray-api-gen intray-cli-data intray-client intray-data
-    intray-server-gen mergeless monad-logger mtl path path-io servant
-    servant-client sydtest sydtest-persistent-sqlite sydtest-wai text
-    unliftio
+    base bytestring filelock genvalidity-path genvalidity-sydtest
+    genvalidity-sydtest-aeson http-client intray-api-gen intray-client
+    intray-data intray-server-gen monad-logger mtl path path-io sydtest
+    sydtest-wai text unliftio
   ];
   testToolDepends = [ sydtest-discover ];
   license = "unknown";

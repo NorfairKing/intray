@@ -15,16 +15,11 @@ library:
   - autodocodec
   - autodocodec-yaml
   - bytestring
-  - conduit
   - containers
   - envparse
-  - exceptions
-  - file-embed
   - http-client
   - intray-api
-  - intray-data
   - jose
-  - markdown
   - mergeless
   - mergeless-persistent
   - monad-logger
@@ -36,20 +31,15 @@ library:
   - persistent-sqlite
   - pretty-show
   - resourcet
-  - safe
-  - servant
   - servant-auth-server
-  - servant-docs
   - servant-server
   - intray-stripe-client
   - text
   - time
   - typed-uuid
-  - unordered-containers
   - wai
   - wai-cors
   - warp >=3.2
-  - yaml
 
 executables:
   intray-server:

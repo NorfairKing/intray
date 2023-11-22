@@ -3,18 +3,16 @@
 , genvalidity-sydtest, genvalidity-sydtest-aeson, genvalidity-text
 , genvalidity-time, genvalidity-typed-uuid, genvalidity-uuid
 , intray-data, lib, QuickCheck, sydtest, sydtest-discover
-, sydtest-persistent-sqlite, text, validity, validity-bytestring
-, validity-text, validity-time
+, sydtest-persistent-sqlite, text
 }:
 mkDerivation {
   pname = "intray-data-gen";
   version = "0.0.0.0";
   src = ./.;
   libraryHaskellDepends = [
-    base bytestring genvalidity genvalidity-bytestring
-    genvalidity-persistent genvalidity-text genvalidity-time
-    genvalidity-typed-uuid genvalidity-uuid intray-data QuickCheck text
-    validity validity-bytestring validity-text validity-time
+    base genvalidity genvalidity-bytestring genvalidity-persistent
+    genvalidity-text genvalidity-time genvalidity-typed-uuid
+    genvalidity-uuid intray-data QuickCheck text
   ];
   testHaskellDepends = [
     base bytestring genvalidity-sydtest genvalidity-sydtest-aeson

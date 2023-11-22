@@ -7,7 +7,6 @@ library:
   dependencies:
   - QuickCheck
   - base >=4.7 && <5
-  - bytestring
   - genvalidity >=1.0
   - genvalidity-bytestring
   - genvalidity-persistent
@@ -17,10 +16,6 @@ library:
   - genvalidity-uuid
   - intray-data
   - text
-  - validity
-  - validity-bytestring
-  - validity-text
-  - validity-time
 
 tests:
   intray-data-test:

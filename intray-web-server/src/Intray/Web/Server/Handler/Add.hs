@@ -18,16 +18,15 @@ import qualified Network.HTTP.Types as Http
 import Yesod
 
 getAddR :: Handler Html
-getAddR =
-  withLogin $ \_ -> do
-    alreadyExpired
-    req <- getRequest
-    let tokenKey = defaultCsrfParamName
-    let token =
-          case reqToken req of
-            Nothing -> mempty
-            Just n -> [shamlet|<input type=hidden name=#{tokenKey} value=#{n}>|]
-    withNavBar $(widgetFile "add")
+getAddR = withLogin $ \_ -> do
+  alreadyExpired
+  req <- getRequest
+  let tokenKey = defaultCsrfParamName
+  let token =
+        case reqToken req of
+          Nothing -> mempty
+          Just n -> [shamlet|<input type=hidden name=#{tokenKey} value=#{n}>|]
+  withNavBar $(widgetFile "add")
 
 newItemTextForm :: FormInput Handler Textarea
 newItemTextForm = ireq textareaField "contents"

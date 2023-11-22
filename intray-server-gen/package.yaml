@@ -20,17 +20,12 @@ library:
   - http-types
   - intray-api
   - intray-client
-  - intray-data
   - intray-data-gen
   - intray-server
-  - microlens >=0.4
   - monad-logger
   - path
   - path-io
   - persistent-sqlite
-  - resourcet
-  - servant
-  - servant-auth-client
   - servant-auth-server
   - servant-client
   - servant-server
@@ -38,10 +33,7 @@ library:
   - sydtest-persistent-sqlite
   - sydtest-wai
   - text >=1.2
-  - time
   - typed-uuid
-  - wai
-  - warp
 
 tests:
   intray-server-test:
@@ -66,21 +58,15 @@ tests:
     - intray-api
     - intray-api-gen
     - intray-client
-    - intray-data
     - intray-data-gen
     - intray-server
     - intray-server-gen
-    - mergeless
     - path
     - path-io
     - persistent
-    - servant
-    - servant-client
-    - servant-server
     - sydtest
     - sydtest-aeson
     - text
-    - time
 
 benchmarks:
   intray-server-bench:
@@ -91,15 +77,10 @@ benchmarks:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - QuickCheck
     - base
     - bytestring
-    - cookie
     - criterion
     - http-client
     - intray-client
     - intray-server-gen
-    - servant
-    - servant-auth-client
-    - servant-client
     - sydtest

@@ -66,17 +66,12 @@ library
     , autodocodec-yaml
     , base >=4.7 && <5
     , bytestring
-    , conduit
     , containers
     , envparse
-    , exceptions
-    , file-embed
     , http-client
     , intray-api
-    , intray-data
     , intray-stripe-client
     , jose
-    , markdown
     , mergeless
     , mergeless-persistent
     , monad-logger
@@ -88,19 +83,14 @@ library
     , persistent-sqlite
     , pretty-show
     , resourcet
-    , safe
-    , servant
     , servant-auth-server
-    , servant-docs
     , servant-server
     , text
     , time
     , typed-uuid
-    , unordered-containers
     , wai
     , wai-cors
     , warp >=3.2
-    , yaml
   default-language: Haskell2010
 
 executable intray-server

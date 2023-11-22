@@ -38,12 +38,7 @@ spec =
         let un = "example with a space"
         liftIO $ parseUsername un `shouldBe` Nothing
         registerFlow un "example"
-        statusIs 303
-        loc <- getLocation
-        liftIO $ loc `shouldBe` Right (AuthR registerR)
-        void followRedirect
-        statusIs 200
-        bodyContains "Invalid"
+        statusIs 400
     describe "ChangePasswordR" $ do
       yit "gets a 200 when not logged in" $ do
         get $ AuthR changePasswordTargetR

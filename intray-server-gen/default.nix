@@ -2,13 +2,11 @@
 , genvalidity-bytestring, genvalidity-containers
 , genvalidity-mergeless, genvalidity-sydtest, genvalidity-text
 , genvalidity-time, http-client, http-types, intray-api
-, intray-api-gen, intray-client, intray-data, intray-data-gen
-, intray-server, lib, mergeless, microlens, monad-logger, path
-, path-io, persistent, persistent-sqlite, QuickCheck, resourcet
-, servant, servant-auth-client, servant-auth-server, servant-client
-, servant-server, sydtest, sydtest-aeson, sydtest-discover
-, sydtest-persistent-sqlite, sydtest-wai, text, time, typed-uuid
-, wai, warp
+, intray-api-gen, intray-client, intray-data-gen, intray-server
+, lib, monad-logger, path, path-io, persistent, persistent-sqlite
+, QuickCheck, servant-auth-server, servant-client, servant-server
+, sydtest, sydtest-aeson, sydtest-discover
+, sydtest-persistent-sqlite, sydtest-wai, text, typed-uuid
 }:
 mkDerivation {
   pname = "intray-server-gen";
@@ -18,23 +16,21 @@ mkDerivation {
     base bytestring containers cookie genvalidity-bytestring
     genvalidity-containers genvalidity-mergeless genvalidity-sydtest
     genvalidity-text genvalidity-time http-client http-types intray-api
-    intray-client intray-data intray-data-gen intray-server microlens
-    monad-logger path path-io persistent-sqlite QuickCheck resourcet
-    servant servant-auth-client servant-auth-server servant-client
-    servant-server sydtest sydtest-persistent-sqlite sydtest-wai text
-    time typed-uuid wai warp
+    intray-client intray-data-gen intray-server monad-logger path
+    path-io persistent-sqlite QuickCheck servant-auth-server
+    servant-client servant-server sydtest sydtest-persistent-sqlite
+    sydtest-wai text typed-uuid
   ];
   testHaskellDepends = [
     base bytestring containers genvalidity-bytestring
     genvalidity-sydtest genvalidity-text genvalidity-time http-types
-    intray-api intray-api-gen intray-client intray-data intray-data-gen
-    intray-server mergeless path path-io persistent QuickCheck servant
-    servant-client servant-server sydtest sydtest-aeson text time
+    intray-api intray-api-gen intray-client intray-data-gen
+    intray-server path path-io persistent QuickCheck sydtest
+    sydtest-aeson text
   ];
   testToolDepends = [ sydtest-discover ];
   benchmarkHaskellDepends = [
-    base bytestring cookie criterion http-client intray-client
-    QuickCheck servant servant-auth-client servant-client sydtest
+    base bytestring criterion http-client intray-client sydtest
   ];
   description = "Test utils for intray-server";
   license = "unknown";

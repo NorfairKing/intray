@@ -16,8 +16,7 @@ data Flags = Flags
     flagAPIBaseUrl :: !(Maybe BaseUrl),
     flagLogLevel :: !(Maybe LogLevel),
     flagTracking :: !(Maybe Text),
-    flagVerification :: !(Maybe Text),
-    flagLoginCacheFile :: !(Maybe FilePath)
+    flagVerification :: !(Maybe Text)
   }
   deriving (Show, Eq)
 
@@ -26,8 +25,7 @@ data Configuration = Configuration
     confAPIBaseUrl :: !(Maybe BaseUrl),
     confLogLevel :: !(Maybe LogLevel),
     confTracking :: !(Maybe Text),
-    confVerification :: !(Maybe Text),
-    confLoginCacheFile :: !(Maybe FilePath)
+    confVerification :: !(Maybe Text)
   }
   deriving stock (Show, Eq)
   deriving (FromJSON, ToJSON) via (Autodocodec Configuration)
@@ -36,12 +34,16 @@ instance HasCodec Configuration where
   codec =
     object "Configuration" $
       Configuration
-        <$> optionalFieldOrNull "port" "The port to serve web requests on" .= confPort
-        <*> optionalFieldOrNullWith "api-url" (bimapCodec (left show . parseBaseUrl) show codec) "The url to contact the api server at" .= confAPIBaseUrl
-        <*> optionalFieldOrNull "log-level" "The minimal severity of log messages" .= confLogLevel
-        <*> optionalFieldOrNull "tracking" "The google analytics tracking code" .= confTracking
-        <*> optionalFieldOrNull "verification" "The google search console verification code" .= confVerification
-        <*> optionalFieldOrNull "login-cache-file" "The file to store the login cache database in" .= confLoginCacheFile
+        <$> optionalFieldOrNull "port" "The port to serve web requests on"
+          .= confPort
+        <*> optionalFieldOrNullWith "api-url" (bimapCodec (left show . parseBaseUrl) show codec) "The url to contact the api server at"
+          .= confAPIBaseUrl
+        <*> optionalFieldOrNull "log-level" "The minimal severity of log messages"
+          .= confLogLevel
+        <*> optionalFieldOrNull "tracking" "The google analytics tracking code"
+          .= confTracking
+        <*> optionalFieldOrNull "verification" "The google search console verification code"
+          .= confVerification
 
 data Environment = Environment
   { envConfigFile :: !(Maybe FilePath),
@@ -49,8 +51,7 @@ data Environment = Environment
     envLogLevel :: !(Maybe LogLevel),
     envAPIBaseUrl :: !(Maybe BaseUrl),
     envTracking :: !(Maybe Text),
-    envVerification :: !(Maybe Text),
-    envLoginCacheFile :: !(Maybe FilePath)
+    envVerification :: !(Maybe Text)
   }
   deriving (Show, Eq)
 
@@ -59,7 +60,6 @@ data Settings = Settings
     setLogLevel :: !LogLevel,
     setAPIBaseUrl :: !BaseUrl,
     setTracking :: !(Maybe Text),
-    setVerification :: !(Maybe Text),
-    setLoginCacheFile :: !FilePath
+    setVerification :: !(Maybe Text)
   }
   deriving (Show)

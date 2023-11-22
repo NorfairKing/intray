@@ -26,11 +26,9 @@ library
     , bytestring >=0.10
     , containers
     , intray-api
-    , intray-data
     , mergeless
     , servant
     , servant-auth-client
-    , servant-auth-server
     , servant-client
     , servant-flatten
     , text
