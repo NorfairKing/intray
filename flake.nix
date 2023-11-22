@@ -154,5 +154,9 @@
       };
       nixosModuleFactories.${system}.default = mkNixosModule;
       homeManagerModules.${system}.default = import ./nix/home-manager-module.nix { intrayReleasePackages = pkgs.intrayReleasePackages; };
+      nix-ci.cachix = {
+        name = "intray";
+        public-key = "intray.cachix.org-1:qD7I/NQLia2iy6cbzZvFuvn09iuL4AkTmHvjxrQlccQ=";
+      };
     };
 }
