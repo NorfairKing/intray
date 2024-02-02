@@ -30,6 +30,11 @@ in
               default = [ ];
               description = "The host to serve API requests on";
             };
+            openFirewall = mkOption {
+              type = types.bool;
+              default = false;
+              description = "Whether to open the specified ports in the firewall";
+            };
             port = mkOption {
               type = types.int;
               example = 8001;
@@ -105,6 +110,11 @@ in
               example = [ "intray.cs-syd.eu" ];
               default = [ ];
               description = "The host to serve web requests on";
+            };
+            openFirewall = mkOption {
+              type = types.bool;
+              default = true;
+              description = "Whether to open the specified ports in the firewall";
             };
             port = mkOption {
               type = types.int;
@@ -252,8 +262,8 @@ in
         web-server-service
       ];
       networking.firewall.allowedTCPPorts = builtins.concatLists [
-        (optional (cfg.api-server.enable or false) cfg.api-server.port)
-        (optional (cfg.web-server.enable or false) cfg.web-server.port)
+        (optional ((cfg.api-server.enable or false) && cfg.api-server.openFirewall) cfg.api-server.port)
+        (optional ((cfg.web-server.enable or false) && cfg.web-server.openFirewall) cfg.web-server.port)
       ];
       services.nginx.virtualHosts = mergeListRecursively [
         api-host

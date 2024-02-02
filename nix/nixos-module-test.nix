@@ -24,6 +24,7 @@ pkgs.nixosTest (
           api-server = {
             enable = true;
             port = api-port;
+            openFirewall = true;
             log-level = "Debug";
           };
         };
@@ -37,6 +38,7 @@ pkgs.nixosTest (
           web-server = {
             enable = true;
             port = web-port;
+            openFirewall = true;
             api-url = "apiserver:${builtins.toString api-port}";
           };
         };
