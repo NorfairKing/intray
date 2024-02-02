@@ -15,6 +15,7 @@ in
   options.services.intray."${envname}" =
     {
       enable = mkEnableOption "Intray Service";
+      configureNetworking = mkEnableOption "Automatic intray server networking" // { default = true; };
       api-server = mkOption {
         default = null;
         type = types.nullOr (types.submodule {
@@ -251,13 +252,13 @@ in
         api-server-service
         web-server-service
       ];
-      networking.firewall.allowedTCPPorts = builtins.concatLists [
+      networking.firewall.allowedTCPPorts = mkIf cfg.configureNetworking (builtins.concatLists [
         (optional (cfg.api-server.enable or false) cfg.api-server.port)
         (optional (cfg.web-server.enable or false) cfg.web-server.port)
-      ];
-      services.nginx.virtualHosts = mergeListRecursively [
+      ]);
+      services.nginx.virtualHosts = mkIf cfg.configureNetworking (mergeListRecursively [
         api-host
         web-host
-      ];
+      ]);
     };
 }
