@@ -16,15 +16,15 @@ import System.IO
 
 promptUsername :: Maybe Username -> CliM Username
 promptUsername mun =
-  liftIO $
-    case mun of
+  liftIO
+    $ case mun of
       Nothing -> promptUntil "username" parseUsername
       Just un -> pure un
 
 promptPassword :: Maybe Text -> CliM Text
 promptPassword mp =
-  liftIO $
-    case mp of
+  liftIO
+    $ case mp of
       Nothing -> promptSecret "password"
       Just pw -> pure pw
 

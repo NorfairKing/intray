@@ -21,8 +21,9 @@ intrayWebServer = do
 
 runIntrayWebServer :: Settings -> IO ()
 runIntrayWebServer Settings {..} =
-  runStderrLoggingT $
-    filterLogger (\_ ll -> ll >= setLogLevel) $ do
+  runStderrLoggingT
+    $ filterLogger (\_ ll -> ll >= setLogLevel)
+    $ do
       man <- liftIO Http.newTlsManager
       let app =
             App

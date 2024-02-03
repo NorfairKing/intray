@@ -77,10 +77,12 @@ data AuthCookie = AuthCookie
 
 instance HasCodec AuthCookie where
   codec =
-    object "AuthCookie" $
-      AuthCookie
-        <$> requiredField "uuid" "user uuid" .= authCookieUserUUID
-        <*> optionalFieldWithOmittedDefault "permissions" S.empty "permissions" .= authCookiePermissions
+    object "AuthCookie"
+      $ AuthCookie
+      <$> requiredField "uuid" "user uuid"
+      .= authCookieUserUUID
+      <*> optionalFieldWithOmittedDefault "permissions" S.empty "permissions"
+      .= authCookiePermissions
 
 instance FromJWT AuthCookie
 
@@ -101,10 +103,12 @@ instance Validity Registration
 
 instance HasCodec Registration where
   codec =
-    object "Registration" $
-      Registration
-        <$> requiredField "name" "Username" .= registrationUsername
-        <*> requiredField "password" "Password" .= registrationPassword
+    object "Registration"
+      $ Registration
+      <$> requiredField "name" "Username"
+      .= registrationUsername
+      <*> requiredField "password" "Password"
+      .= registrationPassword
 
 data LoginForm = LoginForm
   { loginFormUsername :: Username,
@@ -117,10 +121,12 @@ instance Validity LoginForm
 
 instance HasCodec LoginForm where
   codec =
-    object "LoginForm" $
-      LoginForm
-        <$> requiredField "username" "Username" .= loginFormUsername
-        <*> requiredField "password" "Password" .= loginFormPassword
+    object "LoginForm"
+      $ LoginForm
+      <$> requiredField "username" "Username"
+      .= loginFormUsername
+      <*> requiredField "password" "Password"
+      .= loginFormPassword
 
 data Pricing = Pricing
   { pricingPlan :: !Text,
@@ -135,12 +141,16 @@ instance Validity Pricing
 
 instance HasCodec Pricing where
   codec =
-    object "Pricing" $
-      Pricing
-        <$> requiredField "plan" "stripe plan" .= pricingPlan
-        <*> requiredField "price" "price" .= pricingPrice
-        <*> requiredField "publishable-key" "publishable key" .= pricingStripePublishableKey
-        <*> requiredField "max-items-free" "how many items a free account can have" .= pricingMaxItemsFree
+    object "Pricing"
+      $ Pricing
+      <$> requiredField "plan" "stripe plan"
+      .= pricingPlan
+      <*> requiredField "price" "price"
+      .= pricingPrice
+      <*> requiredField "publishable-key" "publishable key"
+      .= pricingStripePublishableKey
+      <*> requiredField "max-items-free" "how many items a free account can have"
+      .= pricingMaxItemsFree
 
 instance HasCodec LogLevel where
   codec =

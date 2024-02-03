@@ -29,8 +29,8 @@ servePostAddAccessKey AuthCookie {..} AddAccessKey {..} = do
   case mhp of
     Nothing -> throwAll err500 {errBody = "Unable to hash secret key."}
     Just hp -> do
-      runDB $
-        insert_
+      runDB
+        $ insert_
           AccessKey
             { accessKeyIdentifier = uuid,
               accessKeyUser = authCookieUserUUID,

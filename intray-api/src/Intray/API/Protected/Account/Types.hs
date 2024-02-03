@@ -36,15 +36,22 @@ instance Validity AccountInfo
 
 instance HasCodec AccountInfo where
   codec =
-    object "AccountInfo" $
-      AccountInfo
-        <$> requiredField "uuid" "account uuid" .= accountInfoUUID
-        <*> requiredField "username" "account username" .= accountInfoUsername
-        <*> requiredField "created" "creation time" .= accountInfoCreatedTimestamp
-        <*> requiredField "last-login" "last login time" .= accountInfoLastLogin
-        <*> requiredField "admin" "whether the user is an admin" .= accountInfoAdmin
-        <*> requiredField "count" "how many items the user has in their intray" .= accountInfoCount
-        <*> requiredField "status" "paid status of the account" .= accountInfoStatus
+    object "AccountInfo"
+      $ AccountInfo
+      <$> requiredField "uuid" "account uuid"
+      .= accountInfoUUID
+      <*> requiredField "username" "account username"
+      .= accountInfoUsername
+      <*> requiredField "created" "creation time"
+      .= accountInfoCreatedTimestamp
+      <*> requiredField "last-login" "last login time"
+      .= accountInfoLastLogin
+      <*> requiredField "admin" "whether the user is an admin"
+      .= accountInfoAdmin
+      <*> requiredField "count" "how many items the user has in their intray"
+      .= accountInfoCount
+      <*> requiredField "status" "paid status of the account"
+      .= accountInfoStatus
 
 data PaidStatus
   = HasNotPaid Int -- Number of extra items that they're still allowed
@@ -57,12 +64,12 @@ instance Validity PaidStatus
 
 instance HasCodec PaidStatus where
   codec =
-    object "PaidStatus" $
-      dimapCodec f g $
-        eitherCodec (requiredField "items-left" "how many free items the user has left") $
-          eitherCodec
-            (requiredField "until" "when the subscription expires")
-            (pure NoPaymentNecessary)
+    object "PaidStatus"
+      $ dimapCodec f g
+      $ eitherCodec (requiredField "items-left" "how many free items the user has left")
+      $ eitherCodec
+        (requiredField "until" "when the subscription expires")
+        (pure NoPaymentNecessary)
     where
       f = \case
         Left i -> HasNotPaid i
@@ -84,10 +91,12 @@ instance Validity ChangePassphrase
 
 instance HasCodec ChangePassphrase where
   codec =
-    object "ChangePassphrase" $
-      ChangePassphrase
-        <$> requiredField "old-passphrase" "old passphrase" .= changePassphraseOld
-        <*> requiredField "new-passphrase" "new passphrase" .= changePassphraseNew
+    object "ChangePassphrase"
+      $ ChangePassphrase
+      <$> requiredField "old-passphrase" "old passphrase"
+      .= changePassphraseOld
+      <*> requiredField "new-passphrase" "new passphrase"
+      .= changePassphraseNew
 
 data InitiateStripeCheckoutSession = InitiateStripeCheckoutSession
   { initiateStripeCheckoutSessionSuccessUrl :: Text,
@@ -100,10 +109,12 @@ instance Validity InitiateStripeCheckoutSession
 
 instance HasCodec InitiateStripeCheckoutSession where
   codec =
-    object "InitiateStripeCheckoutSession" $
-      InitiateStripeCheckoutSession
-        <$> requiredField "success" "success url" .= initiateStripeCheckoutSessionSuccessUrl
-        <*> requiredField "canceled" "canceled url" .= initiateStripeCheckoutSessionCanceledUrl
+    object "InitiateStripeCheckoutSession"
+      $ InitiateStripeCheckoutSession
+      <$> requiredField "success" "success url"
+      .= initiateStripeCheckoutSessionSuccessUrl
+      <*> requiredField "canceled" "canceled url"
+      .= initiateStripeCheckoutSessionCanceledUrl
 
 data InitiatedCheckoutSession = InitiatedCheckoutSession
   { initiatedCheckoutSessionId :: Text,
@@ -116,7 +127,9 @@ instance Validity InitiatedCheckoutSession
 
 instance HasCodec InitiatedCheckoutSession where
   codec =
-    object "InitiatedCheckoutSession" $
-      InitiatedCheckoutSession
-        <$> requiredField "session" "session identifier" .= initiatedCheckoutSessionId
-        <*> requiredField "customer" "customer identifier" .= initiatedCheckoutSessionCustomerId
+    object "InitiatedCheckoutSession"
+      $ InitiatedCheckoutSession
+      <$> requiredField "session" "session identifier"
+      .= initiatedCheckoutSessionId
+      <*> requiredField "customer" "customer identifier"
+      .= initiatedCheckoutSessionCustomerId

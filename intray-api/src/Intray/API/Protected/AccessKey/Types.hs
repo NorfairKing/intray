@@ -36,12 +36,16 @@ instance Validity AccessKeyInfo
 
 instance HasCodec AccessKeyInfo where
   codec =
-    object "AccessKeyInfo" $
-      AccessKeyInfo
-        <$> requiredField "uuid" "access key uuid" .= accessKeyInfoUUID
-        <*> requiredField "name" "access key name" .= accessKeyInfoName
-        <*> requiredField "created" "creation time" .= accessKeyInfoCreatedTimestamp
-        <*> requiredField "permissions" "permissions" .= accessKeyInfoPermissions
+    object "AccessKeyInfo"
+      $ AccessKeyInfo
+      <$> requiredField "uuid" "access key uuid"
+      .= accessKeyInfoUUID
+      <*> requiredField "name" "access key name"
+      .= accessKeyInfoName
+      <*> requiredField "created" "creation time"
+      .= accessKeyInfoCreatedTimestamp
+      <*> requiredField "permissions" "permissions"
+      .= accessKeyInfoPermissions
 
 data AddAccessKey = AddAccessKey
   { addAccessKeyName :: Text,
@@ -54,10 +58,12 @@ instance Validity AddAccessKey
 
 instance HasCodec AddAccessKey where
   codec =
-    object "AddAccessKey" $
-      AddAccessKey
-        <$> requiredField "name" "access key name" .= addAccessKeyName
-        <*> requiredField "permissions" "access key permissions" .= addAccessKeyPermissions
+    object "AddAccessKey"
+      $ AddAccessKey
+      <$> requiredField "name" "access key name"
+      .= addAccessKeyName
+      <*> requiredField "permissions" "access key permissions"
+      .= addAccessKeyPermissions
 
 data AccessKeyCreated = AccessKeyCreated
   { accessKeyCreatedCreatedTimestamp :: UTCTime,
@@ -71,8 +77,11 @@ instance Validity AccessKeyCreated
 
 instance HasCodec AccessKeyCreated where
   codec =
-    object "AccessKeyCreated" $
-      AccessKeyCreated
-        <$> requiredField "created" "created timestamp" .= accessKeyCreatedCreatedTimestamp
-        <*> requiredField "secret" "access key secret" .= accessKeyCreatedKey
-        <*> requiredField "uuid" "access key uuid" .= accessKeyCreatedUUID
+    object "AccessKeyCreated"
+      $ AccessKeyCreated
+      <$> requiredField "created" "created timestamp"
+      .= accessKeyCreatedCreatedTimestamp
+      <*> requiredField "secret" "access key secret"
+      .= accessKeyCreatedKey
+      <*> requiredField "uuid" "access key uuid"
+      .= accessKeyCreatedUUID

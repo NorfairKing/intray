@@ -86,18 +86,18 @@ intrayPublicServer =
       postStripeHook = servePostStripeHook
     }
 
-withAuthResult :: ThrowAll a => (AuthCookie -> a) -> (AuthResult AuthCookie -> a)
+withAuthResult :: (ThrowAll a) => (AuthCookie -> a) -> (AuthResult AuthCookie -> a)
 withAuthResult func ar =
   case ar of
     Authenticated ac -> func ac
     _ -> throwAll err401
 
 withAuthResultAndPermission ::
-  ThrowAll a => Permission -> (AuthCookie -> a) -> (AuthResult AuthCookie -> a)
+  (ThrowAll a) => Permission -> (AuthCookie -> a) -> (AuthResult AuthCookie -> a)
 withAuthResultAndPermission p func =
   withAuthResult (\ac -> withPermission (authCookiePermissions ac) p (func ac))
 
-withPermission :: ThrowAll a => Set Permission -> Permission -> a -> a
+withPermission :: (ThrowAll a) => Set Permission -> Permission -> a -> a
 withPermission ps p func =
   if S.member p ps
     then func

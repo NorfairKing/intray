@@ -64,7 +64,9 @@ combineToInstructions (Arguments cmd Flags {..}) Environment {..} mConf =
                   Nothing -> NeverSync
                   Just _ -> AlwaysSync
               )
-              $ flagSyncStrategy <|> envSyncStrategy <|> mc configSyncStrategy
+              $ flagSyncStrategy
+              <|> envSyncStrategy
+              <|> mc configSyncStrategy
       let setAutoOpen = fromMaybe (AutoOpenWith "xdg-open") (flagAutoOpen <|> envAutoOpen <|> mc configAutoOpen)
       let setLogLevel = fromMaybe LevelWarn (flagLogLevel <|> envLogLevel <|> mc configLogLevel)
       pure Settings {..}
@@ -79,8 +81,8 @@ combineToInstructions (Arguments cmd Flags {..}) Environment {..} mConf =
           flagMPass <- mPass registerArgPassword registerArgPasswordFile
           envMPass <- mPass envPassword envPasswordFile
           confMPass <- mPass (mc configPassword) (mc configPasswordFile)
-          pure $
-            DispatchRegister
+          pure
+            $ DispatchRegister
               RegisterSettings
                 { registerSetUsername =
                     (T.pack <$> (registerArgUsername <|> envUsername <|> mc configUsername))
@@ -91,8 +93,8 @@ combineToInstructions (Arguments cmd Flags {..}) Environment {..} mConf =
           flagMPass <- mPass loginArgPassword loginArgPasswordFile
           envMPass <- mPass envPassword envPasswordFile
           confMPass <- mPass (mc configPassword) (mc configPasswordFile)
-          pure $
-            DispatchLogin
+          pure
+            $ DispatchLogin
               LoginSettings
                 { loginSetUsername =
                     (T.pack <$> (loginArgUsername <|> envUsername <|> mc configUsername))
@@ -101,8 +103,8 @@ combineToInstructions (Arguments cmd Flags {..}) Environment {..} mConf =
                     flagMPass <|> envMPass <|> confMPass
                 }
         CommandAddItem AddArgs {..} ->
-          pure $
-            DispatchAddItem
+          pure
+            $ DispatchAddItem
               AddSettings
                 { addSetContents = map T.pack addArgContents,
                   addSetReadStdin = addArgReadStdin,
@@ -140,18 +142,18 @@ getEnvironment = Env.parse (Env.header "Environment") environmentParser
 
 environmentParser :: Env.Parser Env.Error Environment
 environmentParser =
-  Env.prefixed "INTRAY_" $
-    Environment
-      <$> optional (Env.var Env.str "CONFIG_FILE" (Env.help "Config file"))
-      <*> optional (Env.var Env.str "URL" (Env.help "sync server url"))
-      <*> optional (Env.var Env.str "USERNAME" (Env.help "Sync username"))
-      <*> optional (Env.var Env.str "PASSWORD" (Env.help "Sync password"))
-      <*> optional (Env.var Env.str "PASSWORD_FILE" (Env.help "Sync password file"))
-      <*> optional (Env.var Env.str "CACHE_DIR" (Env.help "cache directory"))
-      <*> optional (Env.var Env.str "DATA_DIR" (Env.help "data directory"))
-      <*> optional (Env.var Env.auto "SYNC_STRATEGY" (Env.help "Sync strategy"))
-      <*> optional (Env.var (fmap AutoOpenWith . Env.str) "AUTO_OPEN" (Env.help "The command to auto-open links and pictures"))
-      <*> optional (Env.var Env.auto "LOG_LEVEL" (Env.help "minimal severity of log messages"))
+  Env.prefixed "INTRAY_"
+    $ Environment
+    <$> optional (Env.var Env.str "CONFIG_FILE" (Env.help "Config file"))
+    <*> optional (Env.var Env.str "URL" (Env.help "sync server url"))
+    <*> optional (Env.var Env.str "USERNAME" (Env.help "Sync username"))
+    <*> optional (Env.var Env.str "PASSWORD" (Env.help "Sync password"))
+    <*> optional (Env.var Env.str "PASSWORD_FILE" (Env.help "Sync password file"))
+    <*> optional (Env.var Env.str "CACHE_DIR" (Env.help "cache directory"))
+    <*> optional (Env.var Env.str "DATA_DIR" (Env.help "data directory"))
+    <*> optional (Env.var Env.auto "SYNC_STRATEGY" (Env.help "Sync strategy"))
+    <*> optional (Env.var (fmap AutoOpenWith . Env.str) "AUTO_OPEN" (Env.help "The command to auto-open links and pictures"))
+    <*> optional (Env.var Env.auto "LOG_LEVEL" (Env.help "minimal severity of log messages"))
 
 getArguments :: IO Arguments
 getArguments = do
@@ -181,8 +183,8 @@ parseArgs = Arguments <$> parseCommand <*> parseFlags
 
 parseCommand :: Parser Command
 parseCommand =
-  hsubparser $
-    mconcat
+  hsubparser
+    $ mconcat
       [ command "register" parseCommandRegister,
         command "login" parseCommandLogin,
         command "add" parseCommandPostPostAddItem,
@@ -220,8 +222,8 @@ parseCommandLogin = info parser modifier
 
 parseUsernameOption :: Parser (Maybe String)
 parseUsernameOption =
-  optional $
-    strOption
+  optional
+    $ strOption
       ( mconcat
           [ long "username",
             help "The username to register",
@@ -231,8 +233,8 @@ parseUsernameOption =
 
 parsePasswordOption :: Parser (Maybe String)
 parsePasswordOption =
-  optional $
-    strOption
+  optional
+    $ strOption
       ( mconcat
           [ long "password",
             help "The password to register with. If both password and password-file are absent, a prompt will ask for the password.",
@@ -242,8 +244,8 @@ parsePasswordOption =
 
 parsePasswordFileOption :: Parser (Maybe FilePath)
 parsePasswordFileOption =
-  optional $
-    strOption
+  optional
+    $ strOption
       ( mconcat
           [ long "password-file",
             help "The path to the password to register with. If both password and password-file are absent, a prompt will ask for the password.",
@@ -342,8 +344,9 @@ parseFlags =
           [ long "log-level",
             metavar "LOG_LEVEL",
             value Nothing,
-            help $
-              "the log level, possible values: " <> show [LevelDebug, LevelInfo, LevelWarn, LevelError]
+            help
+              $ "the log level, possible values: "
+              <> show [LevelDebug, LevelInfo, LevelWarn, LevelError]
           ]
       )
 

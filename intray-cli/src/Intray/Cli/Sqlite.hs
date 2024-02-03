@@ -21,12 +21,12 @@ import Intray.Cli.Env
 
 setShownItem :: ClientItemId -> CliM ()
 setShownItem clientItemId =
-  void $
-    runDB $
-      DB.upsertBy
-        (UniqueShownItem clientItemId)
-        (ShownItem {shownItemItem = clientItemId})
-        [ShownItemItem =. clientItemId]
+  void
+    $ runDB
+    $ DB.upsertBy
+      (UniqueShownItem clientItemId)
+      (ShownItem {shownItemItem = clientItemId})
+      [ShownItemItem =. clientItemId]
 
 clearShownItem :: CliM ()
 clearShownItem = runDB $ DB.deleteWhere ([] :: [Filter ShownItem])
@@ -37,8 +37,9 @@ getShownItem = runDB $ fmap (shownItemItem . entityVal) <$> DB.selectFirst [] []
 produceShownItem :: CliM (Maybe (Entity ClientItem))
 produceShownItem = do
   mShownItemId <- getShownItem
-  mShownItem <- fmap join $
-    forM mShownItemId $ \shownItem -> do
+  mShownItem <- fmap join
+    $ forM mShownItemId
+    $ \shownItem -> do
       clientItem <- runDB $ DB.get shownItem
       pure (Entity shownItem <$> clientItem)
   case mShownItem of

@@ -8,6 +8,7 @@ module Intray.Cli.Sync
   )
 where
 
+import Control.Monad
 import Control.Monad.Logger
 import qualified Data.Set as S
 import qualified Data.Text as T
@@ -33,9 +34,8 @@ autoSyncStore = do
         Nothing -> pure ()
         Just clientEnv -> do
           mToken <- loadToken
-          case mToken of
-            Nothing -> pure ()
-            Just token -> actuallySync clientEnv token
+          forM_ mToken $ \token ->
+            actuallySync clientEnv token
 
 tryToSyncStore :: CliM ()
 tryToSyncStore = do
@@ -49,10 +49,11 @@ actuallySync clientEnv token = do
   syncRequest <- makeSyncRequest
   mShownItemUuid <- do
     mSi <- getShownItem
-    runDB $
-      fmap (join . join) $
-        forM mSi $
-          fmap (fmap clientItemServerIdentifier) . get
+    runDB
+      $ fmap (join . join)
+      $ forM mSi
+      $ fmap (fmap clientItemServerIdentifier)
+      . get
   errOrSyncResponse <- liftIO $ runClientM (clientPostSync token syncRequest) clientEnv
   case errOrSyncResponse of
     Left err -> logErrorN $ T.pack $ unlines ["Failed to sync:", show err]
@@ -85,10 +86,10 @@ anyUnsyncedWarning = do
   case mUnsynced of
     Nothing -> pure ()
     Just _ ->
-      logWarnN $
-        T.pack $
-          unlines
-            [ "Not all added items were synchronized in the most recent synchronisation.",
-              "This may have occurred if you have not subscribed with your sync server.",
-              "If that is the case, please navigate to your sync server's web interface to subscribe."
-            ]
+      logWarnN
+        $ T.pack
+        $ unlines
+          [ "Not all added items were synchronized in the most recent synchronisation.",
+            "This may have occurred if you have not subscribed with your sync server.",
+            "If that is the case, please navigate to your sync server's web interface to subscribe."
+          ]

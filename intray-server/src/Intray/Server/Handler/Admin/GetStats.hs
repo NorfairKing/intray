@@ -32,8 +32,9 @@ serveAdminGetStats _ = do
   let adminStatsActiveUsers = ActiveUsers {..}
   adminStatsSubscribedUsers <- do
     us <- runDB $ selectList [] []
-    fmap (fromIntegral . length . catMaybes) $
-      forM us $ \(Entity _ u) -> do
+    fmap (fromIntegral . length . catMaybes)
+      $ forM us
+      $ \(Entity _ u) -> do
         ps <- getUserPaidStatus (userIdentifier u)
         pure $ case ps of
           HasNotPaid _ -> Nothing

@@ -38,8 +38,10 @@ runCliM Settings {..} minimalExclusivity maximalExclusivity func = do
         AlwaysSync -> maximalExclusivity
   withFileLock (fromAbsFile dbLockPath) actualExclusivity $ \_ -> do
     liftIO $ ensureDir (parent dbPath)
-    runStderrLoggingT . filterLogger (\_ ll -> ll >= setLogLevel) $
-      withSqlitePoolInfo (mkSqliteConnectionInfo $ T.pack $ fromAbsFile dbPath) 1 $ \pool -> do
+    runStderrLoggingT
+      . filterLogger (\_ ll -> ll >= setLogLevel)
+      $ withSqlitePoolInfo (mkSqliteConnectionInfo $ T.pack $ fromAbsFile dbPath) 1
+      $ \pool -> do
         flip runSqlPool pool $ do
           _ <- runMigrationQuiet clientAutoMigration
           pure ()

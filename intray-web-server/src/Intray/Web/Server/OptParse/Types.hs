@@ -32,18 +32,18 @@ data Configuration = Configuration
 
 instance HasCodec Configuration where
   codec =
-    object "Configuration" $
-      Configuration
-        <$> optionalFieldOrNull "port" "The port to serve web requests on"
-          .= confPort
-        <*> optionalFieldOrNullWith "api-url" (bimapCodec (left show . parseBaseUrl) show codec) "The url to contact the api server at"
-          .= confAPIBaseUrl
-        <*> optionalFieldOrNull "log-level" "The minimal severity of log messages"
-          .= confLogLevel
-        <*> optionalFieldOrNull "tracking" "The google analytics tracking code"
-          .= confTracking
-        <*> optionalFieldOrNull "verification" "The google search console verification code"
-          .= confVerification
+    object "Configuration"
+      $ Configuration
+      <$> optionalFieldOrNull "port" "The port to serve web requests on"
+      .= confPort
+      <*> optionalFieldOrNullWith "api-url" (bimapCodec (left show . parseBaseUrl) show codec) "The url to contact the api server at"
+      .= confAPIBaseUrl
+      <*> optionalFieldOrNull "log-level" "The minimal severity of log messages"
+      .= confLogLevel
+      <*> optionalFieldOrNull "tracking" "The google analytics tracking code"
+      .= confTracking
+      <*> optionalFieldOrNull "verification" "The google search console verification code"
+      .= confVerification
 
 data Environment = Environment
   { envConfigFile :: !(Maybe FilePath),

@@ -16,6 +16,6 @@ import Intray.Server.Types
 
 serveGetItemUUIDs :: AuthCookie -> IntrayHandler [ItemUUID]
 serveGetItemUUIDs AuthCookie {..} =
-  fmap (fmap $ intrayItemIdentifier . entityVal) $
-    runDB $
-      selectList [IntrayItemUserId ==. authCookieUserUUID] [Asc IntrayItemCreated]
+  fmap (fmap $ intrayItemIdentifier . entityVal)
+    $ runDB
+    $ selectList [IntrayItemUserId ==. authCookieUserUUID] [Asc IntrayItemCreated]

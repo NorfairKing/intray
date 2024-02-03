@@ -97,29 +97,29 @@ data Configuration = Configuration
 
 instance HasCodec Configuration where
   codec =
-    object "Configuration" $
-      Configuration
-        <$> optionalFieldOrNull "url" "The api url of the intray server. Example: api.intray.eu" .= configUrl
-        <*> optionalFieldOrNull "username" "The username to log in with" .= configUsername
-        <*> optionalFieldOrNull
-          "password"
-          "The password to log in with. Note that leaving your password in plaintext in a config file is not safe. Only use this for automation."
-          .= configPassword
-        <*> optionalFieldOrNull
-          "password-file"
-          "The path to a file containing the password to log in with. Note that leaving your password in plaintext in a config file is not safe. Only use this for automation."
-          .= configPasswordFile
-        <*> optionalFieldOrNull
-          "cache-dir"
-          "The directory to store cache information. You can remove this directory as necessary."
-          .= configCacheDir
-        <*> optionalFieldOrNull
-          "data-dir"
-          "The directory to store data information. Removing this directory could lead to data loss."
-          .= configDataDir
-        <*> optionalFieldOrNull "sync" "The sync strategy for non-sync commands." .= configSyncStrategy
-        <*> optionalFieldOrNull "auto-open" "how to auto-open" .= configAutoOpen
-        <*> optionalFieldOrNull "log-level" "minimal severity for log message" .= configLogLevel
+    object "Configuration"
+      $ Configuration
+      <$> optionalFieldOrNull "url" "The api url of the intray server. Example: api.intray.eu" .= configUrl
+      <*> optionalFieldOrNull "username" "The username to log in with" .= configUsername
+      <*> optionalFieldOrNull
+        "password"
+        "The password to log in with. Note that leaving your password in plaintext in a config file is not safe. Only use this for automation."
+        .= configPassword
+      <*> optionalFieldOrNull
+        "password-file"
+        "The path to a file containing the password to log in with. Note that leaving your password in plaintext in a config file is not safe. Only use this for automation."
+        .= configPasswordFile
+      <*> optionalFieldOrNull
+        "cache-dir"
+        "The directory to store cache information. You can remove this directory as necessary."
+        .= configCacheDir
+      <*> optionalFieldOrNull
+        "data-dir"
+        "The directory to store data information. Removing this directory could lead to data loss."
+        .= configDataDir
+      <*> optionalFieldOrNull "sync" "The sync strategy for non-sync commands." .= configSyncStrategy
+      <*> optionalFieldOrNull "auto-open" "how to auto-open" .= configAutoOpen
+      <*> optionalFieldOrNull "log-level" "minimal severity for log message" .= configLogLevel
 
 data Settings = Settings
   { setBaseUrl :: Maybe BaseUrl,
@@ -139,8 +139,8 @@ data SyncStrategy
 
 instance HasCodec SyncStrategy where
   codec =
-    dimapCodec f g $
-      eitherCodec
+    dimapCodec f g
+      $ eitherCodec
         ( literalTextValueCodec NeverSync "NeverSync"
             <??> [ "Only sync when manually running 'intray sync'.",
                    "When using this option, you essentially promise that you will take care of ensuring that syncing happens regularly."
@@ -164,8 +164,8 @@ data AutoOpen = DontAutoOpen | AutoOpenWith FilePath
 
 instance HasCodec AutoOpen where
   codec =
-    dimapCodec f g $
-      eitherCodec
+    dimapCodec f g
+      $ eitherCodec
         (nullCodec <?> "Explicitly _don't_ auto-open links or pictures.")
         (codec <?> "Auto-open with the given command. xdg-open is the default.")
     where

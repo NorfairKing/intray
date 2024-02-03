@@ -12,8 +12,8 @@ downsizeImage contents = do
       w = imageWidth image :: Int
       h = imageHeight image :: Int
       maxDim = 512
-  pure $
-    if w <= maxDim && h <= maxDim
+  pure
+    $ if w <= maxDim && h <= maxDim
       then contents
       else
         let d = maxDim :: Int -- desired

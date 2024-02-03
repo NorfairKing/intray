@@ -71,13 +71,15 @@ combineToSettings flags@Flags {..} env@Environment {..} mConf = do
                       <|> mmc monetisationConfStripePublishableKey
                   )
       let maxItemsFree =
-            fromMaybe 5 $
-              flagMaxItemsFree <|> envMaxItemsFree <|> mmc monetisationConfMaxItemsFree
+            fromMaybe 5
+              $ flagMaxItemsFree
+              <|> envMaxItemsFree
+              <|> mmc monetisationConfMaxItemsFree
       pure $ do
         ss <- StripeSettings <$> plan <*> secretKey <*> publicKey
         price <- flagPrice <|> envPrice <|> mmc monetisationConfPrice
-        pure $
-          MonetisationSettings
+        pure
+          $ MonetisationSettings
             { monetisationSetStripeSettings = ss,
               monetisationSetMaxItemsFree = maxItemsFree,
               monetisationSetPrice = price
@@ -100,19 +102,19 @@ getEnvironment = Env.parse id environmentParser
 
 environmentParser :: Env.Parser Env.Error Environment
 environmentParser =
-  Env.prefixed "INTRAY_SERVER_" $
-    Environment
-      <$> optional (Env.var Env.str "CONFIG_FILE" (Env.help "Config file"))
-      <*> optional (Env.var Env.str "HOST" (Env.help "host to run the api server on"))
-      <*> optional (Env.var Env.auto "PORT" (Env.help "port to run the api server on"))
-      <*> optional (Env.var Env.str "DATABASE" (Env.help "database file"))
-      <*> optional (Env.var Env.auto "LOG_LEVEL" (Env.help "minimal severity of log messages"))
-      <*> optional (Env.var Env.str "SIGNING_KEY_FILE" (Env.help "the file to store the signing key in"))
-      <*> optional (Env.var Env.str "STRIPE_PLAN" (Env.help "stripe plan id for subscriptions"))
-      <*> optional (Env.var Env.str "STRIPE_SECRET_KEY" (Env.help "stripe secret key"))
-      <*> optional (Env.var Env.str "STRIPE_PUBLISHABLE_KEY" (Env.help "stripe publishable key"))
-      <*> optional (Env.var Env.auto "MAX_ITEMS_FREE" (Env.help "maximum items that a free user can have"))
-      <*> optional (Env.var Env.str "PRICE" (Env.help "A text description of the plan price"))
+  Env.prefixed "INTRAY_SERVER_"
+    $ Environment
+    <$> optional (Env.var Env.str "CONFIG_FILE" (Env.help "Config file"))
+    <*> optional (Env.var Env.str "HOST" (Env.help "host to run the api server on"))
+    <*> optional (Env.var Env.auto "PORT" (Env.help "port to run the api server on"))
+    <*> optional (Env.var Env.str "DATABASE" (Env.help "database file"))
+    <*> optional (Env.var Env.auto "LOG_LEVEL" (Env.help "minimal severity of log messages"))
+    <*> optional (Env.var Env.str "SIGNING_KEY_FILE" (Env.help "the file to store the signing key in"))
+    <*> optional (Env.var Env.str "STRIPE_PLAN" (Env.help "stripe plan id for subscriptions"))
+    <*> optional (Env.var Env.str "STRIPE_SECRET_KEY" (Env.help "stripe secret key"))
+    <*> optional (Env.var Env.str "STRIPE_PUBLISHABLE_KEY" (Env.help "stripe publishable key"))
+    <*> optional (Env.var Env.auto "MAX_ITEMS_FREE" (Env.help "maximum items that a free user can have"))
+    <*> optional (Env.var Env.str "PRICE" (Env.help "A text description of the plan price"))
 
 getFlags :: IO Flags
 getFlags = do
@@ -169,8 +171,9 @@ parseFlags =
           [ long "log-level",
             metavar "LOG_LEVEL",
             value Nothing,
-            help $
-              "the log level, possible values: " <> show [LevelDebug, LevelInfo, LevelWarn, LevelError]
+            help
+              $ "the log level, possible values: "
+              <> show [LevelDebug, LevelInfo, LevelWarn, LevelError]
           ]
       )
     <*> option

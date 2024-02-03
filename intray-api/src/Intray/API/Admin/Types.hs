@@ -25,12 +25,16 @@ instance Validity AdminStats
 
 instance HasCodec AdminStats where
   codec =
-    object "AdminStats" $
-      AdminStats
-        <$> requiredField "accounts" "how many accounts there are" .= adminStatsNbAccounts
-        <*> requiredField "subscribed-user" "how many of those are subscribed" .= adminStatsSubscribedUsers
-        <*> requiredField "items" "total number of items that users have in their intrays" .= adminStatsNbItems
-        <*> requiredField "active-users" "X-active users stats" .= adminStatsActiveUsers
+    object "AdminStats"
+      $ AdminStats
+      <$> requiredField "accounts" "how many accounts there are"
+      .= adminStatsNbAccounts
+      <*> requiredField "subscribed-user" "how many of those are subscribed"
+      .= adminStatsSubscribedUsers
+      <*> requiredField "items" "total number of items that users have in their intrays"
+      .= adminStatsNbItems
+      <*> requiredField "active-users" "X-active users stats"
+      .= adminStatsActiveUsers
 
 data ActiveUsers = ActiveUsers
   { activeUsersDaily :: !Word,
@@ -45,9 +49,13 @@ instance Validity ActiveUsers
 
 instance HasCodec ActiveUsers where
   codec =
-    object "ActiveUsers" $
-      ActiveUsers
-        <$> requiredField "daily" "daily active users" .= activeUsersDaily
-        <*> requiredField "weekly" "weekly active users" .= activeUsersWeekly
-        <*> requiredField "monthly" "monthly active users" .= activeUsersMonthly
-        <*> requiredField "yearly" "yearly active users" .= activeUsersYearly
+    object "ActiveUsers"
+      $ ActiveUsers
+      <$> requiredField "daily" "daily active users"
+      .= activeUsersDaily
+      <*> requiredField "weekly" "weekly active users"
+      .= activeUsersWeekly
+      <*> requiredField "monthly" "monthly active users"
+      .= activeUsersMonthly
+      <*> requiredField "yearly" "yearly active users"
+      .= activeUsersYearly

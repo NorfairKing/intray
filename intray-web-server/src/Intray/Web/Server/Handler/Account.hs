@@ -40,8 +40,8 @@ accountInfoSegment (Just AccountInfo {..}) mp = do
           HasPaid subbed -> [whamlet|Subscribed until ^{makeTimestampWidget now subbed}|]
           NoPaymentNecessary -> [whamlet|No payment necessary|]
       createdWidget = makeTimestampWidget now accountInfoCreatedTimestamp
-  pure $
-    mconcat
+  pure
+    $ mconcat
       [ [whamlet|
           <h3 .has-text-weight-bold>
             Info

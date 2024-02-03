@@ -71,11 +71,11 @@ instance Yesod App where
   makeSessionBackend _ =
     Just <$> defaultClientSessionBackend (60 * 24 * 365 * 10) "client_session_key.aes"
   errorHandler NotFound =
-    fmap toTypedContent $
-      withNavBar $
-        do
-          setTitle "Page not found"
-          [whamlet|
+    fmap toTypedContent
+      $ withNavBar
+      $ do
+        setTitle "Page not found"
+        [whamlet|
       <h1>
         Page not found
       |]
@@ -87,8 +87,8 @@ instance YesodAuth App where
   logoutDest _ = HomeR
   authHttpManager = getsYesod appHttpManager
   authenticate creds =
-    pure $
-      if credsPlugin creds == intrayAuthPluginName
+    pure
+      $ if credsPlugin creds == intrayAuthPluginName
         then Authenticated $ credsIdent creds
         else ServerError $ T.unwords ["Unknown authentication plugin:", credsPlugin creds]
   authPlugins _ = [intrayAuthPlugin]
@@ -162,8 +162,8 @@ postNewAccountR = do
           <$> ireq
             ( checkMMap
                 ( \t ->
-                    pure $
-                      case parseUsernameWithError t of
+                    pure
+                      $ case parseUsernameWithError t of
                         Left err -> Left (T.pack $ unwords ["Invalid username:", show t ++ ";", err])
                         Right un -> Right un
                 )
@@ -223,15 +223,16 @@ getChangePasswordR = do
 postChangePasswordR :: IntrayAuthHandler Html
 postChangePasswordR = do
   ChangePassword {..} <-
-    liftHandler $
-      runInputPost $
-        ChangePassword
-          <$> ireq passwordField "old"
-          <*> ireq passwordField "new1"
-          <*> ireq passwordField "new2"
+    liftHandler
+      $ runInputPost
+      $ ChangePassword
+      <$> ireq passwordField "old"
+      <*> ireq passwordField "new1"
+      <*> ireq passwordField "new2"
   if changePasswordNewPassword1 == changePasswordNewPassword2
-    then liftHandler $
-      withLogin $ \t -> do
+    then liftHandler
+      $ withLogin
+      $ \t -> do
         let cpp =
               ChangePassphrase
                 { changePassphraseOld = changePasswordOldPassword,
@@ -257,13 +258,13 @@ withNavBar widget = do
   msgs <- getMessages
   defaultLayout $(widgetFile "with-nav-bar")
 
-genToken :: MonadHandler m => m Html
+genToken :: (MonadHandler m) => m Html
 genToken = do
   alreadyExpired
   req <- getRequest
   let tokenKey = defaultCsrfParamName
-  pure $
-    case reqToken req of
+  pure
+    $ case reqToken req of
       Nothing -> mempty
       Just n -> [shamlet|<input type=hidden name=#{tokenKey} value=#{n}>|]
 
@@ -321,8 +322,8 @@ loginToSession form = do
       case sessionHeader of
         Header session -> pure session
         _ ->
-          sendResponseStatus Http.status500 $
-            unwords ["The server responded but with an invalid header for login", show sessionHeader]
+          sendResponseStatus Http.status500
+            $ unwords ["The server responded but with an invalid header for login", show sessionHeader]
 
 withLogin :: (Token -> Handler a) -> Handler a
 withLogin func = do

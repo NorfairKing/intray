@@ -20,8 +20,8 @@ newtype HashedPassword
 
 instance Validity HashedPassword where
   validate (HashedPassword password) =
-    declare "The password uses our chosen hashing policy" $
-      BCrypt.hashUsesPolicy hashingpolicy password
+    declare "The password uses our chosen hashing policy"
+      $ BCrypt.hashUsesPolicy hashingpolicy password
 
 hashingpolicy :: BCrypt.HashingPolicy
 hashingpolicy = BCrypt.fastBcryptHashingPolicy

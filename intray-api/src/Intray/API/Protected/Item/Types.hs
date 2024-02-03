@@ -42,18 +42,19 @@ instance Validity TypedItem
 
 instance HasCodec TypedItem where
   codec =
-    object "TypedItem" $
-      TypedItem
-        <$> requiredField "type" "type of the item data" .= itemType
-        <*> requiredFieldWith
-          "data"
-          ( bimapCodec
-              (Base64.decode . SB8.pack)
-              (SB8.unpack . Base64.encode)
-              codec
-          )
-          "base64-encoded data"
-          .= itemData
+    object "TypedItem"
+      $ TypedItem
+      <$> requiredField "type" "type of the item data"
+      .= itemType
+      <*> requiredFieldWith
+        "data"
+        ( bimapCodec
+            (Base64.decode . SB8.pack)
+            (SB8.unpack . Base64.encode)
+            codec
+        )
+        "base64-encoded data"
+      .= itemData
 
 textTypedItem :: Text -> TypedItem
 textTypedItem t = TypedItem {itemType = TextItem, itemData = TE.encodeUtf8 t}
@@ -76,14 +77,16 @@ data AddedItem a = AddedItem
   deriving stock (Show, Read, Eq, Ord, Generic)
   deriving (FromJSON, ToJSON) via (Autodocodec (AddedItem a))
 
-instance Validity a => Validity (AddedItem a)
+instance (Validity a) => Validity (AddedItem a)
 
-instance HasCodec a => HasCodec (AddedItem a) where
+instance (HasCodec a) => HasCodec (AddedItem a) where
   codec =
-    object "AddedItem" $
-      AddedItem
-        <$> requiredField "contents" "the item itself" .= addedItemContents
-        <*> requiredField "created" "creation timestamp" .= addedItemCreated
+    object "AddedItem"
+      $ AddedItem
+      <$> requiredField "contents" "the item itself"
+      .= addedItemContents
+      <*> requiredField "created" "creation timestamp"
+      .= addedItemCreated
 
 data ItemInfo a = ItemInfo
   { itemInfoIdentifier :: ItemUUID,
@@ -93,12 +96,15 @@ data ItemInfo a = ItemInfo
   deriving stock (Show, Read, Eq, Ord, Generic)
   deriving (FromJSON, ToJSON) via (Autodocodec (ItemInfo a))
 
-instance Validity a => Validity (ItemInfo a)
+instance (Validity a) => Validity (ItemInfo a)
 
-instance HasCodec a => HasCodec (ItemInfo a) where
+instance (HasCodec a) => HasCodec (ItemInfo a) where
   codec =
-    object "ItemInfo" $
-      ItemInfo
-        <$> requiredField "id" "uuid" .= itemInfoIdentifier
-        <*> requiredField "contents" "the item itself" .= itemInfoContents
-        <*> requiredField "created" "creation timestamp" .= itemInfoCreated
+    object "ItemInfo"
+      $ ItemInfo
+      <$> requiredField "id" "uuid"
+      .= itemInfoIdentifier
+      <*> requiredField "contents" "the item itself"
+      .= itemInfoContents
+      <*> requiredField "created" "creation timestamp"
+      .= itemInfoCreated

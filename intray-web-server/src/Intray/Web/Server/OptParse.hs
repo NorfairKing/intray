@@ -55,14 +55,14 @@ getEnvironment = Env.parse id environmentParser
 
 environmentParser :: Env.Parser Env.Error Environment
 environmentParser =
-  Env.prefixed "INTRAY_WEB_SERVER_" $
-    Environment
-      <$> optional (Env.var Env.str "CONFIG_FILE" (Env.help "Config file"))
-      <*> optional (Env.var Env.auto "PORT" (Env.help "port to run the web server on"))
-      <*> optional (Env.var Env.auto "LOG_LEVEL" (Env.help "minimal severity for log messages"))
-      <*> optional (Env.var (left (Env.UnreadError . show) . parseBaseUrl) "API_URL" (Env.help "base url for the api server to call"))
-      <*> optional (Env.var Env.str "ANALYTICS_TRACKING_ID" (Env.help "google analytics tracking id"))
-      <*> optional (Env.var Env.str "SEARCH_CONSOLE_VERIFICATION" (Env.help "google search console verification id"))
+  Env.prefixed "INTRAY_WEB_SERVER_"
+    $ Environment
+    <$> optional (Env.var Env.str "CONFIG_FILE" (Env.help "Config file"))
+    <*> optional (Env.var Env.auto "PORT" (Env.help "port to run the web server on"))
+    <*> optional (Env.var Env.auto "LOG_LEVEL" (Env.help "minimal severity for log messages"))
+    <*> optional (Env.var (left (Env.UnreadError . show) . parseBaseUrl) "API_URL" (Env.help "base url for the api server to call"))
+    <*> optional (Env.var Env.str "ANALYTICS_TRACKING_ID" (Env.help "google analytics tracking id"))
+    <*> optional (Env.var Env.str "SEARCH_CONSOLE_VERIFICATION" (Env.help "google search console verification id"))
 
 getFlags :: IO Flags
 getFlags = do

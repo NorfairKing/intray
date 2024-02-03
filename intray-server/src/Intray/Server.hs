@@ -31,28 +31,28 @@ import Servant.Server.Generic
 
 runIntrayServer :: Settings -> IO ()
 runIntrayServer Settings {..} =
-  runStderrLoggingT $
-    filterLogger (\_ ll -> ll >= setLogLevel) $
-      withSqlitePoolInfo setConnectionInfo 1 $
-        \pool -> do
-          runResourceT $ flip runSqlPool pool $ runMigration serverAutoMigration
-          signingKey <- liftIO $ loadSigningKey setSigningKeyFile
-          let jwtCfg = defaultJWTSettings signingKey
-          let cookieCfg = defaultCookieSettings
-          logFunc <- askLoggerIO
-          let intrayEnv =
-                IntrayServerEnv
-                  { envLogFunc = logFunc,
-                    envHost = setHost,
-                    envConnectionPool = pool,
-                    envCookieSettings = cookieCfg,
-                    envJWTSettings = jwtCfg,
-                    envAdmins = setAdmins,
-                    envFreeloaders = setFreeloaders,
-                    envMonetisation = setMonetisationSettings
-                  }
-          let runServer = Warp.run setPort $ intrayApp intrayEnv
-          liftIO runServer
+  runStderrLoggingT
+    $ filterLogger (\_ ll -> ll >= setLogLevel)
+    $ withSqlitePoolInfo setConnectionInfo 1
+    $ \pool -> do
+      runResourceT $ flip runSqlPool pool $ runMigration serverAutoMigration
+      signingKey <- liftIO $ loadSigningKey setSigningKeyFile
+      let jwtCfg = defaultJWTSettings signingKey
+      let cookieCfg = defaultCookieSettings
+      logFunc <- askLoggerIO
+      let intrayEnv =
+            IntrayServerEnv
+              { envLogFunc = logFunc,
+                envHost = setHost,
+                envConnectionPool = pool,
+                envCookieSettings = cookieCfg,
+                envJWTSettings = jwtCfg,
+                envAdmins = setAdmins,
+                envFreeloaders = setFreeloaders,
+                envMonetisation = setMonetisationSettings
+              }
+      let runServer = Warp.run setPort $ intrayApp intrayEnv
+      liftIO runServer
 
 intrayApp :: IntrayServerEnv -> Wai.Application
 intrayApp se = addPolicy . serveWithContext intrayAPI (intrayAppContext se) $ makeIntrayServer se
