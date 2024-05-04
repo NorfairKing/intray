@@ -1,0 +1,69 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.36.0.
+--
+-- see: https://github.com/sol/hpack
+
+name:           intray-api
+version:        0.0.0.0
+synopsis:       Intray API
+build-type:     Simple
+
+library
+  exposed-modules:
+      Intray.API
+      Intray.API.AccessKeySecret
+      Intray.API.AccessKeyUUID
+      Intray.API.AccountUUID
+      Intray.API.Admin
+      Intray.API.Admin.Types
+      Intray.API.HashedPassword
+      Intray.API.Image
+      Intray.API.ItemType
+      Intray.API.ItemUUID
+      Intray.API.Permission
+      Intray.API.Protected
+      Intray.API.Protected.AccessKey
+      Intray.API.Protected.AccessKey.Types
+      Intray.API.Protected.Account
+      Intray.API.Protected.Account.Types
+      Intray.API.Protected.Item
+      Intray.API.Protected.Item.Types
+      Intray.API.Types
+      Intray.API.Username
+      Intray.API.UUID
+  other-modules:
+      Paths_intray_api
+  hs-source-dirs:
+      src
+  ghc-options: -Wall
+  build-depends:
+      JuicyPixels
+    , JuicyPixels-extra
+    , aeson
+    , autodocodec
+    , base >=4.7 && <5
+    , base16-bytestring
+    , base64-bytestring
+    , bcrypt
+    , bytestring >=0.10
+    , containers
+    , http-api-data
+    , mergeless
+    , monad-logger
+    , path-pieces
+    , persistent
+    , random
+    , servant
+    , servant-auth
+    , servant-auth-server
+    , text
+    , time
+    , typed-uuid
+    , uuid
+    , validity >=0.4
+    , validity-bytestring >=0.2
+    , validity-text >=0.2
+    , validity-time >=0.1
+    , wai
+  default-language: Haskell2010

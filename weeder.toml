@@ -1,0 +1,29 @@
+unused-types = true
+type-class-roots = false
+roots = [
+  "^Main.main$",
+  # Generated
+  "^Paths_.*",
+  # Exposed as a library
+  "^Intray.Client.",
+  "^Intray.API.",
+]
+root-instances = [
+  # Actual roots
+  ## Needed for tickler but not directly for intray.
+  {instance = "PersistField AccessKeySecret" },
+  {instance = "PersistFieldSql AccessKeySecret" },
+  # Generated
+  ## Database
+  {class = 'ToBackendKey', module = "^Intray.Cli.DB$"},
+  {instance = 'AtLeastOneUniqueKey .*', module = "Intray.Cli.DB"},
+  {instance = 'OnlyOneUniqueKey .*', module = "Intray.Cli.DB"},
+  {instance = '^SymbolToField .*', module = "Intray.Cli.DB"},
+  {instance = '^ToBackendKey .*', module = "Intray.Cli.DB"},
+  {instance = '^SafeToInsert .*', module = "Intray.Cli.DB"},
+  {instance = '^PathPiece \(Key .*\)$'},
+  {instance = '^ToHttpApiData \(Key .*\)$'},
+  {instance = '^FromHttpApiData \(Key .*\)$'},
+  {instance = '^PersistFieldSql \(Key .*\)$'},
+  {instance = '^PersistFieldSql .*$', module = "Intray.Cli.DB"},
+]

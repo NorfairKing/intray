@@ -1,0 +1,13 @@
+.shake/
+.stack-work/
+stack.yaml.lock
+result*
+/out/
+/tmp/
+/src/
+dist/
+*.db*
+.pre-commit-hooks
+.pre-commit-config.yaml
+.direnv/
+intray-stripe-client/

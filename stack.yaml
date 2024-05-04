@@ -1,0 +1,117 @@
+snapshot: lts-21.22
+packages:
+- intray-api
+- intray-api-gen
+- intray-cli
+- intray-cli-data
+- intray-client
+
+# These are duplicated in nix/overlay.
+ghc-options:
+  "$locals": -Wall -Wincomplete-uni-patterns -Wincomplete-record-updates -Wpartial-fields -Widentities -Wredundant-constraints -Wcpp-undef -O0 -Wunused-packages
+  intray-stripe-client: -w # Turn off warnings for the generated code.
+extra-deps:
+- servant-flatten-0.2@sha256:276896f7c5cdec5b8f8493f6205fded0cc602d050b58fdb09a6d7c85c3bb0837,1234
+
+- github: NorfairKing/servant
+  commit: 552da96ff9a6d81a8553c6429843178d78356054
+  subdirs:
+  - servant
+  - servant-auth/servant-auth
+  - servant-auth/servant-auth-client
+  - servant-auth/servant-auth-server
+  - servant-client
+  - servant-client-core
+  - servant-server
+
+- github: NorfairKing/fast-myers-diff
+  commit: c106ef803c69ef9440399247ec4ffd59c84f6fc7
+  subdirs:
+    - fast-myers-diff
+
+- github: NorfairKing/yesod-static-remote
+  commit: 7eda644dc369e16c3591847f6c7cad30846bf6b0
+
+- github: NorfairKing/mergeless
+  commit: af70d2eb3055bdba54be960fa14ee5c55a60772e
+  subdirs:
+    - mergeless
+    - genvalidity-mergeless
+    - mergeless-persistent
+
+
+- github: NorfairKing/typed-uuid
+  commit: 00fbc7e0380ab2ff72e8fd02323e76f13b7d5b59
+  subdirs:
+    - typed-uuid
+    - genvalidity-typed-uuid
+
+- github: NorfairKing/pretty-relative-time
+  commit: a634358ff274380a12360f7814c3aea46ea35b1b
+
+- github: NorfairKing/safe-coloured-text
+  commit: 50abcbfa2a2ed15c6186fa2381fe818bd93a730b
+  subdirs:
+    - safe-coloured-text
+    - safe-coloured-text-terminfo
+
+- github: NorfairKing/autodocodec
+  commit: e7f4ec8d1d47e77c0f7fe83c8032abae5b082572
+  subdirs:
+    - autodocodec
+    - autodocodec-schema
+    - autodocodec-yaml
+
+- github: NorfairKing/yesod-autoreload
+  commit: dfd89eaa65f77c1f1a5a38810d9513b3649971e4
+
+- github: NorfairKing/sydtest
+  commit: 6313c1b211d14c1215cdf97b9933675cf9c2adb9
+  subdirs:
+  - sydtest
+  - sydtest-discover
+
+- github: NorfairKing/validity
+  commit: 34e17fe6d92765209f1db8127aee13c74285805d
+  subdirs:
+  - genvalidity
+  - genvalidity-aeson
+  - genvalidity-bytestring
+  - genvalidity-case-insensitive
+  - genvalidity-containers
+  - genvalidity-criterion
+  - genvalidity-network-uri
+  - genvalidity-path
+  - genvalidity-persistent
+  - genvalidity-property
+  - genvalidity-scientific
+  - genvalidity-sydtest
+  - genvalidity-sydtest-aeson
+  - genvalidity-sydtest-hashable
+  - genvalidity-sydtest-lens
+  - genvalidity-sydtest-persistent
+  - genvalidity-text
+  - genvalidity-time
+  - genvalidity-unordered-containers
+  - genvalidity-uuid
+  - genvalidity-vector
+  - validity
+  - validity-aeson
+  - validity-bytestring
+  - validity-case-insensitive
+  - validity-containers
+  - validity-network-uri
+  - validity-path
+  - validity-persistent
+  - validity-primitive
+  - validity-scientific
+  - validity-text
+  - validity-time
+  - validity-unordered-containers
+  - validity-uuid
+  - validity-vector
+
+system-ghc: true
+nix:
+  enable: false
+with-hpack: hpack

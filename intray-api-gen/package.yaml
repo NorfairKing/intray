@@ -1,0 +1,40 @@
+name: intray-api-gen
+version: '0.0.0.0'
+synopsis: Generators for intray-api
+
+dependencies:
+- base >=4.7 && <5
+
+library:
+  source-dirs: src
+  dependencies:
+  - QuickCheck
+  - genvalidity
+  - genvalidity-bytestring
+  - genvalidity-text
+  - genvalidity-time
+  - genvalidity-typed-uuid
+  - intray-api
+  - text
+
+tests:
+  intray-api-test:
+    main: Spec.hs
+    source-dirs: test
+    build-tools: sydtest-discover
+    ghc-options:
+    - -Wall
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - base
+    - genvalidity-sydtest
+    - genvalidity-sydtest-aeson
+    - genvalidity-text
+    - sydtest
+    - intray-api
+    - intray-api-gen
+    - QuickCheck
+    - text
+    - bytestring

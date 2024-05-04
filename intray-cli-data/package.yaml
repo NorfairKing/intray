@@ -1,0 +1,15 @@
+name: intray-cli-data
+version: '0.0.0.0'
+category: Intray
+
+library:
+  source-dirs: src/
+
+  dependencies:
+  - aeson >=1.0
+  - autodocodec
+  - base >=4.9 && <5
+  - bytestring
+  - intray-api
+  - persistent
+  - time

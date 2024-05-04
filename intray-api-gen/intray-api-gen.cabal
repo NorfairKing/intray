@@ -1,0 +1,61 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.36.0.
+--
+-- see: https://github.com/sol/hpack
+
+name:           intray-api-gen
+version:        0.0.0.0
+synopsis:       Generators for intray-api
+build-type:     Simple
+
+library
+  exposed-modules:
+      Intray.API.Admin.Gen
+      Intray.API.Gen
+      Intray.API.Protected.Account.Gen
+      Intray.API.Protected.Gen
+      Intray.API.Protected.Item.Gen
+  other-modules:
+      Paths_intray_api_gen
+  hs-source-dirs:
+      src
+  build-depends:
+      QuickCheck
+    , base >=4.7 && <5
+    , genvalidity
+    , genvalidity-bytestring
+    , genvalidity-text
+    , genvalidity-time
+    , genvalidity-typed-uuid
+    , intray-api
+    , text
+  default-language: Haskell2010
+
+test-suite intray-api-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Intray.API.Admin.InstanceSpec
+      Intray.API.InstanceSpec
+      Intray.API.Protected.Account.InstanceSpec
+      Intray.API.Protected.Item.InstanceSpec
+      TestImport
+      Paths_intray_api_gen
+  hs-source-dirs:
+      test
+  ghc-options: -Wall -threaded -rtsopts -with-rtsopts=-N
+  build-tool-depends:
+      sydtest-discover:sydtest-discover
+  build-depends:
+      QuickCheck
+    , base
+    , bytestring
+    , genvalidity-sydtest
+    , genvalidity-sydtest-aeson
+    , genvalidity-text
+    , intray-api
+    , intray-api-gen
+    , sydtest
+    , text
+  default-language: Haskell2010

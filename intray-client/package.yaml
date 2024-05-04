@@ -1,0 +1,21 @@
+name: intray-client
+version: '0.0.0.0'
+synopsis: Intray Client
+
+library:
+  source-dirs: src
+  ghc-options: -Wall
+
+  dependencies:
+  - base >=4.7 && <5
+  - aeson
+  - containers
+  - intray-api
+  - mergeless
+  - servant
+  - servant-auth-client
+  - servant-client
+  - servant-flatten
+  - text
+  - time
+  - typed-uuid

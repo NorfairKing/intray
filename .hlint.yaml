@@ -1,0 +1,16 @@
+- ignore:
+    name: "Replace case with maybe"
+- ignore:
+    name: "Reduce duplication"
+- ignore:
+    name: "Redundant <$>"
+- ignore:
+    name: "Use newtype instead of data"
+- ignore:
+    name: "Use ++"
+- ignore:
+    name: "Use tuple-section"
+- ignore:
+    name: "Use unless"
+- ignore:
+    name: "Use forM_"
