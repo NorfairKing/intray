@@ -139,6 +139,9 @@
           ]);
         shellHook = self.checks.${system}.pre-commit.shellHook;
       };
+      nixosModules.${system} = {
+        serviceNotifications = import ./nix/service-notifications.nix { inherit (pkgsMusl.intrayRelease) notification; };
+      };
       homeManagerModules.${system}.default = import ./nix/home-manager-module.nix { inherit (pkgsMusl.intrayReleasePackages) intray-cli; };
       nix-ci = {
         auto-update = {
