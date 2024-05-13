@@ -13,7 +13,6 @@ where
 
 import Data.GenValidity
 import Intray.API
-import Intray.API.AccessKeySecret
 import Intray.API.Admin.Gen ()
 import Intray.API.Protected.Gen ()
 import System.IO.Unsafe

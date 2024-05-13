@@ -24,6 +24,7 @@ module Intray.API.Types
     ItemUUID,
     AccountUUID,
     AccessKeyUUID,
+    AccessKeySecret,
     Username,
     parseUsername,
     parseUsernameWithError,
@@ -45,6 +46,7 @@ import qualified Data.Text.Encoding as TE
 import Data.UUID.Typed
 import Data.Validity
 import GHC.Generics (Generic)
+import Intray.API.AccessKeySecret
 import Intray.API.AccessKeyUUID
 import Intray.API.AccountUUID
 import Intray.API.HashedPassword
