@@ -117,8 +117,40 @@ with final.haskell.lib;
               "intray-cli-data" = intrayPkg "intray-cli-data";
               "intray-client" = intrayPkg "intray-client";
             };
+            fixGHC = pkg:
+              if final.stdenv.hostPlatform.isMusl
+              then
+                pkg.override
+                  {
+                    # To make sure that executables that need template
+                    # haskell can be linked statically.
+                    enableRelocatedStaticLibs = true;
+                    # We can't turn this to false because this build is broken for ghc 9.6.5.
+                    # You can turn this to false, as is supposed to, once this issue is fixed:
+                    # https://github.com/NixOS/nixpkgs/issues/316850#issuecomment-2144824536
+                    # or once ghc is upgraded
+                    enableShared = true;
+                    # In order to not get undefined references to elf_strptr, elf_rawdata etc,
+                    # as a result of the above we need to turn this to false:
+                    enableDwarf = false;
+                  }
+              else pkg;
+
           in
           {
+            # To override GHC, we need to override both `ghc` and the one in
+            # `buildHaskellPackages` because otherwise this code in `generic-builder.nix`
+            # will make our package depend on 2 different GHCs:
+            #     nativeGhc = buildHaskellPackages.ghc;
+            #     depsBuildBuild = [ nativeGhc ] ...
+            #     nativeBuildInputs = [ ghc removeReferencesTo ] ...
+            #
+            #  See https://github.com/nh2/static-haskell-nix/blob/88f1e2d57e3f4cd6d980eb3d8f99d5e60040ad54/survey/default.nix#L1593
+            ghc = fixGHC super.ghc;
+            buildHaskellPackages = old.buildHaskellPackages.override (oldBuildHaskellPackages: {
+              ghc = fixGHC oldBuildHaskellPackages.ghc;
+            });
+
             # Not actually broken
             servant-auth-server = unmarkBroken super.servant-auth-server;
 
