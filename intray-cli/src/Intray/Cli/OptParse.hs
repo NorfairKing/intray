@@ -170,7 +170,7 @@ prefs_ :: ParserPrefs
 prefs_ = defaultPrefs {prefShowHelpOnEmpty = True, prefShowHelpOnError = True}
 
 argParser :: ParserInfo Arguments
-argParser = info (helper <*> parseArgs) (fullDesc <> footerDoc (Just $ OptParse.string footerStr))
+argParser = info (helper <*> parseArgs) (fullDesc <> footerDoc (Just $ OptParse.pretty footerStr))
   where
     footerStr =
       unlines
