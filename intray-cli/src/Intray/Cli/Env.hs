@@ -2,6 +2,7 @@
 
 module Intray.Cli.Env where
 
+import Control.Monad
 import Control.Monad.IO.Class
 import Control.Monad.Logger
 import Control.Monad.Reader

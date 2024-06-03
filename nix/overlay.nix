@@ -110,32 +110,12 @@ with final.haskell.lib;
             intrayPkgWithComp =
               exeName: name:
               self.generateOptparseApplicativeCompletions [ exeName ] (intrayPkg name);
-            intrayPackages =
-              {
-
-                "intray-api" = intrayPkg "intray-api";
-                "intray-api-gen" = intrayPkg "intray-api-gen";
-                "intray-cli" = intrayPkgWithComp "intray" "intray-cli";
-                "intray-cli-data" = intrayPkg "intray-cli-data";
-                "intray-client" = intrayPkg "intray-client";
-              };
-
-            servantPkg = name: subdir:
-              # Some tests are really slow so we turn them off.
-              dontCheck (self.callCabal2nix name
-                ((builtins.fetchGit {
-                  url = "https://github.com/haskell-servant/servant";
-                  rev = "552da96ff9a6d81a8553c6429843178d78356054";
-                }) + "/${subdir}")
-                { });
-            servantPackages = {
-              "servant" = servantPkg "servant" "servant";
-              "servant-client" = servantPkg "servant-client" "servant-client";
-              "servant-client-core" = servantPkg "servant-client-core" "servant-client-core";
-              "servant-server" = servantPkg "servant-server" "servant-server";
-              "servant-auth" = servantPkg "servant-auth-client" "servant-auth/servant-auth";
-              "servant-auth-client" = servantPkg "servant-auth-client" "servant-auth/servant-auth-client";
-              "servant-auth-server" = servantPkg "servant-auth-server" "servant-auth/servant-auth-server";
+            intrayPackages = {
+              "intray-api" = intrayPkg "intray-api";
+              "intray-api-gen" = intrayPkg "intray-api-gen";
+              "intray-cli" = intrayPkgWithComp "intray" "intray-cli";
+              "intray-cli-data" = intrayPkg "intray-cli-data";
+              "intray-client" = intrayPkg "intray-client";
             };
             fixGHC = pkg:
               if final.stdenv.hostPlatform.isMusl
@@ -146,26 +126,22 @@ with final.haskell.lib;
                     # haskell can be linked statically.
                     enableRelocatedStaticLibs = true;
                     enableShared = false;
+                    enableDwarf = false;
                   }
               else pkg;
+
           in
           {
-
-            # To override GHC, we need to override both `ghc` and the one in
-            # `buildHaskellPackages` because otherwise this code in `generic-builder.nix`
-            # will make our package depend on 2 different GHCs:
-            #     nativeGhc = buildHaskellPackages.ghc;
-            #     depsBuildBuild = [ nativeGhc ] ...
-            #     nativeBuildInputs = [ ghc removeReferencesTo ] ...
-            #
-            #  See https://github.com/nh2/static-haskell-nix/blob/88f1e2d57e3f4cd6d980eb3d8f99d5e60040ad54/survey/default.nix#L1593
             ghc = fixGHC super.ghc;
             buildHaskellPackages = old.buildHaskellPackages.override (oldBuildHaskellPackages: {
               ghc = fixGHC oldBuildHaskellPackages.ghc;
             });
 
+            # Not actually broken
+            servant-auth-server = unmarkBroken super.servant-auth-server;
+
             inherit intrayPackages;
-          } // intrayPackages // servantPackages
+          } // intrayPackages
       );
     });
 }
