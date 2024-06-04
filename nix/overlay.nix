@@ -125,14 +125,17 @@ with final.haskell.lib;
                     # To make sure that executables that need template
                     # haskell can be linked statically.
                     enableRelocatedStaticLibs = true;
-                    # We can't turn this to false because this build is broken for ghc 9.6.5.
-                    # You can turn this to false, as is supposed to, once this issue is fixed:
-                    # https://github.com/NixOS/nixpkgs/issues/316850#issuecomment-2144824536
-                    # or once ghc is upgraded
-                    enableShared = true;
-                    # In order to not get undefined references to elf_strptr, elf_rawdata etc,
-                    # as a result of the above we need to turn this to false:
+                    enableShared = false;
                     enableDwarf = false;
+                    # Until https://github.com/NixOS/nixpkgs/pull/317175
+                    srcOnly = args: final.srcOnly (args // {
+                      patches = (args.patches or [ ]) ++ [
+                        (final.fetchpatch {
+                          url = "https://gitlab.haskell.org/ghc/ghc/-/commit/1bb24432ff77e11a0340a7d8586e151e15bba2a1.diff";
+                          hash = "sha256-MpvTmFFsNiPDoOp9BhZyWeapeibQ77zgEV+xzZ1UAXs=";
+                        })
+                      ];
+                    });
                   }
               else pkg;
 
