@@ -1,8 +1,10 @@
+{-# LANGUAGE ApplicativeDo #-}
 {-# LANGUAGE DerivingVia #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards #-}
 
 module Intray.Cli.OptParse.Types where
 
@@ -10,104 +12,20 @@ import Autodocodec
 import Control.Monad.Logger
 import Data.Text (Text)
 import Intray.API
+import OptEnvConf
 import Path
+import Path.IO
 import Servant.Client
 
-data Arguments
-  = Arguments Command Flags
-
 data Instructions
-  = Instructions Dispatch Settings
+  = Instructions !Dispatch !Settings
 
-data Command
-  = CommandRegister RegisterArgs
-  | CommandLogin LoginArgs
-  | CommandAddItem AddArgs
-  | CommandShowItem
-  | CommandDoneItem
-  | CommandSize
-  | CommandReview
-  | CommandLogout
-  | CommandSync
-
-data RegisterArgs = RegisterArgs
-  { registerArgUsername :: Maybe String,
-    registerArgPassword :: Maybe String,
-    registerArgPasswordFile :: Maybe FilePath
-  }
-
-data LoginArgs = LoginArgs
-  { loginArgUsername :: Maybe String,
-    loginArgPassword :: Maybe String,
-    loginArgPasswordFile :: Maybe FilePath
-  }
-
-data AddArgs = AddArgs
-  { addArgContents :: [String],
-    addArgReadStdin :: Bool,
-    addArgRemote :: Bool
-  }
-
-data Flags = Flags
-  { flagConfigFile :: Maybe FilePath,
-    flagUrl :: Maybe String,
-    flagCacheDir :: Maybe FilePath,
-    flagDataDir :: Maybe FilePath,
-    flagSyncStrategy :: Maybe SyncStrategy,
-    flagAutoOpen :: Maybe AutoOpen,
-    flagLogLevel :: Maybe LogLevel
-  }
-
-data Environment = Environment
-  { envConfigFile :: Maybe FilePath,
-    envUrl :: Maybe String,
-    envUsername :: Maybe String,
-    envPassword :: Maybe String,
-    envPasswordFile :: Maybe FilePath,
-    envCacheDir :: Maybe FilePath,
-    envDataDir :: Maybe FilePath,
-    envSyncStrategy :: Maybe SyncStrategy,
-    envAutoOpen :: Maybe AutoOpen,
-    envLogLevel :: Maybe LogLevel
-  }
-
-data Configuration = Configuration
-  { configUrl :: Maybe String,
-    configUsername :: Maybe String,
-    configPassword :: Maybe String,
-    configPasswordFile :: Maybe FilePath,
-    configCacheDir :: Maybe FilePath,
-    configDataDir :: Maybe FilePath,
-    configSyncStrategy :: Maybe SyncStrategy,
-    configAutoOpen :: Maybe AutoOpen,
-    configLogLevel :: Maybe LogLevel
-  }
-
-instance HasCodec Configuration where
-  codec =
-    object "Configuration" $
-      Configuration
-        <$> optionalFieldOrNull "url" "The api url of the intray server. Example: api.intray.eu" .= configUrl
-        <*> optionalFieldOrNull "username" "The username to log in with" .= configUsername
-        <*> optionalFieldOrNull
-          "password"
-          "The password to log in with. Note that leaving your password in plaintext in a config file is not safe. Only use this for automation."
-          .= configPassword
-        <*> optionalFieldOrNull
-          "password-file"
-          "The path to a file containing the password to log in with. Note that leaving your password in plaintext in a config file is not safe. Only use this for automation."
-          .= configPasswordFile
-        <*> optionalFieldOrNull
-          "cache-dir"
-          "The directory to store cache information. You can remove this directory as necessary."
-          .= configCacheDir
-        <*> optionalFieldOrNull
-          "data-dir"
-          "The directory to store data information. Removing this directory could lead to data loss."
-          .= configDataDir
-        <*> optionalFieldOrNull "sync" "The sync strategy for non-sync commands." .= configSyncStrategy
-        <*> optionalFieldOrNull "auto-open" "how to auto-open" .= configAutoOpen
-        <*> optionalFieldOrNull "log-level" "minimal severity for log message" .= configLogLevel
+instance HasParser Instructions where
+  settingsParser =
+    subEnv_ "intray" $
+      Instructions
+        <$> settingsParser
+        <*> settingsParser
 
 data Settings = Settings
   { setBaseUrl :: Maybe BaseUrl,
@@ -118,10 +36,43 @@ data Settings = Settings
     setLogLevel :: LogLevel
   }
 
+instance HasParser Settings where
+  settingsParser = do
+    setBaseUrl <-
+      optional $
+        mapIO parseBaseUrl $
+          setting
+            [ help "api url of the intray server.",
+              reader str,
+              name "url",
+              metavar "URL",
+              example "api.intray.eu"
+            ]
+    setCacheDir <-
+      mapIO resolveDir' $
+        setting
+          [ help "directory to store cache information. You can remove this directory as necessary.",
+            reader str,
+            metavar "DIR",
+            name "cache-dir"
+          ]
+    setDataDir <-
+      mapIO resolveDir' $
+        setting
+          [ help "directory to store data information. Removing this directory could lead to data loss.",
+            reader str,
+            metavar "DIR",
+            name "data-dir"
+          ]
+    setSyncStrategy <- settingsParser
+    setAutoOpen <- settingsParser
+    setLogLevel <- settingsParser
+    pure Settings {..}
+
 data SyncStrategy
   = NeverSync
   | AlwaysSync
-  deriving stock (Read)
+  deriving stock (Show, Read)
 
 instance HasCodec SyncStrategy where
   codec =
@@ -145,7 +96,20 @@ instance HasCodec SyncStrategy where
         NeverSync -> Left NeverSync
         AlwaysSync -> Right AlwaysSync
 
-data AutoOpen = DontAutoOpen | AutoOpenWith FilePath
+instance HasParser SyncStrategy where
+  settingsParser =
+    setting
+      [ help "sync strategy for non-sync commands.",
+        reader auto,
+        metavar "SYNC_STRATEGY",
+        name "sync-strategy",
+        example NeverSync,
+        example AlwaysSync
+      ]
+
+data AutoOpen
+  = DontAutoOpen
+  | AutoOpenWith FilePath
 
 instance HasCodec AutoOpen where
   codec =
@@ -161,6 +125,23 @@ instance HasCodec AutoOpen where
         DontAutoOpen -> Left ()
         AutoOpenWith s -> Right s
 
+instance HasParser AutoOpen where
+  settingsParser =
+    choice
+      [ setting
+          [ help "Don't auto-open links or pictures",
+            switch DontAutoOpen,
+            long "no-auto-open"
+          ],
+        AutoOpenWith
+          <$> setting
+            [ help "how to auto-open",
+              reader str,
+              long "auto-open-with",
+              conf "auto-open"
+            ]
+      ]
+
 data Dispatch
   = DispatchRegister RegisterSettings
   | DispatchLogin LoginSettings
@@ -172,18 +153,104 @@ data Dispatch
   | DispatchLogout
   | DispatchSync
 
+instance HasParser Dispatch where
+  settingsParser =
+    commands
+      [ command "register" "Register with the sync server" $ DispatchRegister <$> settingsParser,
+        command "login" "Authenticate with the sync server" $ DispatchLogin <$> settingsParser,
+        command "add" "Add an intray item" $ DispatchAddItem <$> settingsParser,
+        command "show" "Show one intray item" $ pure DispatchShowItem,
+        command "done" "Mark the shown intray item as done" $ pure DispatchDoneItem,
+        command "size" "Show the number of items in the intray" $ pure DispatchSize,
+        command "review" "Review intray items one by one" $ pure DispatchReview,
+        command "logout" "Log out with the sync server" $ pure DispatchLogout,
+        command "sync" "Synchronise with the sync server" $ pure DispatchSync
+      ]
+
 data RegisterSettings = RegisterSettings
   { registerSetUsername :: Maybe Username,
     registerSetPassword :: Maybe Text
   }
+
+instance HasParser RegisterSettings where
+  settingsParser = do
+    registerSetUsername <-
+      optional
+        ( checkMap parseUsernameWithError $
+            setting
+              [ help "Username",
+                reader str,
+                metavar "USERNAME",
+                name "username"
+              ]
+        )
+    registerSetPassword <-
+      optional
+        ( setting
+            [ help "Password",
+              reader str,
+              metavar "PASSWORD",
+              name "password"
+            ]
+        )
+    pure RegisterSettings {..}
 
 data LoginSettings = LoginSettings
   { loginSetUsername :: Maybe Username,
     loginSetPassword :: Maybe Text
   }
 
+instance HasParser LoginSettings where
+  settingsParser = do
+    loginSetUsername <-
+      optional
+        ( checkMap parseUsernameWithError $
+            setting
+              [ help "Username",
+                reader str,
+                metavar "USERNAME",
+                name "username"
+              ]
+        )
+    loginSetPassword <-
+      optional
+        ( setting
+            [ help "Password",
+              reader str,
+              metavar "PASSWORD",
+              name "password"
+            ]
+        )
+    pure LoginSettings {..}
+
 data AddSettings = AddSettings
   { addSetContents :: [Text],
     addSetReadStdin :: Bool,
     addSetRemote :: Bool
   }
+
+instance HasParser AddSettings where
+  settingsParser = do
+    addSetContents <-
+      many $
+        setting
+          [ help "contents of the items to be added",
+            reader str,
+            argument,
+            metavar "TEXT"
+          ]
+    addSetReadStdin <-
+      setting
+        [ help "read contents from standard input too",
+          switch True,
+          value False,
+          long "stdin"
+        ]
+    addSetRemote <-
+      setting
+        [ help "only add the item remotely, not locally. This implies --sync-strategy NeverSync",
+          switch True,
+          value False,
+          long "remote"
+        ]
+    pure AddSettings {..}

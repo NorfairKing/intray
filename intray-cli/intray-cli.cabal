@@ -53,6 +53,7 @@ library
     , monad-logger
     , mtl >=2.2
     , network-uri
+    , opt-env-conf
     , optparse-applicative >=0.13
     , path >=0.4
     , path-io >=1.2

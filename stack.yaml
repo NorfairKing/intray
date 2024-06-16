@@ -6,6 +6,14 @@ packages:
 - intray-cli-data
 - intray-client
 
+- /home/syd/src/opt-env-conf/opt-env-conf/
+- /home/syd/src/opt-env-conf/opt-env-conf-test/
+- /home/syd/src/autodocodec/autodocodec/
+- /home/syd/src/autodocodec/autodocodec-schema/
+- /home/syd/src/autodocodec/autodocodec-yaml/
+- /home/syd/src/safe-coloured-text/safe-coloured-text
+- /home/syd/src/safe-coloured-text/safe-coloured-text-layout
+
 # These are duplicated in nix/overlay.
 ghc-options:
   "$locals": -Wall -Wincomplete-uni-patterns -Wincomplete-record-updates -Wpartial-fields -Widentities -Wredundant-constraints -Wcpp-undef -O0 -Wunused-packages
@@ -49,18 +57,18 @@ extra-deps:
 - github: NorfairKing/pretty-relative-time
   commit: a634358ff274380a12360f7814c3aea46ea35b1b
 
-- github: NorfairKing/safe-coloured-text
-  commit: 50abcbfa2a2ed15c6186fa2381fe818bd93a730b
-  subdirs:
-    - safe-coloured-text
-    - safe-coloured-text-terminfo
+    # - github: NorfairKing/safe-coloured-text
+    #   commit: 50abcbfa2a2ed15c6186fa2381fe818bd93a730b
+    #   subdirs:
+    #     - safe-coloured-text
+    #     - safe-coloured-text-terminfo
 
-- github: NorfairKing/autodocodec
-  commit: e7f4ec8d1d47e77c0f7fe83c8032abae5b082572
-  subdirs:
-    - autodocodec
-    - autodocodec-schema
-    - autodocodec-yaml
+    # - github: NorfairKing/autodocodec
+    #   commit: e7f4ec8d1d47e77c0f7fe83c8032abae5b082572
+    #   subdirs:
+    #     - autodocodec
+    #     - autodocodec-schema
+    #     - autodocodec-yaml
 
 - github: NorfairKing/yesod-autoreload
   commit: dfd89eaa65f77c1f1a5a38810d9513b3649971e4
