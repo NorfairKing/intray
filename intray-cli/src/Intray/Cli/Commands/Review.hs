@@ -7,7 +7,7 @@ import Control.Monad.IO.Class
 import Data.Time
 import Intray.Cli.Commands.Done
 import Intray.Cli.Env
-import Intray.Cli.OptParse.Types
+import Intray.Cli.OptParse
 import Intray.Cli.Prompt
 import Intray.Cli.Sqlite
 import Intray.Cli.Store

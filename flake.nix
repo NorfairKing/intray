@@ -14,14 +14,16 @@
     weeder-nix.flake = false;
     validity.url = "github:NorfairKing/validity";
     validity.flake = false;
-    autodocodec.url = "github:NorfairKing/autodocodec";
+    autodocodec.url = "github:NorfairKing/autodocodec/opt-env-conf";
     autodocodec.flake = false;
-    safe-coloured-text.url = "github:NorfairKing/safe-coloured-text";
+    safe-coloured-text.url = "github:NorfairKing/safe-coloured-text/opt-env-conf";
     safe-coloured-text.flake = false;
     fast-myers-diff.url = "github:NorfairKing/fast-myers-diff";
     fast-myers-diff.flake = false;
     sydtest.url = "github:NorfairKing/sydtest";
     sydtest.flake = false;
+    opt-env-conf.url = "github:NorfairKing/opt-env-conf";
+    opt-env-conf.flake = false;
     mergeless.url = "github:NorfairKing/mergeless";
     mergeless.flake = false;
     yesod-autoreload.url = "github:NorfairKing/yesod-autoreload";
@@ -45,6 +47,7 @@
     , validity
     , safe-coloured-text
     , sydtest
+    , opt-env-conf
     , fast-myers-diff
     , autodocodec
     , mergeless
@@ -58,11 +61,13 @@
       system = "x86_64-linux";
       pkgs = import nixpkgs {
         inherit system;
+        config.allowUnfree = true;
         overlays = [
           self.overlays.${system}
           (import (autodocodec + "/nix/overlay.nix"))
           (import (safe-coloured-text + "/nix/overlay.nix"))
           (import (sydtest + "/nix/overlay.nix"))
+          (import (opt-env-conf + "/nix/overlay.nix"))
           (import (fast-myers-diff + "/nix/overlay.nix"))
           (import (mergeless + "/nix/overlay.nix"))
           (import (validity + "/nix/overlay.nix"))

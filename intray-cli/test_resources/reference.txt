@@ -1,0 +1,92 @@
+[36mUsage: [m[33mintray[m [37m--url[m [33mURL[m [37m--cache-dir[m [33mDIR[m [37m--data-dir[m [33mDIR[m [37m--sync-strategy[m [33mSYNC_STRATEGY[m [37m--no-auto-open[m [37m--log-level[m [33mLOG_LEVEL[m
+
+[36mAll settings[m:
+  [34mapi url of the intray server.[m
+  option: [37m--url[m [33mURL[m
+  env: [37mURL[m [33mURL[m
+  config: [37murl[m: [33m<string>[m
+  
+  [34mdirectory to store cache information. You can remove this directory as necessary.[m
+  option: [37m--cache-dir[m [33mDIR[m
+  env: [37mCACHE_DIR[m [33mDIR[m
+  config: [37mcache-dir[m: [33m<string>[m
+  
+  [34mdirectory to store data information. Removing this directory could lead to data loss.[m
+  option: [37m--data-dir[m [33mDIR[m
+  env: [37mDATA_DIR[m [33mDIR[m
+  config: [37mdata-dir[m: [33m<string>[m
+  
+  [34msync strategy for non-sync commands.[m
+  option: [37m--sync-strategy[m [33mSYNC_STRATEGY[m
+  env: [37mSYNC_STRATEGY[m [33mSYNC_STRATEGY[m
+  config: [37msync-strategy[m:
+    # [32many of[m
+    [ # Only sync when manually running 'intray sync'.
+      # When using this option, you essentially promise that you will take care of ensuring that syncing happens regularly.
+      NeverSync
+    , # Sync on every change to the local state.
+      # Commands will still succeed even if the sync fails because of internet connect problems for example.
+      AlwaysSync
+    ]
+  
+  [34mDon't auto-open links or pictures[m
+  switch: [37m--no-auto-open[m
+
+  [34mhow to auto-open[m
+  config: [37mauto-open[m: [33m<string>[m
+  
+  [34mminimal severity for log message[m
+  option: [37m--log-level[m [33mLOG_LEVEL[m
+  env: [37mLOG_LEVEL[m [33mLOG_LEVEL[m
+  config: [37mlog-level[m:
+    # [32mone of[m
+    [ Debug
+    , Info
+    , Warn
+    , Error
+    ]
+  
+
+[36mOptions[m:
+  [37m--url[m           [34mapi url of the intray server.[m                                                         
+  [37m--cache-dir[m     [34mdirectory to store cache information. You can remove this directory as necessary.[m     
+  [37m--data-dir[m      [34mdirectory to store data information. Removing this directory could lead to data loss.[m 
+  [37m--sync-strategy[m [34msync strategy for non-sync commands.[m                                                  
+  [37m--no-auto-open[m  [34mDon't auto-open links or pictures[m                                                     
+  [37m--log-level[m     [34mminimal severity for log message[m                                                      
+
+[36mEnvironment Variables[m:
+  [37mURL[m [33mURL[m                       [34mapi url of the intray server.[m                                                        
+  [37mCACHE_DIR[m [33mDIR[m                 [34mdirectory to store cache information. You can remove this directory as necessary.[m    
+  [37mDATA_DIR[m [33mDIR[m                  [34mdirectory to store data information. Removing this directory could lead to data loss.[m
+  [37mSYNC_STRATEGY[m [33mSYNC_STRATEGY[m   [34msync strategy for non-sync commands.[m                                                 
+  [37mLOG_LEVEL[m [33mLOG_LEVEL[m           [34mminimal severity for log message[m                                                     
+
+[36mConfiguration Values[m:
+  [34mapi url of the intray server.[m
+  [37murl[m: [33m<string>[m
+  [34mdirectory to store cache information. You can remove this directory as necessary.[m
+  [37mcache-dir[m: [33m<string>[m
+  [34mdirectory to store data information. Removing this directory could lead to data loss.[m
+  [37mdata-dir[m: [33m<string>[m
+  [34msync strategy for non-sync commands.[m
+  [37msync-strategy[m:
+    # [32many of[m
+    [ # Only sync when manually running 'intray sync'.
+      # When using this option, you essentially promise that you will take care of ensuring that syncing happens regularly.
+      NeverSync
+    , # Sync on every change to the local state.
+      # Commands will still succeed even if the sync fails because of internet connect problems for example.
+      AlwaysSync
+    ]
+  [34mhow to auto-open[m
+  [37mauto-open[m: [33m<string>[m
+  [34mminimal severity for log message[m
+  [37mlog-level[m:
+    # [32mone of[m
+    [ Debug
+    , Info
+    , Warn
+    , Error
+    ]
+
