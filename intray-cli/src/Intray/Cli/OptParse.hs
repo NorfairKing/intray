@@ -1,10 +1,10 @@
+{-# LANGUAGE ApplicativeDo #-}
+{-# LANGUAGE DerivingVia #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE QuasiQuotes #-}
 {-# LANGUAGE RecordWildCards #-}
-{-# LANGUAGE TypeApplications #-}
 
 module Intray.Cli.OptParse
   ( Instructions (..),
@@ -19,345 +19,300 @@ module Intray.Cli.OptParse
   )
 where
 
-import Autodocodec.Yaml
+import Autodocodec
 import Control.Monad.Logger
-import Data.Maybe
-import qualified Data.Text as T
-import qualified Data.Text.IO as T
-import qualified Env
-import Intray.API.Username
-import Intray.Cli.OptParse.Types
-import Options.Applicative
-import qualified Options.Applicative.Help as OptParse
+import Data.Text (Text)
+import Intray.API
+import OptEnvConf
 import Path
 import Path.IO
+import Paths_intray_cli (version)
 import Servant.Client
-import qualified System.Environment as System
 
 getInstructions :: IO Instructions
-getInstructions = do
-  args@(Arguments _ flags) <- getArguments
-  env <- getEnvironment
-  config <- getConfiguration flags env
-  combineToInstructions args env config
+getInstructions = runSettingsParser version "Intray"
 
-combineToInstructions :: Arguments -> Environment -> Maybe Configuration -> IO Instructions
-combineToInstructions (Arguments cmd Flags {..}) Environment {..} mConf =
-  Instructions <$> getDispatch <*> getSettings
-  where
-    mc :: (Configuration -> Maybe a) -> Maybe a
-    mc f = mConf >>= f
-    getSettings = do
-      setBaseUrl <-
-        case flagUrl <|> envUrl <|> mc configUrl of
-          Nothing -> pure Nothing
-          Just url -> Just <$> parseBaseUrl url
-      setCacheDir <-
-        case flagCacheDir <|> envCacheDir <|> mc configCacheDir of
-          Nothing -> getXdgDir XdgCache (Just [reldir|intray|])
-          Just d -> resolveDir' d
-      setDataDir <-
-        case flagDataDir <|> envDataDir <|> mc configDataDir of
-          Nothing -> getXdgDir XdgData (Just [reldir|intray|])
-          Just d -> resolveDir' d
-      let setSyncStrategy =
-            fromMaybe
-              ( case setBaseUrl of
-                  Nothing -> NeverSync
-                  Just _ -> AlwaysSync
-              )
-              $ flagSyncStrategy
-                <|> envSyncStrategy
-                <|> mc configSyncStrategy
-      let setAutoOpen = fromMaybe (AutoOpenWith "xdg-open") (flagAutoOpen <|> envAutoOpen <|> mc configAutoOpen)
-      let setLogLevel = fromMaybe LevelWarn (flagLogLevel <|> envLogLevel <|> mc configLogLevel)
-      pure Settings {..}
-    mPass mPassword mPasswordFile = case mPassword of
-      Just password -> pure $ Just (T.pack password)
-      Nothing -> case mPasswordFile of
-        Nothing -> pure Nothing
-        Just passwordFile -> Just . T.strip <$> T.readFile passwordFile
-    getDispatch =
-      case cmd of
-        CommandRegister RegisterArgs {..} -> do
-          flagMPass <- mPass registerArgPassword registerArgPasswordFile
-          envMPass <- mPass envPassword envPasswordFile
-          confMPass <- mPass (mc configPassword) (mc configPasswordFile)
-          pure $
-            DispatchRegister
-              RegisterSettings
-                { registerSetUsername =
-                    (T.pack <$> (registerArgUsername <|> envUsername <|> mc configUsername))
-                      >>= parseUsername,
-                  registerSetPassword = flagMPass <|> envMPass <|> confMPass
-                }
-        CommandLogin LoginArgs {..} -> do
-          flagMPass <- mPass loginArgPassword loginArgPasswordFile
-          envMPass <- mPass envPassword envPasswordFile
-          confMPass <- mPass (mc configPassword) (mc configPasswordFile)
-          pure $
-            DispatchLogin
-              LoginSettings
-                { loginSetUsername =
-                    (T.pack <$> (loginArgUsername <|> envUsername <|> mc configUsername))
-                      >>= parseUsername,
-                  loginSetPassword =
-                    flagMPass <|> envMPass <|> confMPass
-                }
-        CommandAddItem AddArgs {..} ->
-          pure $
-            DispatchAddItem
-              AddSettings
-                { addSetContents = map T.pack addArgContents,
-                  addSetReadStdin = addArgReadStdin,
-                  addSetRemote = addArgRemote
-                }
-        CommandShowItem -> pure DispatchShowItem
-        CommandDoneItem -> pure DispatchDoneItem
-        CommandSize -> pure DispatchSize
-        CommandReview -> pure DispatchReview
-        CommandLogout -> pure DispatchLogout
-        CommandSync -> pure DispatchSync
+data Instructions
+  = Instructions !Dispatch !Settings
 
-getConfiguration :: Flags -> Environment -> IO (Maybe Configuration)
-getConfiguration Flags {..} Environment {..} =
-  case flagConfigFile <|> envConfigFile of
-    Nothing -> defaultConfigFiles >>= readFirstYamlConfigFile
-    Just cf -> do
-      afp <- resolveFile' cf
-      readYamlConfigFile afp
+instance HasParser Instructions where
+  settingsParser = parseInstructions
 
-defaultConfigFiles :: IO [Path Abs File]
-defaultConfigFiles =
-  sequence
-    [ do
-        xdgConfigDir <- getXdgDir XdgConfig (Just [reldir|intray|])
-        resolveFile xdgConfigDir "config.yaml",
-      do
-        homeDir <- getHomeDir
-        intrayDir <- resolveDir homeDir ".intray"
-        resolveFile intrayDir "config.yaml"
-    ]
+{-# ANN parseInstructions ("NOCOVER" :: String) #-}
+parseInstructions :: Parser Instructions
+parseInstructions =
+  subEnv_ "intray" $
+    let configParsers :: Parser [Path Abs File]
+        configParsers =
+          sequenceA
+            [ xdgYamlConfigFile "intray",
+              runIO $ do
+                homeDir <- getHomeDir
+                intrayDir <- resolveDir homeDir ".intray"
+                resolveFile intrayDir "config.yaml"
+            ]
+     in withFirstYamlConfig configParsers $
+          Instructions
+            <$> settingsParser
+            <*> settingsParser
 
-getEnvironment :: IO Environment
-getEnvironment = Env.parse (Env.header "Environment") environmentParser
+data Settings = Settings
+  { setBaseUrl :: Maybe BaseUrl,
+    setCacheDir :: Path Abs Dir,
+    setDataDir :: Path Abs Dir,
+    setSyncStrategy :: SyncStrategy,
+    setAutoOpen :: AutoOpen,
+    setLogLevel :: LogLevel
+  }
 
-environmentParser :: Env.Parser Env.Error Environment
-environmentParser =
-  Env.prefixed "INTRAY_" $
-    Environment
-      <$> optional (Env.var Env.str "CONFIG_FILE" (Env.help "Config file"))
-      <*> optional (Env.var Env.str "URL" (Env.help "sync server url"))
-      <*> optional (Env.var Env.str "USERNAME" (Env.help "Sync username"))
-      <*> optional (Env.var Env.str "PASSWORD" (Env.help "Sync password"))
-      <*> optional (Env.var Env.str "PASSWORD_FILE" (Env.help "Sync password file"))
-      <*> optional (Env.var Env.str "CACHE_DIR" (Env.help "cache directory"))
-      <*> optional (Env.var Env.str "DATA_DIR" (Env.help "data directory"))
-      <*> optional (Env.var Env.auto "SYNC_STRATEGY" (Env.help "Sync strategy"))
-      <*> optional (Env.var (fmap AutoOpenWith . Env.str) "AUTO_OPEN" (Env.help "The command to auto-open links and pictures"))
-      <*> optional (Env.var Env.auto "LOG_LEVEL" (Env.help "minimal severity of log messages"))
+instance HasParser Settings where
+  settingsParser = parseSettings
 
-getArguments :: IO Arguments
-getArguments = do
-  args <- System.getArgs
-  let result = runArgumentsParser args
-  handleParseResult result
+{-# ANN parseSettings ("NOCOVER" :: String) #-}
+parseSettings :: Parser Settings
+parseSettings = do
+  setBaseUrl <-
+    optional $
+      mapIO parseBaseUrl $
+        setting
+          [ help "api url of the intray server.",
+            reader str,
+            name "url",
+            metavar "URL",
+            example "api.intray.eu"
+          ]
+  setCacheDir <-
+    directoryPathSetting
+      [ help "directory to store cache information. You can remove this directory as necessary.",
+        name "cache-dir"
+      ]
+  setDataDir <-
+    directoryPathSetting
+      [ help "directory to store data information. Removing this directory could lead to data loss.",
+        name "data-dir"
+      ]
+  setSyncStrategy <- settingsParser
+  setAutoOpen <- settingsParser
+  setLogLevel <- settingsParser
+  pure Settings {..}
 
-runArgumentsParser :: [String] -> ParserResult Arguments
-runArgumentsParser = execParserPure prefs_ argParser
+data SyncStrategy
+  = NeverSync
+  | AlwaysSync
+  deriving stock (Show, Read)
 
-prefs_ :: ParserPrefs
-prefs_ = defaultPrefs {prefShowHelpOnEmpty = True, prefShowHelpOnError = True}
+instance HasCodec SyncStrategy where
+  codec =
+    dimapCodec f g $
+      eitherCodec
+        ( literalTextValueCodec NeverSync "NeverSync"
+            <??> [ "Only sync when manually running 'intray sync'.",
+                   "When using this option, you essentially promise that you will take care of ensuring that syncing happens regularly."
+                 ]
+        )
+        ( literalTextValueCodec AlwaysSync "AlwaysSync"
+            <??> [ "Sync on every change to the local state.",
+                   "Commands will still succeed even if the sync fails because of internet connect problems for example."
+                 ]
+        )
+    where
+      f = \case
+        Left ns -> ns
+        Right as -> as
+      g = \case
+        NeverSync -> Left NeverSync
+        AlwaysSync -> Right AlwaysSync
 
-argParser :: ParserInfo Arguments
-argParser = info (helper <*> parseArgs) (fullDesc <> footerDoc (Just $ OptParse.pretty footerStr))
-  where
-    footerStr =
-      unlines
-        [ Env.helpDoc environmentParser,
-          "",
-          "Configuration file format:",
-          T.unpack (renderColouredSchemaViaCodec @Configuration)
-        ]
-
-parseArgs :: Parser Arguments
-parseArgs = Arguments <$> parseCommand <*> parseFlags
-
-parseCommand :: Parser Command
-parseCommand =
-  hsubparser $
-    mconcat
-      [ command "register" parseCommandRegister,
-        command "login" parseCommandLogin,
-        command "add" parseCommandPostPostAddItem,
-        command "show" parseCommandShowItem,
-        command "done" parseCommandDoneItem,
-        command "size" parseCommandSize,
-        command "review" parseCommandReview,
-        command "logout" parseCommandLogout,
-        command "sync" parseCommandSync
+instance HasParser SyncStrategy where
+  settingsParser =
+    setting
+      [ help "sync strategy for non-sync commands.",
+        reader auto,
+        metavar "SYNC_STRATEGY",
+        name "sync-strategy",
+        shownExample NeverSync,
+        shownExample AlwaysSync
       ]
 
-parseCommandRegister :: ParserInfo Command
-parseCommandRegister = info parser modifier
-  where
-    modifier = fullDesc <> progDesc "Register user"
-    parser =
-      CommandRegister
-        <$> ( RegisterArgs
-                <$> parseUsernameOption
-                <*> parsePasswordOption
-                <*> parsePasswordFileOption
-            )
+data AutoOpen
+  = DontAutoOpen
+  | AutoOpenWith FilePath
 
-parseCommandLogin :: ParserInfo Command
-parseCommandLogin = info parser modifier
-  where
-    modifier = fullDesc <> progDesc "Login user"
-    parser =
-      CommandLogin
-        <$> ( LoginArgs
-                <$> parseUsernameOption
-                <*> parsePasswordOption
-                <*> parsePasswordFileOption
-            )
+instance HasCodec AutoOpen where
+  codec =
+    dimapCodec f g $
+      eitherCodec
+        (nullCodec <?> "Explicitly _don't_ auto-open links or pictures.")
+        (codec <?> "Auto-open with the given command. xdg-open is the default.")
+    where
+      f = \case
+        Left () -> DontAutoOpen
+        Right s -> AutoOpenWith s
+      g = \case
+        DontAutoOpen -> Left ()
+        AutoOpenWith s -> Right s
 
-parseUsernameOption :: Parser (Maybe String)
-parseUsernameOption =
-  optional $
-    strOption
-      ( mconcat
-          [ long "username",
-            help "The username to register",
-            metavar "USERNAME"
+instance HasParser AutoOpen where
+  settingsParser =
+    choice
+      [ setting
+          [ help "Don't auto-open links or pictures",
+            switch DontAutoOpen,
+            long "no-auto-open"
+          ],
+        AutoOpenWith
+          <$> setting
+            [ help "Command to use to auto-open",
+              reader str,
+              option,
+              long "auto-open-with",
+              metavar "COMMAND"
+            ],
+        setting
+          [ help "How to auto-open",
+            confWith' "auto-open" $
+              dimapCodec
+                Just
+                ( \case
+                    Nothing -> DontAutoOpen
+                    Just ao -> ao
+                )
+                (codec :: JSONCodec AutoOpen)
+          ]
+      ]
+
+data Dispatch
+  = DispatchRegister RegisterSettings
+  | DispatchLogin LoginSettings
+  | DispatchAddItem AddSettings
+  | DispatchShowItem
+  | DispatchDoneItem
+  | DispatchSize
+  | DispatchReview
+  | DispatchLogout
+  | DispatchSync
+
+instance HasParser Dispatch where
+  settingsParser = parseDispatch
+
+{-# ANN parseDispatch ("NOCOVER" :: String) #-}
+parseDispatch :: Parser Dispatch
+parseDispatch =
+  commands
+    [ command "register" "Register with the sync server" $ DispatchRegister <$> settingsParser,
+      command "login" "Authenticate with the sync server" $ DispatchLogin <$> settingsParser,
+      command "add" "Add an intray item" $ DispatchAddItem <$> settingsParser,
+      command "show" "Show one intray item" $ pure DispatchShowItem,
+      command "done" "Mark the shown intray item as done" $ pure DispatchDoneItem,
+      command "size" "Show the number of items in the intray" $ pure DispatchSize,
+      command "review" "Review intray items one by one" $ pure DispatchReview,
+      command "logout" "Log out with the sync server" $ pure DispatchLogout,
+      command "sync" "Synchronise with the sync server" $ pure DispatchSync
+    ]
+
+data RegisterSettings = RegisterSettings
+  { registerSetUsername :: Maybe Username,
+    registerSetPassword :: Maybe Text
+  }
+
+instance HasParser RegisterSettings where
+  settingsParser = parseRegisterSettings
+
+{-# ANN parseRegisterSettings ("NOCOVER" :: String) #-}
+parseRegisterSettings :: Parser RegisterSettings
+parseRegisterSettings = do
+  registerSetUsername <-
+    optional
+      ( checkMapEither parseUsernameWithError $
+          setting
+            [ help "Username",
+              reader str,
+              metavar "USERNAME",
+              name "username"
+            ]
+      )
+  registerSetPassword <-
+    optional
+      ( choice
+          [ mapIO readSecretTextFile $
+              filePathSetting
+                [ help "Password file",
+                  name "password-file"
+                ],
+            setting
+              [ help "Password",
+                reader str,
+                metavar "PASSWORD",
+                name "password"
+              ]
           ]
       )
+  pure RegisterSettings {..}
 
-parsePasswordOption :: Parser (Maybe String)
-parsePasswordOption =
-  optional $
-    strOption
-      ( mconcat
-          [ long "password",
-            help "The password to register with. If both password and password-file are absent, a prompt will ask for the password.",
-            metavar "PASSWORD"
+data LoginSettings = LoginSettings
+  { loginSetUsername :: Maybe Username,
+    loginSetPassword :: Maybe Text
+  }
+
+instance HasParser LoginSettings where
+  settingsParser = parseLoginSettings
+
+{-# ANN parseLoginSettings ("NOCOVER" :: String) #-}
+parseLoginSettings :: Parser LoginSettings
+parseLoginSettings = do
+  loginSetUsername <-
+    optional
+      ( checkMapEither parseUsernameWithError $
+          setting
+            [ help "Username",
+              reader str,
+              metavar "USERNAME",
+              name "username"
+            ]
+      )
+  loginSetPassword <-
+    optional
+      ( setting
+          [ help "Password",
+            reader str,
+            metavar "PASSWORD",
+            name "password"
           ]
       )
+  pure LoginSettings {..}
 
-parsePasswordFileOption :: Parser (Maybe FilePath)
-parsePasswordFileOption =
-  optional $
-    strOption
-      ( mconcat
-          [ long "password-file",
-            help "The path to the password to register with. If both password and password-file are absent, a prompt will ask for the password.",
-            metavar "PASSWORD"
-          ]
-      )
+data AddSettings = AddSettings
+  { addSetContents :: [Text],
+    addSetReadStdin :: Bool,
+    addSetRemote :: Bool
+  }
 
-parseCommandPostPostAddItem :: ParserInfo Command
-parseCommandPostPostAddItem = info parser modifier
-  where
-    modifier = fullDesc <> progDesc "Add an item"
-    parser =
-      CommandAddItem
-        <$> ( AddArgs
-                <$> many
-                  (strArgument (mconcat [help "Give the contents of the item to be added.", metavar "TEXT"]))
-                <*> switch (mconcat [long "stdin", help "Read contents from stdin too"])
-                <*> switch
-                  ( mconcat
-                      [ long "remote",
-                        help "Only add the item remotely, not locally. This implies --sync-strategy NeverSync"
-                      ]
-                  )
-            )
+instance HasParser AddSettings where
+  settingsParser = parseAddSettings
 
-parseCommandShowItem :: ParserInfo Command
-parseCommandShowItem = info parser modifier
-  where
-    modifier = fullDesc <> progDesc "Show one item."
-    parser = pure CommandShowItem
-
-parseCommandDoneItem :: ParserInfo Command
-parseCommandDoneItem = info parser modifier
-  where
-    modifier = fullDesc <> progDesc "Mark that item as done."
-    parser = pure CommandDoneItem
-
-parseCommandSize :: ParserInfo Command
-parseCommandSize = info parser modifier
-  where
-    modifier = fullDesc <> progDesc "Show the number of items in the intray."
-    parser = pure CommandSize
-
-parseCommandReview :: ParserInfo Command
-parseCommandReview = info parser modifier
-  where
-    modifier = fullDesc <> progDesc "Start reviewing items one by one."
-    parser = pure CommandReview
-
-parseCommandLogout :: ParserInfo Command
-parseCommandLogout = info parser modifier
-  where
-    modifier = fullDesc <> progDesc "Logout user"
-    parser = pure CommandLogout
-
-parseCommandSync :: ParserInfo Command
-parseCommandSync = info parser modifier
-  where
-    modifier = fullDesc <> progDesc "Sync the local and remote intray"
-    parser = pure CommandSync
-
-parseFlags :: Parser Flags
-parseFlags =
-  Flags
-    <$> option
-      (Just <$> str)
-      ( mconcat
-          [ long "config-file",
-            help "Give the path to an altenative config file",
-            value Nothing,
-            metavar "FILEPATH"
-          ]
-      )
-    <*> option
-      (Just <$> str)
-      (mconcat [long "url", help "The url of the server.", value Nothing, metavar "URL"])
-    <*> option
-      (Just <$> str)
-      ( mconcat
-          [ long "cache-dir",
-            help "The directory to use for caching",
-            value Nothing,
-            metavar "FILEPATH"
-          ]
-      )
-    <*> option
-      (Just <$> str)
-      ( mconcat
-          [long "data-dir", help "The directory to use for data", value Nothing, metavar "FILEPATH"]
-      )
-    <*> syncStrategyOpt
-    <*> autoOpenOpt
-    <*> option
-      (Just <$> auto)
-      ( mconcat
-          [ long "log-level",
-            metavar "LOG_LEVEL",
-            value Nothing,
-            help $
-              "the log level, possible values: "
-                <> show [LevelDebug, LevelInfo, LevelWarn, LevelError]
-          ]
-      )
-
-syncStrategyOpt :: Parser (Maybe SyncStrategy)
-syncStrategyOpt =
-  flag Nothing (Just NeverSync) (mconcat [long "no-sync", help "Do not try to sync."])
-    <|> flag Nothing (Just AlwaysSync) (mconcat [long "sync", help "Definitely try to sync."])
-
-autoOpenOpt :: Parser (Maybe AutoOpen)
-autoOpenOpt =
-  flag Nothing (Just DontAutoOpen) (mconcat [long "no-auto-open", help "Do not try to open links and pictures."])
-    <|> (Just . AutoOpenWith <$> strOption (mconcat [long "auto-open-with", help "The command to use to auto-open links and pictures. The default is xdg-open."]))
+{-# ANN parseAddSettings ("NOCOVER" :: String) #-}
+parseAddSettings :: Parser AddSettings
+parseAddSettings = do
+  addSetContents <-
+    many $
+      setting
+        [ help "contents of the items to be added",
+          reader str,
+          argument,
+          metavar "TEXT"
+        ]
+  addSetReadStdin <-
+    setting
+      [ help "read contents from standard input too",
+        switch True,
+        value False,
+        long "stdin"
+      ]
+  addSetRemote <-
+    setting
+      [ help "only add the item remotely, not locally. This implies --sync-strategy NeverSync",
+        switch True,
+        value False,
+        long "remote"
+      ]
+  pure AddSettings {..}

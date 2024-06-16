@@ -10,6 +10,27 @@ packages:
 ghc-options:
   "$locals": -Wall -Wincomplete-uni-patterns -Wincomplete-record-updates -Wpartial-fields -Widentities -Wredundant-constraints -Wcpp-undef -O0 -Wunused-packages
   intray-stripe-client: -w # Turn off warnings for the generated code.
+extra-deps:
+
+- github: NorfairKing/opt-env-conf
+  commit: 7f50e94ae1852d7d1ac6adc3eadfc3b4c6829710
+  subdirs:
+    - opt-env-conf
+    - opt-env-conf-test
+
+- github: NorfairKing/safe-coloured-text
+  commit: a58b782acc873a40a0eeb20eb4dc22c6df9c9dee
+  subdirs:
+    - safe-coloured-text
+    - safe-coloured-text-layout
+    - safe-coloured-text-terminfo
+
+- github: NorfairKing/autodocodec
+  commit: 36779707f38ec3aeb0a591ff8043a63717c96ea2
+  subdirs:               
+    - autodocodec  
+    - autodocodec-schema  
+    - autodocodec-yaml
 
 system-ghc: true
 nix:

@@ -2,17 +2,18 @@ name: intray-cli
 version: '0.0.0.0'
 category: Intray
 
+extra-source-files:
+- test_resources/**/*
+
 library:
   source-dirs: src/
 
   dependencies:
   - autodocodec
-  - autodocodec-yaml
   - base >=4.9 && <5
   - bytestring >=0.10
   - containers
   - cookie >=0.4
-  - envparse
   - filelock
   - http-client >=0.5
   - http-client-tls >=0.3
@@ -24,7 +25,7 @@ library:
   - monad-logger
   - mtl >=2.2
   - network-uri
-  - optparse-applicative >=0.13
+  - opt-env-conf
   - path >=0.4
   - path-io >=1.2
   - persistent
@@ -70,6 +71,7 @@ tests:
     - intray-cli
     - monad-logger
     - mtl
+    - opt-env-conf-test
     - path
     - path-io
     - sydtest

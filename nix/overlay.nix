@@ -109,7 +109,7 @@ with final.haskell.lib;
             });
             intrayPkgWithComp =
               exeName: name:
-              self.generateOptparseApplicativeCompletions [ exeName ] (intrayPkg name);
+              self.opt-env-conf.installManpagesAndCompletions [ exeName ] (intrayPkg name);
             intrayPackages = {
               "intray-api" = intrayPkg "intray-api";
               "intray-api-gen" = intrayPkg "intray-api-gen";

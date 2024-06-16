@@ -10,7 +10,7 @@ import qualified Data.Text as T
 import Database.Persist.Sql
 import Database.Persist.Sqlite
 import Intray.Cli.DB
-import Intray.Cli.OptParse.Types
+import Intray.Cli.OptParse
 import Network.HTTP.Client as HTTP
 import Network.HTTP.Client.TLS as HTTP
 import Path
