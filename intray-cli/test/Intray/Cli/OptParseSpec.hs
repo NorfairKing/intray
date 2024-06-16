@@ -8,6 +8,6 @@ import Test.Syd
 
 spec :: Spec
 spec = do
-  describe "Settings" $ do
-    settingsLintSpec @Settings
-    goldenReferenceDocumentationSpec @Settings "test_resources/reference.txt" "intray"
+  describe "Intructions" $ do
+    settingsLintSpec @Instructions
+    goldenReferenceDocumentationSpec @Instructions "test_resources/reference.txt" "intray"

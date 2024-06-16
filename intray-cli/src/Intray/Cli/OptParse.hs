@@ -201,11 +201,20 @@ instance HasParser RegisterSettings where
         )
     registerSetPassword <-
       optional
-        ( setting
-            [ help "Password",
-              reader str,
-              metavar "PASSWORD",
-              name "password"
+        ( choice
+            [ mapIO readTextSecretFile $
+                setting
+                  [ help "Password file",
+                    reader str,
+                    metavar "FILE",
+                    name "password-file"
+                  ],
+              setting
+                [ help "Password",
+                  reader str,
+                  metavar "PASSWORD",
+                  name "password"
+                ]
             ]
         )
     pure RegisterSettings {..}
