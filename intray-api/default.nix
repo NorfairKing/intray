@@ -1,9 +1,9 @@
 { mkDerivation, aeson, autodocodec, base, base16-bytestring
 , base64-bytestring, bcrypt, bytestring, containers, http-api-data
 , JuicyPixels, JuicyPixels-extra, lib, mergeless, monad-logger
-, path-pieces, persistent, random, servant, servant-auth
-, servant-auth-server, text, time, typed-uuid, uuid, validity
-, validity-bytestring, validity-text, validity-time, wai
+, opt-env-conf, path-pieces, persistent, random, servant
+, servant-auth, servant-auth-server, text, time, typed-uuid, uuid
+, validity, validity-bytestring, validity-text, validity-time, wai
 }:
 mkDerivation {
   pname = "intray-api";
@@ -12,9 +12,9 @@ mkDerivation {
   libraryHaskellDepends = [
     aeson autodocodec base base16-bytestring base64-bytestring bcrypt
     bytestring containers http-api-data JuicyPixels JuicyPixels-extra
-    mergeless monad-logger path-pieces persistent random servant
-    servant-auth servant-auth-server text time typed-uuid uuid validity
-    validity-bytestring validity-text validity-time wai
+    mergeless monad-logger opt-env-conf path-pieces persistent random
+    servant servant-auth servant-auth-server text time typed-uuid uuid
+    validity validity-bytestring validity-text validity-time wai
   ];
   description = "Intray API";
   license = "unknown";

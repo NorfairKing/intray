@@ -2,6 +2,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DerivingVia #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedLists #-}
 {-# LANGUAGE OverloadedStrings #-}
@@ -54,6 +55,7 @@ import Intray.API.ItemUUID
 import Intray.API.Permission
 import Intray.API.Username
 import Network.Wai
+import OptEnvConf
 import Servant.Auth
 import Servant.Auth.Server
 import Servant.Auth.Server.Internal.Class
@@ -164,4 +166,21 @@ instance HasCodec LogLevel where
         (LevelInfo, "Info"),
         (LevelWarn, "Warn"),
         (LevelError, "Error")
+      ]
+
+instance HasParser LogLevel where
+  settingsParser =
+    setting
+      [ help "minimal severity for log message",
+        reader $
+          maybeReader $
+            \case
+              "Debug" -> Just LevelDebug
+              "Info" -> Just LevelInfo
+              "Warn" -> Just LevelWarn
+              "Error" -> Just LevelError
+              _ -> Nothing,
+        metavar "LOG_LEVEL",
+        name "log-level",
+        value LevelInfo
       ]

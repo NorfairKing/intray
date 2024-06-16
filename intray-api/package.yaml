@@ -21,6 +21,7 @@ library:
   - http-api-data
   - mergeless
   - monad-logger
+  - opt-env-conf
   - path-pieces
   - persistent
   - random

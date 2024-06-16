@@ -1,4 +1,5 @@
 { intray-cli
+, opt-env-conf
 }:
 { lib
 , pkgs
@@ -24,71 +25,30 @@ in
       };
       config = mkOption {
         default = { };
-        description = "The contents of the intray cli config file";
+        type = types.submodule {
+          options = (pkgs.callPackage ../intray-cli/options.nix { });
+        };
       };
-      cache-dir = mkOption {
-        type = types.nullOr types.str;
-        default = null;
-        description = "The cache dir";
+      extraConfig = mkOption {
+        description = "The contents of the config file, as an attribute set. This will be translated to Yaml and put in the right place along with the rest of the options defined in this submodule.";
+        default = { };
       };
-      data-dir = mkOption {
-        type = types.nullOr types.str;
-        default = null;
-        description = "The data dir";
-      };
-      sync = mkOption {
-        default = null;
-        type = types.nullOr (types.submodule {
-          options = {
-            enable = mkEnableOption "Intray synchronisation";
-            username = mkOption {
-              type = types.str;
-              example = "syd";
-              description = "The username to use for syncing";
-            };
-            password = mkOption {
-              type = types.nullOr types.str;
-              default = null;
-              description = "The password to use for syncing";
-            };
-            password-file = mkOption {
-              type = types.nullOr types.str;
-              default = null;
-              description = "The password file to use for syncing";
-            };
-            url = mkOption {
-              type = types.str;
-              default = "https://api.intray.eu";
-              example = "https://api.intray.eu";
-              description = "The sync server to use for syncing";
-            };
-          };
-        });
-      };
+      sync.enable = mkEnableOption "Automatic intray synchronisation";
     };
   };
   config =
     let
-      nullOrOption =
-        name: opt: optionalAttrs (!builtins.isNull opt) { "${name}" = opt; };
-      syncConfig = optionalAttrs (cfg.sync.enable or false) {
-        url = cfg.sync.url;
-        username = cfg.sync.username;
-        password = cfg.sync.password;
-        password-file = cfg.sync.password-file;
-        sync = "NeverSync";
-      };
-
-      commonConfig = mergeListRecursively [
-        (nullOrOption "cache-dir" cfg.cache-dir)
-        (nullOrOption "data-dir" cfg.data-dir)
-        cfg.config
-      ];
       intrayConfig = mergeListRecursively [
-        syncConfig
-        commonConfig
+        (builtins.removeAttrs cfg.config [ "override" "overrideDerivation" ])
+        cfg.extraConfig
       ];
       intrayConfigFile = (pkgs.formats.yaml { }).generate "intray-config.yaml" intrayConfig;
+
+      settingsCheck = opt-env-conf.makeSettingsCheck "intray-settings-check"
+        "${cli}/bin/intray"
+        [ "--config-file" intrayConfigFile "sync" ]
+        { };
+
       cli = cfg.intray-cli;
 
       syncIntrayName = "sync-intray";
@@ -119,15 +79,16 @@ in
           Unit = "${syncIntrayName}.service";
         };
       };
-      services = optionalAttrs (cfg.sync != null && cfg.sync.enable) {
+      services = optionalAttrs cfg.sync.enable {
         "${syncIntrayName}" = syncIntrayService;
       };
-      timers = optionalAttrs (cfg.sync != null && cfg.sync.enable) {
+      timers = optionalAttrs cfg.sync.enable {
         "${syncIntrayName}" = syncIntrayTimer;
       };
     in
     mkIf cfg.enable {
       xdg.configFile."intray/config.yaml".source = "${intrayConfigFile}";
+      xdg.configFile."intray/settings-check.txt".source = "${settingsCheck}";
       systemd.user = {
         services = services;
         timers = timers;

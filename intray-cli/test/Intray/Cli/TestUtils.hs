@@ -4,7 +4,7 @@
 module Intray.Cli.TestUtils where
 
 import Intray.Cli
-import Intray.Cli.OptParse.Types
+import Intray.Cli.OptParse
 import qualified Network.HTTP.Client as HTTP
 import Test.Syd.Path
 import Test.Syd.Wai

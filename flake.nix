@@ -22,16 +22,10 @@
     fast-myers-diff.flake = false;
     sydtest.url = "github:NorfairKing/sydtest";
     sydtest.flake = false;
+    opt-env-conf.url = "github:NorfairKing/opt-env-conf";
+    opt-env-conf.flake = false;
     mergeless.url = "github:NorfairKing/mergeless";
     mergeless.flake = false;
-    yesod-autoreload.url = "github:NorfairKing/yesod-autoreload";
-    yesod-autoreload.flake = false;
-    yesod-static-remote.url = "github:NorfairKing/yesod-static-remote";
-    yesod-static-remote.flake = false;
-    linkcheck.url = "github:NorfairKing/linkcheck";
-    linkcheck.flake = false;
-    seocheck.url = "github:NorfairKing/seocheck";
-    seocheck.flake = false;
     dekking.url = "github:NorfairKing/dekking";
     dekking.flake = false;
   };
@@ -45,31 +39,26 @@
     , validity
     , safe-coloured-text
     , sydtest
+    , opt-env-conf
     , fast-myers-diff
     , autodocodec
     , mergeless
-    , yesod-autoreload
-    , yesod-static-remote
-    , linkcheck
-    , seocheck
     , dekking
     }:
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs {
         inherit system;
+        config.allowUnfree = true;
         overlays = [
           self.overlays.${system}
           (import (autodocodec + "/nix/overlay.nix"))
           (import (safe-coloured-text + "/nix/overlay.nix"))
           (import (sydtest + "/nix/overlay.nix"))
+          (import (opt-env-conf + "/nix/overlay.nix"))
           (import (fast-myers-diff + "/nix/overlay.nix"))
           (import (mergeless + "/nix/overlay.nix"))
           (import (validity + "/nix/overlay.nix"))
-          (import (yesod-autoreload + "/nix/overlay.nix"))
-          (import (yesod-static-remote + "/nix/overlay.nix"))
-          (import (linkcheck + "/nix/overlay.nix"))
-          (import (seocheck + "/nix/overlay.nix"))
           (import (dekking + "/nix/overlay.nix"))
           (import (weeder-nix + "/nix/overlay.nix"))
         ];
@@ -85,6 +74,8 @@
       apps.${system}.default = { type = "app"; program = "${pkgs.intrayReleasePackages.intray-cli}/bin/intray"; };
       lib.${system}.intrayNotification = pkgs.intrayNotification;
       checks.${system} = {
+        release = self.packages.${system}.default;
+        static = self.packages.${system}.static;
         coverage-report = pkgs.dekking.makeCoverageReport {
           name = "test-coverage-report";
           packages = [
@@ -124,25 +115,19 @@
         packages = p: builtins.attrValues p.intrayPackages;
         withHoogle = true;
         doBenchmark = true;
-        buildInputs = (with pkgs; [
-          niv
+        buildInputs = with pkgs; [
           zlib
           cabal-install
-        ]) ++ (with pre-commit-hooks.packages.${system};
-          [
-            cabal2nix
-            deadnix
-            hlint
-            hpack
-            nixpkgs-fmt
-            ormolu
-          ]);
+        ] ++ self.checks.${system}.pre-commit.enabledPackages;
         shellHook = self.checks.${system}.pre-commit.shellHook;
       };
       nixosModules.${system} = {
         serviceNotifications = import ./nix/service-notifications.nix { inherit (pkgsMusl.intrayRelease) notification; };
       };
-      homeManagerModules.${system}.default = import ./nix/home-manager-module.nix { inherit (pkgsMusl.intrayReleasePackages) intray-cli; };
+      homeManagerModules.${system}.default = import ./nix/home-manager-module.nix {
+        inherit (pkgsMusl.intrayReleasePackages) intray-cli;
+        inherit (pkgsMusl.haskellPackages) opt-env-conf;
+      };
       nix-ci = {
         auto-update = {
           enable = true;
