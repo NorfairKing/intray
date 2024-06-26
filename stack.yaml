@@ -6,20 +6,30 @@ packages:
 - intray-cli-data
 - intray-client
 
-- /home/syd/src/opt-env-conf/opt-env-conf/
-- /home/syd/src/opt-env-conf/opt-env-conf-test/
-- /home/syd/src/autodocodec/autodocodec/
-- /home/syd/src/autodocodec/autodocodec-schema/
-- /home/syd/src/autodocodec/autodocodec-yaml/
-- /home/syd/src/safe-coloured-text/safe-coloured-text
-- /home/syd/src/safe-coloured-text/safe-coloured-text-layout
-
 # These are duplicated in nix/overlay.
 ghc-options:
   "$locals": -Wall -Wincomplete-uni-patterns -Wincomplete-record-updates -Wpartial-fields -Widentities -Wredundant-constraints -Wcpp-undef -O0 -Wunused-packages
   intray-stripe-client: -w # Turn off warnings for the generated code.
 extra-deps:
 - servant-flatten-0.2@sha256:276896f7c5cdec5b8f8493f6205fded0cc602d050b58fdb09a6d7c85c3bb0837,1234
+
+- github: NorfairKing/safe-coloured-text
+  commit: 61f14d21b7399fe97da24e484c2f9fedaf532bb8
+  subdirs:
+  - safe-coloured-text
+  - safe-coloured-text-layout
+  - safe-coloured-text-gen
+- github: NorfairKing/autodocodec
+  commit: a818df53b0f65caf3615d5cb9d4734288ff1ca39
+  subdirs:
+    - autodocodec
+    - autodocodec-yaml
+    - autodocodec-schema
+- github: NorfairKing/opt-env-conf
+  commit: 0f3d914b16551e88c1cc60060121c3da747c0a38
+  subdirs:
+    - opt-env-conf
+    - opt-env-conf-test
 
 - github: NorfairKing/servant
   commit: 552da96ff9a6d81a8553c6429843178d78356054
@@ -56,19 +66,6 @@ extra-deps:
 
 - github: NorfairKing/pretty-relative-time
   commit: a634358ff274380a12360f7814c3aea46ea35b1b
-
-    # - github: NorfairKing/safe-coloured-text
-    #   commit: 50abcbfa2a2ed15c6186fa2381fe818bd93a730b
-    #   subdirs:
-    #     - safe-coloured-text
-    #     - safe-coloured-text-terminfo
-
-    # - github: NorfairKing/autodocodec
-    #   commit: e7f4ec8d1d47e77c0f7fe83c8032abae5b082572
-    #   subdirs:
-    #     - autodocodec
-    #     - autodocodec-schema
-    #     - autodocodec-yaml
 
 - github: NorfairKing/yesod-autoreload
   commit: dfd89eaa65f77c1f1a5a38810d9513b3649971e4

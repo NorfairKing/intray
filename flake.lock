@@ -3,15 +3,16 @@
     "autodocodec": {
       "flake": false,
       "locked": {
-        "lastModified": 1701673930,
-        "narHash": "sha256-Mv8LNgJrQpHpuxg7jMuYuUoLeWCW+0OvqST4KNJYH9k=",
+        "lastModified": 1719160008,
+        "narHash": "sha256-ZVcod9Yp3lzzZa/NEkqHp0jnxRrcMv3Z+sQ1dxmpnPo=",
         "owner": "NorfairKing",
         "repo": "autodocodec",
-        "rev": "958a1c51fbf2f166974a60e2d0a5d266483baff5",
+        "rev": "36779707f38ec3aeb0a591ff8043a63717c96ea2",
         "type": "github"
       },
       "original": {
         "owner": "NorfairKing",
+        "ref": "opt-env-conf",
         "repo": "autodocodec",
         "type": "github"
       }
@@ -206,6 +207,22 @@
         "type": "github"
       }
     },
+    "opt-env-conf": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1719176523,
+        "narHash": "sha256-OYuLE+uV6DUi5gqJ3q6iz6LQSw/XDyOCj5OHPoRIKNo=",
+        "owner": "NorfairKing",
+        "repo": "opt-env-conf",
+        "rev": "0f3d914b16551e88c1cc60060121c3da747c0a38",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NorfairKing",
+        "repo": "opt-env-conf",
+        "type": "github"
+      }
+    },
     "pre-commit-hooks": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -237,6 +254,7 @@
         "linkcheck": "linkcheck",
         "mergeless": "mergeless",
         "nixpkgs": "nixpkgs",
+        "opt-env-conf": "opt-env-conf",
         "pre-commit-hooks": "pre-commit-hooks",
         "safe-coloured-text": "safe-coloured-text",
         "seocheck": "seocheck",
@@ -250,15 +268,16 @@
     "safe-coloured-text": {
       "flake": false,
       "locked": {
-        "lastModified": 1711626793,
-        "narHash": "sha256-Pu7cKBjljx7wY4OoQ6T6Uu92+Hsj2SnuutYsVN3U89A=",
+        "lastModified": 1719154542,
+        "narHash": "sha256-jX37vLcdvyfWhBuNWK2BVGyP6/P9NK8N3rz9/rUfIYY=",
         "owner": "NorfairKing",
         "repo": "safe-coloured-text",
-        "rev": "4161e707b1b0a8090a7149b8195f15943fa29fa9",
+        "rev": "bbc01b9471b6b5a4ecc4b0592469f6b63bb5650d",
         "type": "github"
       },
       "original": {
         "owner": "NorfairKing",
+        "ref": "opt-env-conf",
         "repo": "safe-coloured-text",
         "type": "github"
       }
