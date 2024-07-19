@@ -45,9 +45,10 @@ with final.haskell.lib;
                   "--ghc-option=-optl=-static"
                   # Static
                   "--extra-lib-dirs=${final.gmp6.override { withStatic = true; }}/lib"
-                  "--extra-lib-dirs=${final.libffi.overrideAttrs (_: { dontDisableStatic = true; })}/lib"
                   "--extra-lib-dirs=${final.zlib.static}/lib"
-                  "--extra-lib-dirs=${staticNcurses}}/lib" # for -ltinfo
+                  "--extra-lib-dirs=${final.libffi.overrideAttrs (_: { dontDisableStatic = true; })}/lib"
+                  # for -ltinfo
+                  "--extra-lib-dirs=${staticNcurses}/lib"
                 ];
                 enableSharedExecutables = false;
                 enableSharedLibraries = false;

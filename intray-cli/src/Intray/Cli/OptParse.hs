@@ -4,6 +4,7 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE QuasiQuotes #-}
 {-# LANGUAGE RecordWildCards #-}
 
 module Intray.Cli.OptParse
@@ -82,14 +83,20 @@ parseSettings = do
             example "api.intray.eu"
           ]
   setCacheDir <-
-    directoryPathSetting
-      [ help "directory to store cache information. You can remove this directory as necessary.",
-        name "cache-dir"
+    choice
+      [ directoryPathSetting
+          [ help "directory to store cache information. You can remove this directory as necessary.",
+            name "cache-dir"
+          ],
+        runIO $ getXdgDir XdgCache (Just [reldir|intray|])
       ]
   setDataDir <-
-    directoryPathSetting
-      [ help "directory to store data information. Removing this directory could lead to data loss.",
-        name "data-dir"
+    choice
+      [ directoryPathSetting
+          [ help "directory to store data information. Removing this directory could lead to data loss.",
+            name "data-dir"
+          ],
+        runIO $ getXdgDir XdgData (Just [reldir|intray|])
       ]
   setSyncStrategy <- settingsParser
   setAutoOpen <- settingsParser
@@ -131,12 +138,14 @@ instance HasParser SyncStrategy where
         metavar "SYNC_STRATEGY",
         name "sync-strategy",
         shownExample NeverSync,
-        shownExample AlwaysSync
+        shownExample AlwaysSync,
+        value AlwaysSync
       ]
 
 data AutoOpen
   = DontAutoOpen
   | AutoOpenWith FilePath
+  deriving (Show)
 
 instance HasCodec AutoOpen where
   codec =
@@ -177,14 +186,15 @@ instance HasParser AutoOpen where
                     Nothing -> DontAutoOpen
                     Just ao -> ao
                 )
-                (codec :: JSONCodec AutoOpen)
+                (codec :: JSONCodec AutoOpen),
+            value (AutoOpenWith "xdg-open")
           ]
       ]
 
 data Dispatch
-  = DispatchRegister RegisterSettings
-  | DispatchLogin LoginSettings
-  | DispatchAddItem AddSettings
+  = DispatchRegister !RegisterSettings
+  | DispatchLogin !LoginSettings
+  | DispatchAddItem !AddSettings
   | DispatchShowItem
   | DispatchDoneItem
   | DispatchSize
@@ -211,8 +221,8 @@ parseDispatch =
     ]
 
 data RegisterSettings = RegisterSettings
-  { registerSetUsername :: Maybe Username,
-    registerSetPassword :: Maybe Text
+  { registerSetUsername :: !(Maybe Username),
+    registerSetPassword :: !(Maybe Text)
   }
 
 instance HasParser RegisterSettings where
@@ -250,8 +260,8 @@ parseRegisterSettings = do
   pure RegisterSettings {..}
 
 data LoginSettings = LoginSettings
-  { loginSetUsername :: Maybe Username,
-    loginSetPassword :: Maybe Text
+  { loginSetUsername :: !(Maybe Username),
+    loginSetPassword :: !(Maybe Text)
   }
 
 instance HasParser LoginSettings where
@@ -282,9 +292,9 @@ parseLoginSettings = do
   pure LoginSettings {..}
 
 data AddSettings = AddSettings
-  { addSetContents :: [Text],
-    addSetReadStdin :: Bool,
-    addSetRemote :: Bool
+  { addSetContents :: ![Text],
+    addSetReadStdin :: !Bool,
+    addSetRemote :: !Bool
   }
 
 instance HasParser AddSettings where
@@ -294,7 +304,7 @@ instance HasParser AddSettings where
 parseAddSettings :: Parser AddSettings
 parseAddSettings = do
   addSetContents <-
-    many $
+    some $
       setting
         [ help "contents of the items to be added",
           reader str,

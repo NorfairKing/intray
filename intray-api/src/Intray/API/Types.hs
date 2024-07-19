@@ -181,5 +181,6 @@ instance HasParser LogLevel where
               "Error" -> Just LevelError
               _ -> Nothing,
         metavar "LOG_LEVEL",
-        name "log-level"
+        name "log-level",
+        value LevelInfo
       ]

@@ -1,4 +1,5 @@
 { intray-cli
+, opt-env-conf
 }:
 { lib
 , pkgs
@@ -89,6 +90,12 @@ in
         commonConfig
       ];
       intrayConfigFile = (pkgs.formats.yaml { }).generate "intray-config.yaml" intrayConfig;
+
+      settingsCheck = opt-env-conf.mkSettingsCheck "intray-settings-check"
+        "${cli}/bin/intray"
+        [ "--config-file" intrayConfigFile "sync" ]
+        { };
+
       cli = cfg.intray-cli;
 
       syncIntrayName = "sync-intray";
@@ -128,6 +135,7 @@ in
     in
     mkIf cfg.enable {
       xdg.configFile."intray/config.yaml".source = "${intrayConfigFile}";
+      xdg.configFile."intray/settings-check.txt".source = "${settingsCheck}";
       systemd.user = {
         services = services;
         timers = timers;

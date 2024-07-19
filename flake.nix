@@ -90,6 +90,8 @@
       apps.${system}.default = { type = "app"; program = "${pkgs.intrayReleasePackages.intray-cli}/bin/intray"; };
       lib.${system}.intrayNotification = pkgs.intrayNotification;
       checks.${system} = {
+        release = self.packages.${system}.default;
+        static = self.packages.${system}.static;
         coverage-report = pkgs.dekking.makeCoverageReport {
           name = "test-coverage-report";
           packages = [
@@ -129,25 +131,19 @@
         packages = p: builtins.attrValues p.intrayPackages;
         withHoogle = true;
         doBenchmark = true;
-        buildInputs = (with pkgs; [
-          niv
+        buildInputs = with pkgs; [
           zlib
           cabal-install
-        ]) ++ (with pre-commit-hooks.packages.${system};
-          [
-            cabal2nix
-            deadnix
-            hlint
-            hpack
-            nixpkgs-fmt
-            ormolu
-          ]);
+        ] ++ self.checks.${system}.pre-commit.enabledPackages;
         shellHook = self.checks.${system}.pre-commit.shellHook;
       };
       nixosModules.${system} = {
         serviceNotifications = import ./nix/service-notifications.nix { inherit (pkgsMusl.intrayRelease) notification; };
       };
-      homeManagerModules.${system}.default = import ./nix/home-manager-module.nix { inherit (pkgsMusl.intrayReleasePackages) intray-cli; };
+      homeManagerModules.${system}.default = import ./nix/home-manager-module.nix {
+        inherit (pkgsMusl.intrayReleasePackages) intray-cli;
+        inherit (pkgsMusl.haskellPackages) opt-env-conf;
+      };
       nix-ci = {
         auto-update = {
           enable = true;
