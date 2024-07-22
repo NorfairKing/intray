@@ -304,7 +304,7 @@ instance HasParser AddSettings where
 parseAddSettings :: Parser AddSettings
 parseAddSettings = do
   addSetContents <-
-    some $
+    many $
       setting
         [ help "contents of the items to be added",
           reader str,

@@ -161,10 +161,10 @@
   [37m--url[m [34mapi url of the intray server.[m 
   [37m--cache-dir[m [34mdirectory to store cache information. You can remove this directory as necessary.[m 
   [37m--data-dir[m [34mdirectory to store data information. Removing this directory could lead to data loss.[m 
-  [37m--sync-strategy[m [34msync strategy for non-sync commands.[m 
+  [37m--sync-strategy[m [34msync strategy for non-sync commands.[m default: [33mAlwaysSync[m
   [37m--no-auto-open[m   [34mDon't auto-open links or pictures[m 
   [37m--auto-open-with[m [34mCommand to use to auto-open[m       
-  [37m--log-level[m [34mminimal severity for log message[m 
+  [37m--log-level[m [34mminimal severity for log message[m default: [33mLevelInfo[m
 
 [36mEnvironment Variables[m:
   [37mINTRAY_CONFIG_FILE[m [33mFILE_PATH[m         [34mPath to the configuration file[m                                                       

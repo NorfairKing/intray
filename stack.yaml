@@ -6,18 +6,17 @@ packages:
 - intray-cli-data
 - intray-client
 
-- /home/syd/src/opt-env-conf/opt-env-conf
 # These are duplicated in nix/overlay.
 ghc-options:
   "$locals": -Wall -Wincomplete-uni-patterns -Wincomplete-record-updates -Wpartial-fields -Widentities -Wredundant-constraints -Wcpp-undef -O0 -Wunused-packages
   intray-stripe-client: -w # Turn off warnings for the generated code.
 extra-deps:
 
-  # - github: NorfairKing/opt-env-conf
-  #   commit: 7f57bea95ab72e3c5b477e8ad11e9153160fc141
-  #   subdirs:
-  #     - opt-env-conf
-  #     - opt-env-conf-test
+- github: NorfairKing/opt-env-conf
+  commit: 7f57bea95ab72e3c5b477e8ad11e9153160fc141
+  subdirs:
+    - opt-env-conf
+    - opt-env-conf-test
 
 - github: NorfairKing/safe-coloured-text
   commit: a58b782acc873a40a0eeb20eb4dc22c6df9c9dee
@@ -27,10 +26,11 @@ extra-deps:
     - safe-coloured-text-terminfo
 
 - github: NorfairKing/autodocodec
-  commit: 36779707f38ec3aeb0a591ff8043a63717c96ea2
-  subdirs:               
+  commit: 05e1c9aac220128dbc2f2c2a0d16ab1c52e349d0
+  subdirs:
     - autodocodec  
     - autodocodec-schema  
+    - autodocodec-nix
     - autodocodec-yaml
 
 system-ghc: true
