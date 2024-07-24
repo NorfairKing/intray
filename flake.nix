@@ -26,12 +26,6 @@
     opt-env-conf.flake = false;
     mergeless.url = "github:NorfairKing/mergeless";
     mergeless.flake = false;
-    yesod-autoreload.url = "github:NorfairKing/yesod-autoreload";
-    yesod-autoreload.flake = false;
-    yesod-static-remote.url = "github:NorfairKing/yesod-static-remote";
-    yesod-static-remote.flake = false;
-    linkcheck.url = "github:NorfairKing/linkcheck";
-    linkcheck.flake = false;
     dekking.url = "github:NorfairKing/dekking";
     dekking.flake = false;
   };
@@ -49,9 +43,6 @@
     , fast-myers-diff
     , autodocodec
     , mergeless
-    , yesod-autoreload
-    , yesod-static-remote
-    , linkcheck
     , dekking
     }:
     let
@@ -68,9 +59,6 @@
           (import (fast-myers-diff + "/nix/overlay.nix"))
           (import (mergeless + "/nix/overlay.nix"))
           (import (validity + "/nix/overlay.nix"))
-          (import (yesod-autoreload + "/nix/overlay.nix"))
-          (import (yesod-static-remote + "/nix/overlay.nix"))
-          (import (linkcheck + "/nix/overlay.nix"))
           (import (dekking + "/nix/overlay.nix"))
           (import (weeder-nix + "/nix/overlay.nix"))
         ];

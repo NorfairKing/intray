@@ -108,22 +108,6 @@
         "type": "github"
       }
     },
-    "linkcheck": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1720421737,
-        "narHash": "sha256-+Rgl01oVfK/H/aFugdK1+pshCmAIOFLA7PaVTICp/mY=",
-        "owner": "NorfairKing",
-        "repo": "linkcheck",
-        "rev": "3a72a7b536bf4c1780127fb381749e982f6c1fe1",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NorfairKing",
-        "repo": "linkcheck",
-        "type": "github"
-      }
-    },
     "mergeless": {
       "flake": false,
       "locked": {
@@ -231,7 +215,6 @@
         "dekking": "dekking",
         "fast-myers-diff": "fast-myers-diff",
         "haskell-dependency-graph-nix": "haskell-dependency-graph-nix",
-        "linkcheck": "linkcheck",
         "mergeless": "mergeless",
         "nixpkgs": "nixpkgs",
         "opt-env-conf": "opt-env-conf",
@@ -239,9 +222,7 @@
         "safe-coloured-text": "safe-coloured-text",
         "sydtest": "sydtest",
         "validity": "validity",
-        "weeder-nix": "weeder-nix",
-        "yesod-autoreload": "yesod-autoreload",
-        "yesod-static-remote": "yesod-static-remote"
+        "weeder-nix": "weeder-nix"
       }
     },
     "safe-coloured-text": {
@@ -305,38 +286,6 @@
       "original": {
         "owner": "NorfairKing",
         "repo": "weeder-nix",
-        "type": "github"
-      }
-    },
-    "yesod-autoreload": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1701870511,
-        "narHash": "sha256-Bk4w5HDdN3CyIIxrKDsNe0uB79aWn/gqb8O80XxB3o0=",
-        "owner": "NorfairKing",
-        "repo": "yesod-autoreload",
-        "rev": "f6455e7ccb58c8e13c4698869812e73e015f94fc",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NorfairKing",
-        "repo": "yesod-autoreload",
-        "type": "github"
-      }
-    },
-    "yesod-static-remote": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1685727661,
-        "narHash": "sha256-4mTiQQtrDsiV2KwYHX/8UHlbDr/oayj+nqJXoTlaPZw=",
-        "owner": "NorfairKing",
-        "repo": "yesod-static-remote",
-        "rev": "f3a65a0012b0a82c963ec027732be18d45c0c991",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NorfairKing",
-        "repo": "yesod-static-remote",
         "type": "github"
       }
     }
