@@ -11,3 +11,4 @@ spec = do
   describe "Intructions" $ do
     settingsLintSpec @Instructions
     goldenSettingsReferenceDocumentationSpec @Instructions "test_resources/documentation.txt" "intray"
+    goldenSettingsNixOptionsSpec @Instructions "options.nix"
