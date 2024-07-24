@@ -91,7 +91,7 @@ in
       ];
       intrayConfigFile = (pkgs.formats.yaml { }).generate "intray-config.yaml" intrayConfig;
 
-      settingsCheck = opt-env-conf.mkSettingsCheck "intray-settings-check"
+      settingsCheck = opt-env-conf.makeSettingsCheck "intray-settings-check"
         "${cli}/bin/intray"
         [ "--config-file" intrayConfigFile "sync" ]
         { };
