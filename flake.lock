@@ -237,7 +237,6 @@
         "opt-env-conf": "opt-env-conf",
         "pre-commit-hooks": "pre-commit-hooks",
         "safe-coloured-text": "safe-coloured-text",
-        "seocheck": "seocheck",
         "sydtest": "sydtest",
         "validity": "validity",
         "weeder-nix": "weeder-nix",
@@ -258,22 +257,6 @@
       "original": {
         "owner": "NorfairKing",
         "repo": "safe-coloured-text",
-        "type": "github"
-      }
-    },
-    "seocheck": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1720360519,
-        "narHash": "sha256-3DK4Sm197VZvQQxVdTsVkQsfcmtVn3iyKZHBzzj22yY=",
-        "owner": "NorfairKing",
-        "repo": "seocheck",
-        "rev": "abfcffaa4382ff41f1edd58e386e904a1ab9b870",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NorfairKing",
-        "repo": "seocheck",
         "type": "github"
       }
     },

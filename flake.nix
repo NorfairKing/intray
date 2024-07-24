@@ -32,8 +32,6 @@
     yesod-static-remote.flake = false;
     linkcheck.url = "github:NorfairKing/linkcheck";
     linkcheck.flake = false;
-    seocheck.url = "github:NorfairKing/seocheck";
-    seocheck.flake = false;
     dekking.url = "github:NorfairKing/dekking";
     dekking.flake = false;
   };
@@ -54,7 +52,6 @@
     , yesod-autoreload
     , yesod-static-remote
     , linkcheck
-    , seocheck
     , dekking
     }:
     let
@@ -74,7 +71,6 @@
           (import (yesod-autoreload + "/nix/overlay.nix"))
           (import (yesod-static-remote + "/nix/overlay.nix"))
           (import (linkcheck + "/nix/overlay.nix"))
-          (import (seocheck + "/nix/overlay.nix"))
           (import (dekking + "/nix/overlay.nix"))
           (import (weeder-nix + "/nix/overlay.nix"))
         ];
