@@ -231,32 +231,8 @@ instance HasParser RegisterSettings where
 {-# ANN parseRegisterSettings ("NOCOVER" :: String) #-}
 parseRegisterSettings :: Parser RegisterSettings
 parseRegisterSettings = do
-  registerSetUsername <-
-    optional
-      ( checkMapEither parseUsernameWithError $
-          setting
-            [ help "Username",
-              reader str,
-              metavar "USERNAME",
-              name "username"
-            ]
-      )
-  registerSetPassword <-
-    optional
-      ( choice
-          [ mapIO readSecretTextFile $
-              filePathSetting
-                [ help "Password file",
-                  name "password-file"
-                ],
-            setting
-              [ help "Password",
-                reader str,
-                metavar "PASSWORD",
-                name "password"
-              ]
-          ]
-      )
+  registerSetUsername <- parseUsernameSetting
+  registerSetPassword <- parsePasswordSetting
   pure RegisterSettings {..}
 
 data LoginSettings = LoginSettings
@@ -270,26 +246,39 @@ instance HasParser LoginSettings where
 {-# ANN parseLoginSettings ("NOCOVER" :: String) #-}
 parseLoginSettings :: Parser LoginSettings
 parseLoginSettings = do
-  loginSetUsername <-
-    optional
-      ( checkMapEither parseUsernameWithError $
-          setting
-            [ help "Username",
-              reader str,
-              metavar "USERNAME",
-              name "username"
-            ]
-      )
-  loginSetPassword <-
-    optional
-      ( setting
-          [ help "Password",
-            reader str,
-            metavar "PASSWORD",
-            name "password"
-          ]
-      )
+  loginSetUsername <- parseUsernameSetting
+  loginSetPassword <- parsePasswordSetting
   pure LoginSettings {..}
+
+parseUsernameSetting :: Parser (Maybe Username)
+parseUsernameSetting =
+  optional
+    ( checkMapEither parseUsernameWithError $
+        setting
+          [ help "Username",
+            reader str,
+            metavar "USERNAME",
+            name "username"
+          ]
+    )
+
+parsePasswordSetting :: Parser (Maybe Text)
+parsePasswordSetting =
+  optional
+    ( choice
+        [ mapIO readSecretTextFile $
+            filePathSetting
+              [ help "Password file",
+                name "password-file"
+              ],
+          setting
+            [ help "Password",
+              reader str,
+              metavar "PASSWORD",
+              name "password"
+            ]
+        ]
+    )
 
 data AddSettings = AddSettings
   { addSetContents :: ![Text],

@@ -102,6 +102,13 @@
       [37musername[m: # [32mor null[m
         [33m<string>[m
     
+    [34mPassword file[m
+    option: [37m--password-file[m [33mFILE_PATH[m
+    env: [37mINTRAY_PASSWORD_FILE[m [33mFILE_PATH[m
+    config:
+      [37mpassword-file[m: # [32mor null[m
+        [33m<string>[m
+  
     [34mPassword[m
     option: [37m--password[m [33mPASSWORD[m
     env: [37mINTRAY_PASSWORD[m [33mPASSWORD[m
@@ -148,8 +155,9 @@
       [37m--password-file[m [34mPassword file[m 
       [37m--password[m      [34mPassword[m      
   [35mlogin[m [34mAuthenticate with the sync server[m
-      [37m--username[m [34mUsername[m 
-      [37m--password[m [34mPassword[m 
+      [37m--username[m      [34mUsername[m      
+      [37m--password-file[m [34mPassword file[m 
+      [37m--password[m      [34mPassword[m      
   [35madd[m [34mAdd an intray item[m
       [33mTEXT[m     [34mcontents of the items to be added[m                                                             
       [37m--stdin[m  [34mread contents from standard input too[m                                           default: [33mFalse[m
@@ -174,6 +182,7 @@
   [37mINTRAY_PASSWORD_FILE[m [33mFILE_PATH[m       [34mPassword file[m                                                                        
   [37mINTRAY_PASSWORD[m [33mPASSWORD[m             [34mPassword[m                                                                             
   [37mINTRAY_USERNAME[m [33mUSERNAME[m             [34mUsername[m                                                                             
+  [37mINTRAY_PASSWORD_FILE[m [33mFILE_PATH[m       [34mPassword file[m                                                                        
   [37mINTRAY_PASSWORD[m [33mPASSWORD[m             [34mPassword[m                                                                             
   [37mINTRAY_URL[m [33mURL[m                       [34mapi url of the intray server.[m                                                        
   [37mINTRAY_CACHE_DIR[m [33mDIRECTORY_PATH[m      [34mdirectory to store cache information. You can remove this directory as necessary.[m    
@@ -196,6 +205,10 @@
     [33m<string>[m
   [34mUsername[m
   [37musername[m:
+    # [32mor null[m
+    [33m<string>[m
+  [34mPassword file[m
+  [37mpassword-file[m:
     # [32mor null[m
     [33m<string>[m
   [34mPassword[m
