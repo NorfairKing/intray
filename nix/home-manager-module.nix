@@ -26,7 +26,7 @@ in
       config = mkOption {
         default = { };
         type = types.submodule {
-          options = (pkgs.callPackage ../intray-cli/options.nix { });
+          options = import ../intray-cli/options.nix { inherit lib; };
         };
       };
       extraConfig = mkOption {
