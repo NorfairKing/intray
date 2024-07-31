@@ -124,9 +124,18 @@
       nixosModules.${system} = {
         serviceNotifications = import ./nix/service-notifications.nix { inherit (pkgsMusl.intrayRelease) notification; };
       };
-      homeManagerModules.${system}.default = import ./nix/home-manager-module.nix {
-        inherit (pkgsMusl.intrayReleasePackages) intray-cli;
-        inherit (pkgsMusl.haskellPackages) opt-env-conf;
+      homeManagerModules.${system} = {
+        default =
+          builtins.trace "Note: use 'static' to get statically linked intray" (
+            import ./nix/home-manager-module.nix {
+              inherit (pkgs.intrayReleasePackages) intray-cli;
+              inherit (pkgs.haskellPackages) opt-env-conf;
+            }
+          );
+        static = import ./nix/home-manager-module.nix {
+          inherit (pkgsMusl.intrayReleasePackages) intray-cli;
+          inherit (pkgsMusl.haskellPackages) opt-env-conf;
+        };
       };
       nix-ci = {
         auto-update = {
