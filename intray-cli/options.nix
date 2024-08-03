@@ -3,7 +3,10 @@
   auto-open = lib.mkOption {
     default = null;
     description = "How to auto-open";
-    type = lib.types.nullOr lib.types.str;
+    type = lib.types.nullOr (lib.types.oneOf [
+      lib.types.bool
+      lib.types.str
+    ]);
   };
   cache-dir = lib.mkOption {
     default = null;

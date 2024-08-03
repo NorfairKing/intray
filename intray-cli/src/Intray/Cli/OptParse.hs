@@ -179,14 +179,13 @@ instance HasParser AutoOpen where
             ],
         setting
           [ help "How to auto-open",
-            confWith' "auto-open" $
-              dimapCodec
-                Just
-                ( \case
-                    Nothing -> DontAutoOpen
-                    Just ao -> ao
-                )
-                (codec :: JSONCodec AutoOpen),
+            confWith "auto-open" $
+              ( \case
+                  Left False -> DontAutoOpen
+                  Left True -> AutoOpenWith "xdg-open"
+                  Right ao -> ao
+              )
+                <$> eitherCodec codec codec,
             value (AutoOpenWith "xdg-open")
           ]
       ]

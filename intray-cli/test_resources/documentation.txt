@@ -49,7 +49,9 @@
   [34mHow to auto-open[m
   config:
     [37mauto-open[m: # [32many of[m
-      [ # Explicitly _don't_ auto-open links or pictures.
+      [ [33mnull[m
+      , [33m<boolean>[m
+      , # Explicitly _don't_ auto-open links or pictures.
         [33mnull[m
       , # Auto-open with the given command. xdg-open is the default.
         [33m<string>[m
@@ -241,7 +243,9 @@
   [34mHow to auto-open[m
   [37mauto-open[m:
     # [32many of[m
-    [ # Explicitly _don't_ auto-open links or pictures.
+    [ [33mnull[m
+    , [33m<boolean>[m
+    , # Explicitly _don't_ auto-open links or pictures.
       [33mnull[m
     , # Auto-open with the given command. xdg-open is the default.
       [33m<string>[m

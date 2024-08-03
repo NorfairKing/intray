@@ -42,7 +42,7 @@ prettyShowItemAndWait aa cacheDir now (Entity cid ClientItem {..}) =
                         PngImage -> ".png"
                 let fileName = idString ++ ext
                 file <- resolveFile cacheDir fileName
-                liftIO $ SB.writeFile (fromAbsFile file) bs
+                SB.writeFile (fromAbsFile file) bs
                 let mp = makeAutoOpenConfig aa (fromAbsFile file)
                 pure ("Image: " <> fromAbsFile file, mp)
           let waitFunc = case mp of
