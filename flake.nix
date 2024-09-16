@@ -68,14 +68,16 @@
     {
       overlays.${system} = import ./nix/overlay.nix;
       packages.${system} = {
-        default = pkgs.intrayRelease;
+        default = self.packages.${system}.dynamic;
         static = pkgsMusl.intrayRelease;
+        dynamic = pkgs.intrayRelease;
       };
       apps.${system}.default = { type = "app"; program = "${pkgs.intrayReleasePackages.intray-cli}/bin/intray"; };
       lib.${system}.intrayNotification = pkgs.intrayNotification;
       checks.${system} = {
         release = self.packages.${system}.default;
         static = self.packages.${system}.static;
+        dynamic = self.packages.${system}.dynamic;
         coverage-report = pkgs.dekking.makeCoverageReport {
           name = "test-coverage-report";
           packages = [
@@ -122,18 +124,18 @@
         shellHook = self.checks.${system}.pre-commit.shellHook;
       };
       nixosModules.${system} = {
-        serviceNotifications = import ./nix/service-notifications.nix { inherit (pkgsMusl.intrayRelease) notification; };
+        serviceNotifications = import ./nix/service-notifications.nix { inherit (pkgs.intrayRelease) notification; };
       };
       homeManagerModules.${system} = {
-        dynamic = import ./nix/home-manager-module.nix {
-          inherit (pkgs.intrayReleasePackages) intray-cli;
-          inherit (pkgs.haskellPackages) opt-env-conf;
-        };
+        default = self.homeManagerModules.${system}.dynamic;
         static = import ./nix/home-manager-module.nix {
           inherit (pkgsMusl.intrayReleasePackages) intray-cli;
           inherit (pkgsMusl.haskellPackages) opt-env-conf;
         };
-        default = self.homeManagerModules.${system}.static;
+        dynamic = import ./nix/home-manager-module.nix {
+          inherit (pkgs.intrayReleasePackages) intray-cli;
+          inherit (pkgs.haskellPackages) opt-env-conf;
+        };
       };
       nix-ci = {
         auto-update = {
