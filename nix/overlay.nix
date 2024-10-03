@@ -138,8 +138,8 @@ with final.haskell.lib;
               ghc = fixGHC oldBuildHaskellPackages.ghc;
             });
 
-            # Not actually broken
-            servant-auth-server = unmarkBroken super.servant-auth-server;
+            # Slow tests
+            servant-auth-server = unmarkBroken (dontCheck super.servant-auth-server);
 
             inherit intrayPackages;
           } // intrayPackages
