@@ -1,31 +1,38 @@
-[36mUsage: [m[33mintray[m [37m--config-file[m [33mFILE_PATH[m COMMAND [37m--url[m [33mURL[m [37m--cache-dir[m [33mDIRECTORY_PATH[m [37m--data-dir[m [33mDIRECTORY_PATH[m [37m--sync-strategy[m [33mSYNC_STRATEGY[m [37m--no-auto-open[m [36m|[m [36m([m[37m--auto-open-with[m [33mCOMMAND[m[36m)[m [37m--log-level[m [33mLOG_LEVEL[m
+[36mUsage: [m[33mintray[m [36m[[m[37m--config-file[m [33mFILE_PATH[m[36m][m COMMAND [36m[[m[37m--url[m [33mURL[m[36m][m [36m[[m[37m--cache-dir[m [33mDIRECTORY_PATH[m[36m][m [36m[[m[37m--data-dir[m [33mDIRECTORY_PATH[m[36m][m [36m[[m[37m--sync-strategy[m [33mSYNC_STRATEGY[m[36m][m [36m[[m[37m--no-auto-open[m [36m|[m [37m--auto-open-with[m [33mCOMMAND[m[36m][m [36m[[m[37m--log-level[m [33mLOG_LEVEL[m[36m][m
 
 [36mAll settings[m:
+  [34mShow this help text[m
+  switch: [37m-h[m[36m|[m[37m--help[m
+
+  [34mOutput version information[m
+  switch: [37m--version[m
+
   [34mPath to the configuration file[m
   option: [37m--config-file[m [33mFILE_PATH[m
   env: [37mINTRAY_CONFIG_FILE[m [33mFILE_PATH[m
-  
+
   [34mapi url of the intray server.[m
   option: [37m--url[m [33mURL[m
   env: [37mINTRAY_URL[m [33mURL[m
   config:
     [37murl[m: # [32mor null[m
       [33m<string>[m
-  
+  example: [33mapi.intray.eu[m
+
   [34mdirectory to store cache information. You can remove this directory as necessary.[m
   option: [37m--cache-dir[m [33mDIRECTORY_PATH[m
   env: [37mINTRAY_CACHE_DIR[m [33mDIRECTORY_PATH[m
   config:
     [37mcache-dir[m: # [32mor null[m
       [33m<string>[m
-  
+
   [34mdirectory to store data information. Removing this directory could lead to data loss.[m
   option: [37m--data-dir[m [33mDIRECTORY_PATH[m
   env: [37mINTRAY_DATA_DIR[m [33mDIRECTORY_PATH[m
   config:
     [37mdata-dir[m: # [32mor null[m
       [33m<string>[m
-  
+
   [34msync strategy for non-sync commands.[m
   option: [37m--sync-strategy[m [33mSYNC_STRATEGY[m
   env: [37mINTRAY_SYNC_STRATEGY[m [33mSYNC_STRATEGY[m
@@ -39,7 +46,9 @@
         # Commands will still succeed even if the sync fails because of internet connect problems for example.
         AlwaysSync
       ]
-  
+  default: [33mAlwaysSync[m
+  examples: [33m"NeverSync", "AlwaysSync"[m
+
   [34mDon't auto-open links or pictures[m
   switch: [37m--no-auto-open[m
 
@@ -56,7 +65,8 @@
       , # Auto-open with the given command. xdg-open is the default.
         [33m<string>[m
       ]
-  
+  default: [33mAutoOpenWith "xdg-open"[m
+
   [34mminimal severity for log message[m
   option: [37m--log-level[m [33mLOG_LEVEL[m
   env: [37mINTRAY_LOG_LEVEL[m [33mLOG_LEVEL[m
@@ -68,7 +78,7 @@
       , Warn
       , Error
       ]
-  
+  default: [33mLevelInfo[m
 
 [36mAll commands[m:
   [34mRegister with the sync server[m
@@ -126,9 +136,11 @@
     
     [34mread contents from standard input too[m
     switch: [37m--stdin[m
+    default: [33mFalse[m
     
     [34monly add the item remotely, not locally. This implies --sync-strategy NeverSync[m
     switch: [37m--remote[m
+    default: [33mFalse[m
     
   
   [34mShow one intray item[m
@@ -151,15 +163,17 @@
   
 
 [36mOptions[m:
-  [37m--config-file[m [34mPath to the configuration file[m 
+  [37m-h[m[36m|[m[37m--help[m [34mShow this help text[m
+  [37m--version[m [34mOutput version information[m
+  [37m--config-file[m [34mPath to the configuration file[m
   [35mregister[m [34mRegister with the sync server[m
-      [37m--username[m      [34mUsername[m      
-      [37m--password-file[m [34mPassword file[m 
-      [37m--password[m      [34mPassword[m      
+      [37m--username[m      [34mUsername[m     
+      [37m--password-file[m [34mPassword file[m
+      [37m--password[m      [34mPassword[m     
   [35mlogin[m [34mAuthenticate with the sync server[m
-      [37m--username[m      [34mUsername[m      
-      [37m--password-file[m [34mPassword file[m 
-      [37m--password[m      [34mPassword[m      
+      [37m--username[m      [34mUsername[m     
+      [37m--password-file[m [34mPassword file[m
+      [37m--password[m      [34mPassword[m     
   [35madd[m [34mAdd an intray item[m
       [33mTEXT[m     [34mcontents of the items to be added[m                                                             
       [37m--stdin[m  [34mread contents from standard input too[m                                           default: [33mFalse[m
@@ -170,27 +184,27 @@
   [35mreview[m [34mReview intray items one by one[m
   [35mlogout[m [34mLog out with the sync server[m
   [35msync[m [34mSynchronise with the sync server[m
-  [37m--url[m [34mapi url of the intray server.[m 
-  [37m--cache-dir[m [34mdirectory to store cache information. You can remove this directory as necessary.[m 
-  [37m--data-dir[m [34mdirectory to store data information. Removing this directory could lead to data loss.[m 
-  [37m--sync-strategy[m [34msync strategy for non-sync commands.[m default: [33mAlwaysSync[m
-  [37m--no-auto-open[m   [34mDon't auto-open links or pictures[m 
-  [37m--auto-open-with[m [34mCommand to use to auto-open[m       
+  [37m--url[m [34mapi url of the intray server.[m example: [33mapi.intray.eu[m
+  [37m--cache-dir[m [34mdirectory to store cache information. You can remove this directory as necessary.[m
+  [37m--data-dir[m [34mdirectory to store data information. Removing this directory could lead to data loss.[m
+  [37m--sync-strategy[m [34msync strategy for non-sync commands.[m default: [33mAlwaysSync[m examples: [33m"NeverSync", "AlwaysSync"[m
+  [37m--no-auto-open[m   [34mDon't auto-open links or pictures[m
+  [37m--auto-open-with[m [34mCommand to use to auto-open[m      
   [37m--log-level[m [34mminimal severity for log message[m default: [33mLevelInfo[m
 
 [36mEnvironment Variables[m:
-  [37mINTRAY_CONFIG_FILE[m [33mFILE_PATH[m         [34mPath to the configuration file[m                                                       
-  [37mINTRAY_USERNAME[m [33mUSERNAME[m             [34mUsername[m                                                                             
-  [37mINTRAY_PASSWORD_FILE[m [33mFILE_PATH[m       [34mPassword file[m                                                                        
-  [37mINTRAY_PASSWORD[m [33mPASSWORD[m             [34mPassword[m                                                                             
-  [37mINTRAY_USERNAME[m [33mUSERNAME[m             [34mUsername[m                                                                             
-  [37mINTRAY_PASSWORD_FILE[m [33mFILE_PATH[m       [34mPassword file[m                                                                        
-  [37mINTRAY_PASSWORD[m [33mPASSWORD[m             [34mPassword[m                                                                             
-  [37mINTRAY_URL[m [33mURL[m                       [34mapi url of the intray server.[m                                                        
-  [37mINTRAY_CACHE_DIR[m [33mDIRECTORY_PATH[m      [34mdirectory to store cache information. You can remove this directory as necessary.[m    
-  [37mINTRAY_DATA_DIR[m [33mDIRECTORY_PATH[m       [34mdirectory to store data information. Removing this directory could lead to data loss.[m
-  [37mINTRAY_SYNC_STRATEGY[m [33mSYNC_STRATEGY[m   [34msync strategy for non-sync commands.[m                                                 
-  [37mINTRAY_LOG_LEVEL[m [33mLOG_LEVEL[m           [34mminimal severity for log message[m                                                     
+  [37mINTRAY_CONFIG_FILE[m [33mFILE_PATH[m         [34mPath to the configuration file[m                                                                                                                      
+  [37mINTRAY_USERNAME[m [33mUSERNAME[m             [34mUsername[m                                                                                                                                            
+  [37mINTRAY_PASSWORD_FILE[m [33mFILE_PATH[m       [34mPassword file[m                                                                                                                                       
+  [37mINTRAY_PASSWORD[m [33mPASSWORD[m             [34mPassword[m                                                                                                                                            
+  [37mINTRAY_USERNAME[m [33mUSERNAME[m             [34mUsername[m                                                                                                                                            
+  [37mINTRAY_PASSWORD_FILE[m [33mFILE_PATH[m       [34mPassword file[m                                                                                                                                       
+  [37mINTRAY_PASSWORD[m [33mPASSWORD[m             [34mPassword[m                                                                                                                                            
+  [37mINTRAY_URL[m [33mURL[m                       [34mapi url of the intray server.[m                                                           example: [33mapi.intray.eu[m                                      
+  [37mINTRAY_CACHE_DIR[m [33mDIRECTORY_PATH[m      [34mdirectory to store cache information. You can remove this directory as necessary.[m                                                                   
+  [37mINTRAY_DATA_DIR[m [33mDIRECTORY_PATH[m       [34mdirectory to store data information. Removing this directory could lead to data loss.[m                                                               
+  [37mINTRAY_SYNC_STRATEGY[m [33mSYNC_STRATEGY[m   [34msync strategy for non-sync commands.[m                                                    default: [33mAlwaysSync[m      examples: [33m"NeverSync", "AlwaysSync"[m
+  [37mINTRAY_LOG_LEVEL[m [33mLOG_LEVEL[m           [34mminimal severity for log message[m                                                        default: [33mLevelInfo[m                                          
 
 [36mConfiguration Values[m:
   [34mUsername[m
@@ -218,6 +232,7 @@
     # [32mor null[m
     [33m<string>[m
   [34mapi url of the intray server.[m
+  example: [33mapi.intray.eu[m
   [37murl[m:
     # [32mor null[m
     [33m<string>[m
@@ -230,6 +245,8 @@
     # [32mor null[m
     [33m<string>[m
   [34msync strategy for non-sync commands.[m
+  default: [33mAlwaysSync[m
+  examples: [33m"NeverSync", "AlwaysSync"[m
   [37msync-strategy[m:
     # [32many of[m
     [ [33mnull[m
@@ -241,6 +258,7 @@
       AlwaysSync
     ]
   [34mHow to auto-open[m
+  default: [33mAutoOpenWith "xdg-open"[m
   [37mauto-open[m:
     # [32many of[m
     [ [33mnull[m
@@ -251,6 +269,7 @@
       [33m<string>[m
     ]
   [34mminimal severity for log message[m
+  default: [33mLevelInfo[m
   [37mlog-level[m:
     # [32mor null[m
     # [32mone of[m

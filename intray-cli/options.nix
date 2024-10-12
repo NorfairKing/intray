@@ -21,7 +21,12 @@
   log-level = lib.mkOption {
     default = null;
     description = "minimal severity for log message";
-    type = lib.types.nullOr lib.types.anything;
+    type = lib.types.nullOr (lib.types.enum [
+      "Debug"
+      "Info"
+      "Warn"
+      "Error"
+    ]);
   };
   password = lib.mkOption {
     default = null;
@@ -36,7 +41,10 @@
   sync-strategy = lib.mkOption {
     default = null;
     description = "sync strategy for non-sync commands.";
-    type = lib.types.nullOr lib.types.anything;
+    type = lib.types.nullOr (lib.types.enum [
+      "NeverSync"
+      "AlwaysSync"
+    ]);
   };
   url = lib.mkOption {
     default = null;
