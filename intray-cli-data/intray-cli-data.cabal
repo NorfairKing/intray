@@ -23,5 +23,6 @@ library
     , bytestring
     , intray-api
     , persistent
+    , text
     , time
   default-language: Haskell2010

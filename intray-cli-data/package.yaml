@@ -12,4 +12,5 @@ library:
   - bytestring
   - intray-api
   - persistent
+  - text
   - time

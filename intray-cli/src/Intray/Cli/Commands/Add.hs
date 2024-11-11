@@ -60,6 +60,7 @@ addItemLocally contents = runDB $ do
           { clientItemType = TextItem,
             clientItemContents = TE.encodeUtf8 contents,
             clientItemCreated = now,
+            clientItemAccessKeyName = Nothing,
             clientItemServerIdentifier = Nothing,
             clientItemDeleted = False
           }

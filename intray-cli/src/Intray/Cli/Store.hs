@@ -7,6 +7,7 @@ where
 
 import Control.Monad.IO.Class
 import qualified Data.ByteString as SB
+import Data.Maybe
 import qualified Data.Text as T
 import Data.Time
 import Database.Persist
@@ -48,7 +49,15 @@ prettyShowItemAndWait aa cacheDir now (Entity cid ClientItem {..}) =
           let waitFunc = case mp of
                 Nothing -> id
                 Just pc -> withProcessWait pc . const
-          waitFunc $ liftIO $ putStrLn $ unlines [concat [timeStr, " (", timeAgoString, ")"], contents]
+          waitFunc $
+            liftIO $
+              putStrLn $
+                unlines $
+                  concat
+                    [ [concat [timeStr, " (", timeAgoString, ")"]],
+                      ["From: " <> T.unpack accessKeyName | accessKeyName <- maybeToList clientItemAccessKeyName],
+                      [contents]
+                    ]
 
 makeAutoOpenConfig :: AutoOpen -> String -> Maybe (ProcessConfig () () ())
 makeAutoOpenConfig aa arg =

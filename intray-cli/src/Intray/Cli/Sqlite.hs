@@ -96,6 +96,7 @@ mergeSyncResponse =
             { clientItemType = itemType,
               clientItemContents = itemData,
               clientItemCreated = addedItemCreated,
+              clientItemAccessKeyName = Nothing,
               clientItemServerIdentifier = Just serverId,
               clientItemDeleted = False
             }

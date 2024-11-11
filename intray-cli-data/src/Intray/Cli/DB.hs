@@ -20,6 +20,7 @@ import Autodocodec
 import Data.Aeson (FromJSONKey (..), ToJSONKey (..))
 import Data.ByteString (ByteString)
 import Data.Functor.Contravariant
+import Data.Text (Text)
 import Data.Time
 import Database.Persist.Sql as Sql
 import Database.Persist.TH
@@ -34,6 +35,7 @@ ClientItem
     type ItemType
     contents ByteString
     created UTCTime
+    accessKeyName Text Maybe default=NULL
 
     serverIdentifier ItemUUID Maybe
     deleted Bool

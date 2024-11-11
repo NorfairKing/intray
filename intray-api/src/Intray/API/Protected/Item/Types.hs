@@ -95,7 +95,8 @@ instance (HasCodec a) => HasCodec (AddedItem a) where
 data ItemInfo a = ItemInfo
   { itemInfoIdentifier :: ItemUUID,
     itemInfoContents :: a,
-    itemInfoCreated :: UTCTime
+    itemInfoCreated :: UTCTime,
+    itemInfoAccessKeyName :: Maybe Text
   }
   deriving stock (Show, Eq, Ord, Generic)
   deriving (FromJSON, ToJSON) via (Autodocodec (ItemInfo a))
@@ -112,3 +113,5 @@ instance (HasCodec a) => HasCodec (ItemInfo a) where
           .= itemInfoContents
         <*> requiredField "created" "creation timestamp"
           .= itemInfoCreated
+        <*> optionalField "access-key" "access key used to create this item"
+          .= itemInfoAccessKeyName

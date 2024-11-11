@@ -82,7 +82,8 @@ instance IsAuth IntrayAccessKey AuthCookie where
 
 data AuthCookie = AuthCookie
   { authCookieUserUUID :: AccountUUID,
-    authCookiePermissions :: Set Permission
+    authCookiePermissions :: Set Permission,
+    authCookieAccessKeyName :: Maybe Text
   }
   deriving (FromJSON, ToJSON) via (Autodocodec AuthCookie)
 
@@ -94,6 +95,7 @@ instance HasCodec AuthCookie where
           .= authCookieUserUUID
         <*> optionalFieldWithOmittedDefault "permissions" S.empty "permissions"
           .= authCookiePermissions
+        <*> optionalField "access-key" "access key name" .= authCookieAccessKeyName
 
 instance FromJWT AuthCookie
 
