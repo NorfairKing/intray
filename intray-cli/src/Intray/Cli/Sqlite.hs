@@ -80,7 +80,8 @@ makeSyncRequest =
             TypedItem
               { itemType = clientItemType,
                 itemData = clientItemContents
-              }
+              },
+          addedItemAccessKeyName = clientItemAccessKeyName
         }
 
 mergeSyncResponse :: SyncResponse Int64 ItemUUID (AddedItem TypedItem) -> CliM ()
@@ -96,7 +97,7 @@ mergeSyncResponse =
             { clientItemType = itemType,
               clientItemContents = itemData,
               clientItemCreated = addedItemCreated,
-              clientItemAccessKeyName = Nothing,
+              clientItemAccessKeyName = addedItemAccessKeyName,
               clientItemServerIdentifier = Just serverId,
               clientItemDeleted = False
             }

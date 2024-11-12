@@ -77,7 +77,8 @@ data TypedItemCase
 
 data AddedItem a = AddedItem
   { addedItemContents :: a,
-    addedItemCreated :: UTCTime
+    addedItemCreated :: UTCTime,
+    addedItemAccessKeyName :: Maybe Text
   }
   deriving stock (Show, Eq, Ord, Generic)
 
@@ -91,6 +92,8 @@ instance (HasCodec a) => HasCodec (AddedItem a) where
           .= addedItemContents
         <*> requiredField "created" "creation timestamp"
           .= addedItemCreated
+        <*> optionalField "access-key" "access key used to create this item"
+          .= addedItemAccessKeyName
 
 data ItemInfo a = ItemInfo
   { itemInfoIdentifier :: ItemUUID,
