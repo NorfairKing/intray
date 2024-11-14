@@ -69,14 +69,14 @@
       overlays.${system} = import ./nix/overlay.nix;
       packages.${system} = {
         default = self.packages.${system}.dynamic;
-        static = pkgsMusl.intrayRelease;
+        # static = pkgsMusl.intrayRelease;
         dynamic = pkgs.intrayRelease;
       };
       apps.${system}.default = { type = "app"; program = "${pkgs.intrayReleasePackages.intray-cli}/bin/intray"; };
       lib.${system}.intrayNotification = pkgs.intrayNotification;
       checks.${system} = {
         release = self.packages.${system}.default;
-        static = self.packages.${system}.static;
+        # static = self.packages.${system}.static;
         dynamic = self.packages.${system}.dynamic;
         coverage-report = pkgs.dekking.makeCoverageReport {
           name = "test-coverage-report";
