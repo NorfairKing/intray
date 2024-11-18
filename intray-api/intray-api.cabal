@@ -15,21 +15,11 @@ library
       Intray.API.AccessKeySecret
       Intray.API.AccessKeyUUID
       Intray.API.AccountUUID
-      Intray.API.Admin
-      Intray.API.Admin.Types
       Intray.API.HashedPassword
       Intray.API.Image
       Intray.API.ItemType
       Intray.API.ItemUUID
       Intray.API.Permission
-      Intray.API.Protected
-      Intray.API.Protected.AccessKey
-      Intray.API.Protected.AccessKey.Types
-      Intray.API.Protected.Account
-      Intray.API.Protected.Account.Types
-      Intray.API.Protected.Item
-      Intray.API.Protected.Item.Types
-      Intray.API.Types
       Intray.API.Username
       Intray.API.UUID
   other-modules:

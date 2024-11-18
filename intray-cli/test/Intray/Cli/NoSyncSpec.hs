@@ -6,7 +6,7 @@ module Intray.Cli.NoSyncSpec
   )
 where
 
-import Intray.API.Username
+import Intray.API
 import Intray.Cli.OptParse
 import Intray.Cli.TestUtils
 import TestImport

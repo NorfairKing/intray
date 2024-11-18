@@ -13,7 +13,6 @@ import Data.Time
 import Database.Persist
 import Database.Persist.Sql
 import Intray.API
-import Intray.API.ItemType
 import Intray.Cli.DB
 import Intray.Cli.OptParse
 import Network.URI

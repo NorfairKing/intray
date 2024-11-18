@@ -11,11 +11,7 @@ build-type:     Simple
 
 library
   exposed-modules:
-      Intray.API.Admin.Gen
       Intray.API.Gen
-      Intray.API.Protected.Account.Gen
-      Intray.API.Protected.Gen
-      Intray.API.Protected.Item.Gen
   other-modules:
       Paths_intray_api_gen
   hs-source-dirs:
@@ -36,10 +32,7 @@ test-suite intray-api-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      Intray.API.Admin.InstanceSpec
-      Intray.API.InstanceSpec
-      Intray.API.Protected.Account.InstanceSpec
-      Intray.API.Protected.Item.InstanceSpec
+      Intray.APISpec
       TestImport
       Paths_intray_api_gen
   hs-source-dirs:

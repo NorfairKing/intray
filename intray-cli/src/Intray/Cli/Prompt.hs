@@ -12,7 +12,7 @@ import Control.Monad
 import Control.Monad.IO.Class
 import Data.Text (Text)
 import qualified Data.Text.IO as T
-import Intray.API.Username
+import Intray.API
 import Intray.Cli.Env
 import System.IO
 

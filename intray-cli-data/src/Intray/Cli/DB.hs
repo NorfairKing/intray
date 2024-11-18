@@ -24,8 +24,7 @@ import Data.Text (Text)
 import Data.Time
 import Database.Persist.Sql as Sql
 import Database.Persist.TH
-import Intray.API.ItemType
-import Intray.API.ItemUUID
+import Intray.API
 
 share
   [mkPersist sqlSettings, mkMigrate "clientAutoMigration"]
