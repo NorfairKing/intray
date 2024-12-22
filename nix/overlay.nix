@@ -14,6 +14,9 @@ with final.haskell.lib;
     } // final.intrayReleasePackages;
   };
 
+  intray-cli = final.intrayReleasePackages.intray-cli;
+  intray-notification = final.intrayReleasePackages.intray-notification;
+
   intrayReleasePackages =
     let
       enableStatic = pkg:
@@ -111,11 +114,13 @@ with final.haskell.lib;
             intrayPkgWithComp =
               exeName: name:
               self.opt-env-conf.installManpagesAndCompletions [ exeName ] (intrayPkg name);
+            intrayPkgWithOwnComp = name: intrayPkgWithComp name name;
             intrayPackages = {
               "intray-api" = intrayPkg "intray-api";
               "intray-api-gen" = intrayPkg "intray-api-gen";
               "intray-cli" = intrayPkgWithComp "intray" "intray-cli";
               "intray-cli-data" = intrayPkg "intray-cli-data";
+              "intray-notification" = intrayPkgWithOwnComp "intray-notification";
               "intray-client" = intrayPkg "intray-client";
             };
             fixGHC = pkg:

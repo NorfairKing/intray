@@ -281,8 +281,7 @@ parsePasswordSetting =
 
 data AddSettings = AddSettings
   { addSetContents :: ![Text],
-    addSetReadStdin :: !Bool,
-    addSetRemote :: !Bool
+    addSetReadStdin :: !Bool
   }
 
 instance HasParser AddSettings where
@@ -305,12 +304,5 @@ parseAddSettings = do
         switch True,
         value False,
         long "stdin"
-      ]
-  addSetRemote <-
-    setting
-      [ help "only add the item remotely, not locally. This implies --sync-strategy NeverSync",
-        switch True,
-        value False,
-        long "remote"
       ]
   pure AddSettings {..}

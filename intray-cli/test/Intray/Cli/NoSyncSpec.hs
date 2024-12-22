@@ -41,8 +41,7 @@ spec = offlineCliMSpec $ do
       DispatchAddItem $
         AddSettings
           { addSetContents = ["hello", "world"],
-            addSetReadStdin = False,
-            addSetRemote = False
+            addSetReadStdin = False
           }
     intray DispatchShowItem
     intray DispatchDoneItem

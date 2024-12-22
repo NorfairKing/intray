@@ -1,0 +1,36 @@
+[36mUsage: [m[33mintray[m [36m[[m[37m--url[m [33mURL[m[36m][m [37m--username[m [33mUSERNAME[m [36m[[m[37m--password[m[36m|[m[37m--key[m [33mSECRET[m [36m|[m [37m--password-file[m[36m|[m[37m--key-file[m [33mFILE_PATH[m[36m][m [36m[[m[33mCONTENTS[m[36m][m
+
+[36mAll settings[m:
+  [34mShow this help text[m
+  switch: [37m-h[m[36m|[m[37m--help[m
+
+  [34mOutput version information[m
+  switch: [37m--version[m
+
+  [34mapi url of the intray server.[m
+  option: [37m--url[m [33mURL[m
+  default: [33m"https://api.intray.eu"[m
+
+  [34mUsername[m
+  option: [37m--username[m [33mUSERNAME[m
+
+  [34mPassword[m
+  option: [37m--password[m[36m|[m[37m--key[m [33mSECRET[m
+  option: [37m--password-file[m[36m|[m[37m--key-file[m [33mFILE_PATH[m
+
+  [34mContents of the item[m
+  argument: [33mCONTENTS[m
+
+[36mOptions[m:
+  [37m-h[m[36m|[m[37m--help[m                  [34mShow this help text[m                                           
+  [37m--version[m                  [34mOutput version information[m                                    
+  [37m--url[m                      [34mapi url of the intray server.[m default: [33m"https://api.intray.eu"[m
+  [37m--username[m                 [34mUsername[m                                                      
+  [37m--password[m[36m|[m[37m--key[m           [34mPassword[m                                                      
+  [37m--password-file[m[36m|[m[37m--key-file[m [34mPassword[m                                                      
+  [33mCONTENTS[m                   [34mContents of the item[m                                          
+
+[36mEnvironment Variables[m:
+
+[36mConfiguration Values[m:
+

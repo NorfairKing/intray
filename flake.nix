@@ -77,6 +77,10 @@
       checks.${system} = {
         release = self.packages.${system}.default;
         # static = self.packages.${system}.static;
+        example-notification = pkgs.intrayNotification {
+          userName = "examplePassword";
+          accessKey = "exampleKey";
+        };
         dynamic = self.packages.${system}.dynamic;
         coverage-report = pkgs.dekking.makeCoverageReport {
           name = "test-coverage-report";
@@ -103,11 +107,17 @@
           hooks = {
             cabal2nix.enable = true;
             deadnix.enable = true;
-            deadnix.excludes = [ ".*/default.nix" ];
+            deadnix.excludes = [
+              ".*/default.nix"
+              ".*/options.nix"
+            ];
             hlint.enable = true;
             hpack.enable = true;
             nixpkgs-fmt.enable = true;
-            nixpkgs-fmt.excludes = [ ".*/default.nix" ];
+            nixpkgs-fmt.excludes = [
+              ".*/default.nix"
+              ".*/options.nix"
+            ];
             ormolu.enable = true;
           };
         };

@@ -1,6 +1,6 @@
 { lib
 , writeShellScript
-, intrayReleasePackages
+, intray-notification
 }:
 { userName
 , accessKey ? null
@@ -9,21 +9,12 @@
 }:
 with lib;
 assert (!(builtins.isNull accessKey && builtins.isNull accessKeyFile)); # "Either accessKey or accessKeyFile must be set.
-let
-  cli = intrayReleasePackages.intray-cli;
-in
 writeShellScript "intray-notification" ''
   set -eou pipefail
-  tempDir="$(mktemp --tmpdir=/tmp --directory intray-notification-XXXXXXXX)"
-  export INTRAY_CACHE_DIR="$tempDir"
-  export INTRAY_DATA_DIR="$tempDir"
-  export INTRAY_CONFIG_FILE="$tempDir/config.yaml"
-  export INTRAY_URL="${intrayUrl}"
-  export INTRAY_USERNAME="${userName}"
-  export INTRAY_SYNC_STRATEGY="NeverSync"
-  ${optionalString (!builtins.isNull accessKey) ("export INTRAY_PASSWORD=${accessKey}")}
-  ${optionalString (!builtins.isNull accessKeyFile) ("export INTRAY_PASSWORD_FILE=${accessKeyFile}")}
-  ${cli}/bin/intray login
-  ${cli}/bin/intray add --stdin --remote "$@"
-  rm -rf $tempDir
+  exec ${intray-notification}/bin/intray-notification \
+    "--url=${intrayUrl}" \
+    "--username=${userName}" \
+    ${optionalString (!builtins.isNull accessKey) ("--key=${accessKey}")} \
+    ${optionalString (!builtins.isNull accessKeyFile) ("--key-file=${accessKeyFile}")} \
+    "$@"
 ''

@@ -1,0 +1,49 @@
+name: intray-notification
+version: '0.0.0.0'
+category: Intray
+
+extra-source-files:
+- test_resources/**/*
+
+dependencies:
+- base >=4.9 && <5
+
+library:
+  source-dirs: src/
+
+  dependencies:
+  - cookie
+  - http-client
+  - http-client-tls
+  - intray-api
+  - intray-client
+  - opt-env-conf
+  - servant-client
+  - text
+
+executables:
+  intray-notification:
+    main: Main.hs
+    source-dirs: app
+    ghc-options:
+    - -Wall
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - intray-notification
+
+tests:
+  intray-notification-test:
+    main: Spec.hs
+    source-dirs: test/
+    build-tools: sydtest-discover
+    ghc-options:
+    - -Wall
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - intray-notification
+    - opt-env-conf-test
+    - sydtest

@@ -5,6 +5,7 @@ packages:
 - intray-cli
 - intray-cli-data
 - intray-client
+- intray-notification
 
 # These are duplicated in nix/overlay.
 ghc-options:
@@ -12,7 +13,7 @@ ghc-options:
 
 extra-deps:
 - github: NorfairKing/opt-env-conf
-  commit: 44c868aea2703dddba3d43e23f79bcdb3297eb50
+  commit: 2a6d3505aec34aacd2bc41d688fdf752815d9916
   subdirs:
     - opt-env-conf
     - opt-env-conf-test

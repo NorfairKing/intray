@@ -138,10 +138,6 @@
     switch: [37m--stdin[m
     default: [33mFalse[m
     
-    [34monly add the item remotely, not locally. This implies --sync-strategy NeverSync[m
-    switch: [37m--remote[m
-    default: [33mFalse[m
-    
   
   [34mShow one intray item[m
   command: [35mshow[m
@@ -175,9 +171,8 @@
       [37m--password-file[m [34mPassword file[m
       [37m--password[m      [34mPassword[m     
   [35madd[m [34mAdd an intray item[m
-      [33mTEXT[m     [34mcontents of the items to be added[m                                                             
-      [37m--stdin[m  [34mread contents from standard input too[m                                           default: [33mFalse[m
-      [37m--remote[m [34monly add the item remotely, not locally. This implies --sync-strategy NeverSync[m default: [33mFalse[m
+      [33mTEXT[m    [34mcontents of the items to be added[m                   
+      [37m--stdin[m [34mread contents from standard input too[m default: [33mFalse[m
   [35mshow[m [34mShow one intray item[m
   [35mdone[m [34mMark the shown intray item as done[m
   [35msize[m [34mShow the number of items in the intray[m
