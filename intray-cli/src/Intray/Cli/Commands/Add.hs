@@ -26,8 +26,8 @@ addItem addSettings = do
     autoSyncStore
 
 getItemContents :: AddSettings -> IO (Maybe Text)
-getItemContents AddSettings {..} =
-  case (addSetReadStdin, addSetContents) of
+getItemContents AddSettings {..} = do
+  mCandidate <- case (addSetReadStdin, addSetContents) of
     (False, []) -> pure Nothing
     (True, []) -> Just <$> liftIO T.getContents
     (False, cts) -> pure $ Just $ T.unwords cts
@@ -35,6 +35,11 @@ getItemContents AddSettings {..} =
       Just <$> do
         cts' <- liftIO T.getContents
         pure $ T.intercalate "\n" [T.unwords cts, cts']
+  pure $ do
+    candidate <- mCandidate
+    let stripped = T.strip candidate
+    guard $ not $ T.null stripped
+    pure stripped
 
 addItemLocally :: Text -> CliM ()
 addItemLocally contents = runDB $ do
