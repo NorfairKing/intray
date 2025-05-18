@@ -39,8 +39,12 @@ notifyWithSettings Settings {..} = do
               Just cookie -> do
                 let token = Token $ setCookieValue cookie
                 stdinContents <- liftIO getContents
-                let contents = T.pack $ intercalate "\n" [settingContents, stdinContents]
-                clientPostAddItem token $ textTypedItem contents
+                let contents = T.strip $ T.pack $ intercalate "\n" [settingContents, stdinContents]
+                if T.null contents
+                  then pure ()
+                  else do
+                    _ <- clientPostAddItem token $ textTypedItem contents
+                    pure ()
   case errOrRes of
     Left err -> die $ show err
     Right _ -> pure ()
