@@ -11,7 +11,6 @@ import Intray.Cli.Commands.Size
 import Intray.Cli.Commands.Sync
 import Intray.Cli.Env
 import Intray.Cli.OptParse
-import System.FileLock
 
 intrayCli :: IO ()
 intrayCli = getInstructions >>= dispatch
@@ -20,12 +19,12 @@ dispatch :: Instructions -> IO ()
 dispatch (Instructions d settings) = do
   let run = runCliM settings
   case d of
-    DispatchRegister rs -> run Shared Shared $ register rs
-    DispatchLogin ls -> run Shared Shared $ login ls
-    DispatchAddItem t -> run Exclusive Exclusive $ addItem t
-    DispatchShowItem -> run Exclusive Exclusive showItem
-    DispatchDoneItem -> run Exclusive Exclusive doneItem
-    DispatchSize -> run Shared Exclusive size
-    DispatchLogout -> run Shared Shared logout
-    DispatchSync -> run Exclusive Exclusive sync
+    DispatchRegister rs -> run $ register rs
+    DispatchLogin ls -> run $ login ls
+    DispatchAddItem t -> run $ addItem t
+    DispatchShowItem -> run showItem
+    DispatchDoneItem -> run doneItem
+    DispatchSize -> run size
+    DispatchLogout -> run logout
+    DispatchSync -> run sync
     DispatchReview -> review settings
