@@ -41,7 +41,6 @@ library
     , bytestring >=0.10
     , containers
     , cookie >=0.4
-    , filelock
     , http-client >=0.5
     , http-client-tls >=0.3
     , intray-api

@@ -12,14 +12,13 @@ import Intray.Cli.Prompt
 import Intray.Cli.Sqlite
 import Intray.Cli.Store
 import Intray.Cli.Sync
-import System.FileLock
 
 review :: Settings -> IO ()
 review settings = go (pure ())
   where
     go :: CliM () -> IO ()
     go beforeFunc = do
-      mClientItemAndStoreSize <- runCliM settings Exclusive Exclusive $ do
+      mClientItemAndStoreSize <- runCliM settings $ do
         beforeFunc
         autoSyncStore
         mShownItem <- produceShownItem
