@@ -5,27 +5,15 @@
     extra-trusted-public-keys = "intray.cachix.org-1:qD7I/NQLia2iy6cbzZvFuvn09iuL4AkTmHvjxrQlccQ=";
   };
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs?ref=nixos-24.11";
+    nixpkgs.url = "github:NixOS/nixpkgs?ref=nixos-25.05";
     pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
     haskell-dependency-graph-nix.url = "github:NorfairKing/haskell-dependency-graph-nix";
     haskell-dependency-graph-nix.inputs.nixpkgs.follows = "nixpkgs";
     haskell-dependency-graph-nix.inputs.pre-commit-hooks.follows = "pre-commit-hooks";
     weeder-nix.url = "github:NorfairKing/weeder-nix";
     weeder-nix.flake = false;
-    validity.url = "github:NorfairKing/validity";
-    validity.flake = false;
-    autodocodec.url = "github:NorfairKing/autodocodec";
-    autodocodec.flake = false;
-    safe-coloured-text.url = "github:NorfairKing/safe-coloured-text";
-    safe-coloured-text.flake = false;
-    fast-myers-diff.url = "github:NorfairKing/fast-myers-diff";
-    fast-myers-diff.flake = false;
-    sydtest.url = "github:NorfairKing/sydtest";
-    sydtest.flake = false;
     opt-env-conf.url = "github:NorfairKing/opt-env-conf";
     opt-env-conf.flake = false;
-    mergeless.url = "github:NorfairKing/mergeless";
-    mergeless.flake = false;
     dekking.url = "github:NorfairKing/dekking";
     dekking.flake = false;
   };
@@ -36,13 +24,7 @@
     , pre-commit-hooks
     , haskell-dependency-graph-nix
     , weeder-nix
-    , validity
-    , safe-coloured-text
-    , sydtest
     , opt-env-conf
-    , fast-myers-diff
-    , autodocodec
-    , mergeless
     , dekking
     }:
     let
@@ -52,13 +34,7 @@
         config.allowUnfree = true;
         overlays = [
           self.overlays.${system}
-          (import (autodocodec + "/nix/overlay.nix"))
-          (import (safe-coloured-text + "/nix/overlay.nix"))
-          (import (sydtest + "/nix/overlay.nix"))
           (import (opt-env-conf + "/nix/overlay.nix"))
-          (import (fast-myers-diff + "/nix/overlay.nix"))
-          (import (mergeless + "/nix/overlay.nix"))
-          (import (validity + "/nix/overlay.nix"))
           (import (dekking + "/nix/overlay.nix"))
           (import (weeder-nix + "/nix/overlay.nix"))
         ];
@@ -87,11 +63,9 @@
           packages = [
             "intray-cli"
             "intray-api"
+            "intray-api-gen"
             "intray-cli-data"
             "intray-client"
-          ];
-          coverage = [
-            "intray-api-gen"
           ];
         };
         dependency-graph = haskell-dependency-graph-nix.lib.${system}.makeDependencyGraph {
