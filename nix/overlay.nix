@@ -107,9 +107,6 @@ with final.haskell.lib;
                 "--ghc-options=-Wcpp-undef"
                 "--ghc-options=-Werror"
               ];
-              # Ugly hack because we can't just add flags to the 'test' invocation.
-              # Show test output as we go, instead of all at once afterwards.
-              testTarget = (old.testTarget or "") + " --show-details=direct";
             });
             intrayPkgWithComp =
               exeName: name:
