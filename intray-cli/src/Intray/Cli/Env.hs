@@ -37,7 +37,7 @@ runCliM Settings {..} func = do
     . filterLogger (\_ ll -> ll >= setLogLevel)
     $ withSqlitePoolInfo (mkSqliteConnectionInfo $ T.pack $ fromAbsFile dbPath) 1
     $ \pool -> do
-      flip runSqlPool pool $ do
+      flip runSqlPool pool $ retryOnBusy $ do
         _ <- runMigrationQuiet clientAutoMigration
         pure ()
 
