@@ -35,6 +35,7 @@ clientPostSync ::
   Token ->
   SyncRequest Int64 ItemUUID (AddedItem TypedItem) ->
   ClientM (SyncResponse Int64 ItemUUID (AddedItem TypedItem))
+clientPostAlert :: Token -> AlertEvent -> ClientM NoContent
 clientGetAccountInfo :: Token -> ClientM AccountInfo
 clientPostChangePassphrase :: Token -> ChangePassphrase -> ClientM NoContent
 clientDeleteAccount :: Token -> ClientM NoContent
@@ -61,6 +62,7 @@ clientGetShowItem
   :<|> clientGetItem
   :<|> clientDeleteItem
   :<|> clientPostSync
+  :<|> clientPostAlert
   :<|> clientGetAccountInfo
   :<|> clientPostChangePassphrase
   :<|> clientDeleteAccount

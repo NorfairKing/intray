@@ -81,6 +81,6 @@ type PostSync =
 
 type PostAlert =
   ProtectAPI
-    :> "alert"
+    :> "alertmanager"
     :> ReqBody '[JSON] AlertEvent
-    :> PostNoContent
+    :> Post '[JSON] NoContent

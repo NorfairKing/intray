@@ -73,6 +73,7 @@ userPermissions =
       PermitGetItems,
       PermitGetItemUUIDs,
       PermitSync,
+      PermitAlert,
       PermitDeleteAccount,
       PermitGetAccountInfo,
       PermitPostChangePassphrase,

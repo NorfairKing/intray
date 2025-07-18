@@ -29,6 +29,7 @@ import Data.ByteString (ByteString)
 import qualified Data.ByteString.Base64 as Base64
 import qualified Data.ByteString.Char8 as SB8
 import Data.Map (Map)
+import qualified Data.Map as M
 import Data.Text (Text)
 import qualified Data.Text.Encoding as TE
 import Data.Time
@@ -151,16 +152,16 @@ instance (HasCodec a) => HasCodec (ItemInfo a) where
 --   ]
 -- }
 data AlertEvent = AlertEvent
-  { alertEventVersion :: Text,
-    alertEventGroupKey :: Text,
-    alertEventTruncatedAlerts :: Int,
-    alertEventStatus :: Text,
-    alertEventReceiver :: Text,
-    alertEventGroupLabels :: Map Text Text,
-    alertEventCommonLabels :: Map Text Text,
-    alertEventCommonAnnotations :: Map Text Text,
-    alertEventExternalURL :: Text,
-    alertEventAlerts :: [Alert]
+  { alertEventVersion :: !Text,
+    alertEventGroupKey :: !Text,
+    alertEventTruncatedAlerts :: !(Maybe Int),
+    alertEventStatus :: !Text,
+    alertEventReceiver :: !Text,
+    alertEventGroupLabels :: !(Map Text Text),
+    alertEventCommonLabels :: !(Map Text Text),
+    alertEventCommonAnnotations :: !(Map Text Text),
+    alertEventExternalURL :: !Text,
+    alertEventAlerts :: ![Alert]
   }
   deriving (Show, Eq, Ord, Generic)
   deriving (FromJSON, ToJSON) via (Autodocodec AlertEvent)
@@ -181,25 +182,25 @@ instance HasCodec AlertEvent where
           .= alertEventStatus
         <*> requiredField "receiver" "receiver of the alert event"
           .= alertEventReceiver
-        <*> requiredField "groupLabels" "labels for the group"
+        <*> optionalFieldWithOmittedDefault "groupLabels" M.empty "labels for the group"
           .= alertEventGroupLabels
-        <*> requiredField "commonLabels" "common labels for all alerts"
+        <*> optionalFieldWithOmittedDefault "commonLabels" M.empty "common labels for all alerts"
           .= alertEventCommonLabels
-        <*> requiredField "commonAnnotations" "common annotations for all alerts"
+        <*> optionalFieldWithOmittedDefault "commonAnnotations" M.empty "common annotations for all alerts"
           .= alertEventCommonAnnotations
         <*> requiredField "externalURL" "backlink to the Alertmanager"
           .= alertEventExternalURL
-        <*> requiredField "alerts" "the list of alerts in this event"
+        <*> optionalFieldWithOmittedDefault "alerts" [] "the list of alerts in this event"
           .= alertEventAlerts
 
 data Alert = Alert
-  { alertStatus :: Text,
-    alertLabels :: Map Text Text,
-    alertAnnotations :: Map Text Text,
-    alertStartsAt :: UTCTime,
-    alertEndsAt :: UTCTime,
-    alertGeneratorURL :: Text,
-    alertFingerprint :: Text
+  { alertStatus :: !Text,
+    alertLabels :: !(Map Text Text),
+    alertAnnotations :: !(Map Text Text),
+    alertStartsAt :: !UTCTime,
+    alertEndsAt :: !UTCTime,
+    alertGeneratorURL :: !Text,
+    alertFingerprint :: !Text
   }
   deriving (Show, Eq, Ord, Generic)
 
@@ -211,9 +212,9 @@ instance HasCodec Alert where
       Alert
         <$> requiredField "status" "status of the alert"
           .= alertStatus
-        <*> requiredField "labels" "labels for the alert"
+        <*> optionalFieldWithOmittedDefault "labels" M.empty "labels for the alert"
           .= alertLabels
-        <*> requiredField "annotations" "annotations for the alert"
+        <*> optionalFieldWithOmittedDefault "annotations" M.empty "annotations for the alert"
           .= alertAnnotations
         <*> requiredField "startsAt" "start time of the alert"
           .= alertStartsAt

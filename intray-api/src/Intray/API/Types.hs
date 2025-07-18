@@ -40,6 +40,7 @@ import Control.Arrow (left)
 import Control.Exception
 import Control.Monad.Logger
 import Data.Aeson (FromJSON (..), ToJSON (..))
+import Data.Maybe
 import Data.Set (Set)
 import qualified Data.Set as S
 import Data.Text (Text)
@@ -71,14 +72,19 @@ newtype AccessKeyEnv = AccessKeyEnv
 instance IsAuth IntrayAccessKey AuthCookie where
   type AuthArgs IntrayAccessKey = '[AccessKeyEnv]
   runAuth _ _ AccessKeyEnv {..} = AuthCheck $ \req ->
-    case (,) <$> lookup "Username" (requestHeaders req) <*> lookup "Access-Key" (requestHeaders req) of
-      Nothing -> pure Indefinite
-      Just (unbs, akbs) ->
-        case (,)
-          <$> (left displayException (TE.decodeUtf8' unbs) >>= parseUsernameWithError)
-          <*> left displayException (TE.decodeUtf8' akbs) of
-          Left _ -> pure Indefinite
-          Right (un, ak) -> accessKeyEnvAuthenticate un ak
+    let headers = requestHeaders req
+        tupInHeaders = (,) <$> lookup "Username" headers <*> lookup "Access-Key" headers
+        query = queryString req
+        lookupQuery k = fromMaybe "" <$> lookup k query
+        tupInQuery = (,) <$> lookupQuery "username" <*> lookupQuery "access-key"
+     in case tupInHeaders <|> tupInQuery of
+          Nothing -> pure Indefinite
+          Just (unbs, akbs) ->
+            case (,)
+              <$> (left displayException (TE.decodeUtf8' unbs) >>= parseUsernameWithError)
+              <*> left displayException (TE.decodeUtf8' akbs) of
+              Left _ -> pure Indefinite
+              Right (un, ak) -> accessKeyEnvAuthenticate un ak
 
 data AuthCookie = AuthCookie
   { authCookieUserUUID :: AccountUUID,
