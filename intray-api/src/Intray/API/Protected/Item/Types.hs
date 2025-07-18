@@ -163,6 +163,7 @@ data AlertEvent = AlertEvent
     alertEventAlerts :: [Alert]
   }
   deriving (Show, Eq, Ord, Generic)
+  deriving (FromJSON, ToJSON) via (Autodocodec AlertEvent)
 
 instance Validity AlertEvent
 
