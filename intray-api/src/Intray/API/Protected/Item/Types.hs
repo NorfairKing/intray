@@ -16,6 +16,8 @@ module Intray.API.Protected.Item.Types
     AddedItem (..),
     ItemInfo (..),
     ItemUUID,
+    AlertEvent (..),
+    Alert (..),
     module Data.UUID.Typed,
   )
 where
@@ -26,6 +28,7 @@ import Data.Aeson (FromJSON, ToJSON)
 import Data.ByteString (ByteString)
 import qualified Data.ByteString.Base64 as Base64
 import qualified Data.ByteString.Char8 as SB8
+import Data.Map (Map)
 import Data.Text (Text)
 import qualified Data.Text.Encoding as TE
 import Data.Time
@@ -118,3 +121,104 @@ instance (HasCodec a) => HasCodec (ItemInfo a) where
           .= itemInfoCreated
         <*> optionalField "access-key" "access key used to create this item"
           .= itemInfoAccessKeyName
+
+-- Docs:
+-- https://prometheus.io/docs/alerting/latest/configuration/#webhook_config
+--
+-- Example from the docs:
+--
+-- {
+--   "version": "4",
+--   "groupKey": <string>,              // key identifying the group of alerts (e.g. to deduplicate)
+--   "truncatedAlerts": <int>,          // how many alerts have been truncated due to "max_alerts"
+--   "status": "<resolved|firing>",
+--   "receiver": <string>,
+--   "groupLabels": <object>,
+--   "commonLabels": <object>,
+--   "commonAnnotations": <object>,
+--   "externalURL": <string>,           // backlink to the Alertmanager.
+--   "alerts": [
+--     {
+--       "status": "<resolved|firing>",
+--       "labels": <object>,
+--       "annotations": <object>,
+--       "startsAt": "<rfc3339>",
+--       "endsAt": "<rfc3339>",
+--       "generatorURL": <string>,      // identifies the entity that caused the alert
+--       "fingerprint": <string>        // fingerprint to identify the alert
+--     },
+--     ...
+--   ]
+-- }
+data AlertEvent = AlertEvent
+  { alertEventVersion :: Text,
+    alertEventGroupKey :: Text,
+    alertEventTruncatedAlerts :: Int,
+    alertEventStatus :: Text,
+    alertEventReceiver :: Text,
+    alertEventGroupLabels :: Map Text Text,
+    alertEventCommonLabels :: Map Text Text,
+    alertEventCommonAnnotations :: Map Text Text,
+    alertEventExternalURL :: Text,
+    alertEventAlerts :: [Alert]
+  }
+  deriving (Show, Eq, Ord, Generic)
+
+instance Validity AlertEvent
+
+instance HasCodec AlertEvent where
+  codec =
+    object "AlertEvent" $
+      AlertEvent
+        <$> requiredField "version" "version of the alert event format"
+          .= alertEventVersion
+        <*> requiredField "groupKey" "key identifying the group of alerts"
+          .= alertEventGroupKey
+        <*> requiredField "truncatedAlerts" "how many alerts have been truncated due to 'max_alerts'"
+          .= alertEventTruncatedAlerts
+        <*> requiredField "status" "status of the alert event"
+          .= alertEventStatus
+        <*> requiredField "receiver" "receiver of the alert event"
+          .= alertEventReceiver
+        <*> requiredField "groupLabels" "labels for the group"
+          .= alertEventGroupLabels
+        <*> requiredField "commonLabels" "common labels for all alerts"
+          .= alertEventCommonLabels
+        <*> requiredField "commonAnnotations" "common annotations for all alerts"
+          .= alertEventCommonAnnotations
+        <*> requiredField "externalURL" "backlink to the Alertmanager"
+          .= alertEventExternalURL
+        <*> requiredField "alerts" "the list of alerts in this event"
+          .= alertEventAlerts
+
+data Alert = Alert
+  { alertStatus :: Text,
+    alertLabels :: Map Text Text,
+    alertAnnotations :: Map Text Text,
+    alertStartsAt :: UTCTime,
+    alertEndsAt :: UTCTime,
+    alertGeneratorURL :: Text,
+    alertFingerprint :: Text
+  }
+  deriving (Show, Eq, Ord, Generic)
+
+instance Validity Alert
+
+instance HasCodec Alert where
+  codec =
+    object "Alert" $
+      Alert
+        <$> requiredField "status" "status of the alert"
+          .= alertStatus
+        <*> requiredField "labels" "labels for the alert"
+          .= alertLabels
+        <*> requiredField "annotations" "annotations for the alert"
+          .= alertAnnotations
+        <*> requiredField "startsAt" "start time of the alert"
+          .= alertStartsAt
+        <*> requiredField "endsAt" "end time of the alert"
+          .= alertEndsAt
+        <*> requiredField "generatorURL" "URL that identifies the entity that caused the alert"
+          .= alertGeneratorURL
+        <*> requiredField "fingerprint" "fingerprint to identify the alert"
+          .= alertFingerprint

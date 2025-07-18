@@ -26,7 +26,8 @@ data IntrayProtectedItemSite route = IntrayProtectedItemSite
     postAddItem :: !(route :- PostAddItem),
     getItem :: !(route :- GetItem),
     deleteItem :: !(route :- DeleteItem),
-    postSync :: !(route :- PostSync)
+    postSync :: !(route :- PostSync),
+    postAlert :: !(route :- PostAlert)
   }
   deriving (Generic)
 
@@ -77,3 +78,9 @@ type PostSync =
     :> "sync"
     :> ReqBody '[JSON] (SyncRequest Int64 ItemUUID (AddedItem TypedItem))
     :> Post '[JSON] (SyncResponse Int64 ItemUUID (AddedItem TypedItem))
+
+type PostAlert =
+  ProtectAPI
+    :> "alert"
+    :> ReqBody '[JSON] AlertEvent
+    :> PostNoContent
