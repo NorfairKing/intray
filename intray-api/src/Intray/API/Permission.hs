@@ -28,6 +28,7 @@ data Permission
   | PermitGetItems
   | PermitGetItemUUIDs
   | PermitSync
+  | PermitAlert
   | PermitDeleteAccount
   | PermitGetAccountInfo
   | PermitPostChangePassphrase
@@ -72,6 +73,7 @@ userPermissions =
       PermitGetItems,
       PermitGetItemUUIDs,
       PermitSync,
+      PermitAlert,
       PermitDeleteAccount,
       PermitGetAccountInfo,
       PermitPostChangePassphrase,
