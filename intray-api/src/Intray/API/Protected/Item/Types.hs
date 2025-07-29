@@ -163,7 +163,10 @@ data AlertEvent = AlertEvent
     alertEventExternalURL :: !Text,
     alertEventAlerts :: ![Alert]
   }
+  deriving (Show, Generic)
   deriving (FromJSON, ToJSON) via (Autodocodec AlertEvent)
+
+instance Validity AlertEvent
 
 instance HasCodec AlertEvent where
   codec =
@@ -199,7 +202,9 @@ data Alert = Alert
     alertGeneratorURL :: !Text,
     alertFingerprint :: !Text
   }
-  deriving (Eq)
+  deriving (Show, Eq, Generic)
+
+instance Validity Alert
 
 instance HasCodec Alert where
   codec =

@@ -6,6 +6,7 @@ module Intray.API.Protected.Item.Gen where
 
 import Data.GenValidity
 import Data.GenValidity.ByteString ()
+import Data.GenValidity.Containers ()
 import Data.GenValidity.Text ()
 import Data.GenValidity.Time ()
 import Data.GenValidity.UUID.Typed ()
@@ -29,5 +30,13 @@ instance GenValid ItemType where
   shrinkValid = shrinkValidStructurally
 
 instance GenValid ImageType where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
+
+instance GenValid AlertEvent where
+  genValid = genValidStructurallyWithoutExtraChecking
+  shrinkValid = shrinkValidStructurallyWithoutExtraFiltering
+
+instance GenValid Alert where
   genValid = genValidStructurallyWithoutExtraChecking
   shrinkValid = shrinkValidStructurallyWithoutExtraFiltering

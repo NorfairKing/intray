@@ -25,6 +25,7 @@ library
     , base >=4.7 && <5
     , genvalidity
     , genvalidity-bytestring
+    , genvalidity-containers
     , genvalidity-text
     , genvalidity-time
     , genvalidity-typed-uuid

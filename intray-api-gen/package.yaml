@@ -11,6 +11,7 @@ library:
   - QuickCheck
   - genvalidity
   - genvalidity-bytestring
+  - genvalidity-containers
   - genvalidity-text
   - genvalidity-time
   - genvalidity-typed-uuid
