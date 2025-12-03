@@ -263,21 +263,13 @@ parseUsernameSetting =
 
 parsePasswordSetting :: Parser (Maybe Text)
 parsePasswordSetting =
-  optional
-    ( choice
-        [ mapIO readSecretTextFile $
-            filePathSetting
-              [ help "Password file",
-                name "password-file"
-              ],
-          setting
-            [ help "Password",
-              reader str,
-              metavar "PASSWORD",
-              name "password"
-            ]
-        ]
-    )
+  optional $
+    secretTextFileOrBareSetting
+      [ help "Password",
+        reader str,
+        metavar "PASSWORD",
+        name "password"
+      ]
 
 data AddSettings = AddSettings
   { addSetContents :: ![Text],

@@ -35,7 +35,7 @@
   };
   password-file = lib.mkOption {
     default = null;
-    description = "Password file";
+    description = "Password";
     type = lib.types.nullOr lib.types.str;
   };
   sync-strategy = lib.mkOption {

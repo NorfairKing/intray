@@ -45,6 +45,7 @@ in
       intrayConfigFile = (pkgs.formats.yaml { }).generate "intray-config.yaml" intrayConfig;
 
       settingsCheck = opt-env-conf.makeSettingsCheck "intray-settings-check"
+        { read-secret = false; }
         "${cli}/bin/intray"
         [ "--config-file" intrayConfigFile "sync" ]
         { };
