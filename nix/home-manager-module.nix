@@ -56,6 +56,7 @@ in
         Service = {
           ExecStartPre = "${cli}/bin/intray login";
           ExecStart = "${cli}/bin/intray sync";
+          Environment = [ "INTRAY_CONFIG_FILE=${intrayConfigFile}" ];
           Type = "oneshot";
         };
       };
