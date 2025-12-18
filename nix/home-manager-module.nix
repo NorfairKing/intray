@@ -44,25 +44,18 @@ in
       ];
       intrayConfigFile = (pkgs.formats.yaml { }).generate "intray-config.yaml" intrayConfig;
 
-      settingsCheck = opt-env-conf.makeSettingsCheck "intray-settings-check"
-        { read-secret = false; }
-        "${cli}/bin/intray"
-        [ "--config-file" intrayConfigFile "sync" ]
-        { };
 
       cli = cfg.intray-cli;
 
       syncIntrayName = "sync-intray";
-      syncIntrayService = {
+      syncIntrayService = opt-env-conf.addSettingsCheckToUserService { read-secret = false; } {
         Unit = {
           Description = "Sync intray items";
           Wants = [ "network-online.target" ];
         };
         Service = {
-          ExecStart = "${pkgs.writeShellScript "intray-sync" ''
-              ${cli}/bin/intray login
-              ${cli}/bin/intray sync
-            ''}";
+          ExecStartPre = "${cli}/bin/intray login";
+          ExecStart = "${cli}/bin/intray sync";
           Type = "oneshot";
         };
       };
@@ -89,7 +82,6 @@ in
     in
     mkIf cfg.enable {
       xdg.configFile."intray/config.yaml".source = "${intrayConfigFile}";
-      xdg.configFile."intray/settings-check.txt".source = "${settingsCheck}";
       systemd.user = {
         services = services;
         timers = timers;
