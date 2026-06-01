@@ -1,5 +1,7 @@
 # Intray
 
+[![NixCI](https://staging.nix-ci.com/badge/gh:NorfairKing:intray)](https://staging.nix-ci.com/gh:NorfairKing:intray)
+
 
 ## Installation 
 
