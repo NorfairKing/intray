@@ -24,7 +24,6 @@ import Data.Validity
 import Data.Validity.Text ()
 import Database.Persist.Sql
 import GHC.Generics (Generic)
-import Web.HttpApiData
 import Web.PathPieces
 
 newtype Username = Username
@@ -59,14 +58,6 @@ instance HasCodec Username where
 instance PathPiece Username where
   fromPathPiece = parseUsername
   toPathPiece = usernameText
-
-instance ToHttpApiData Username where
-  toUrlPiece = usernameText
-  toQueryParam = usernameText
-
-instance FromHttpApiData Username where
-  parseUrlPiece = left T.pack . parseUsernameWithError
-  parseQueryParam = left T.pack . parseUsernameWithError
 
 parseUsername :: (MonadFail m) => Text -> m Username
 parseUsername t =

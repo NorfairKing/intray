@@ -16,7 +16,6 @@ module Intray.API.Types
     AuthCookie (..),
     Permission (..),
     userPermissions,
-    adminPermissions,
     Registration (..),
     LoginForm (..),
     HashedPassword,
@@ -143,23 +142,9 @@ data Pricing = Pricing
     pricingStripePublishableKey :: !Text,
     pricingMaxItemsFree :: !Int
   }
-  deriving stock (Show, Eq, Generic)
-  deriving (FromJSON, ToJSON) via (Autodocodec Pricing)
+  deriving stock (Show, Generic)
 
 instance Validity Pricing
-
-instance HasCodec Pricing where
-  codec =
-    object "Pricing" $
-      Pricing
-        <$> requiredField "plan" "stripe plan"
-          .= pricingPlan
-        <*> requiredField "price" "price"
-          .= pricingPrice
-        <*> requiredField "publishable-key" "publishable key"
-          .= pricingStripePublishableKey
-        <*> requiredField "max-items-free" "how many items a free account can have"
-          .= pricingMaxItemsFree
 
 instance HasCodec LogLevel where
   codec =

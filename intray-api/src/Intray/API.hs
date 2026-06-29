@@ -27,25 +27,14 @@ import Servant.API
 intrayAPI :: Proxy IntrayAPI
 intrayAPI = Proxy
 
-type IntrayAPI = ToServantApi IntraySite
+type IntrayAPI = ToServantApi IntrayRoutes
 
-data IntraySite route = IntraySite
-  { openSite :: !(route :- ToServantApi IntrayOpenSite),
-    adminSite :: !(route :- "admin" :> ToServantApi IntrayAdminSite)
-  }
-  deriving (Generic)
-
-data IntrayOpenSite route = IntrayOpenSite
-  { protectedSite :: !(route :- ToServantApi IntrayProtectedSite),
-    publicSite :: !(route :- ToServantApi IntrayPublicSite)
-  }
-  deriving (Generic)
-
-data IntrayPublicSite route = IntrayPublicSite
+data IntrayRoutes route = IntrayRoutes
   { postRegister :: !(route :- PostRegister),
     postLogin :: !(route :- PostLogin),
-    getPricing :: !(route :- GetPricing),
-    postStripeHook :: !(route :- PostStripeHook)
+    postStripeHook :: !(route :- PostStripeHook),
+    postAddItem :: !(route :- PostAddItem),
+    postSync :: !(route :- PostSync)
   }
   deriving (Generic)
 
@@ -59,10 +48,6 @@ type PostLogin =
   "login"
     :> ReqBody '[JSON] LoginForm
     :> Verb 'POST 204 '[JSON] (Headers '[Header "Set-Cookie" Text] NoContent)
-
-type GetPricing =
-  "pricing"
-    :> Get '[JSON] (Maybe Pricing)
 
 type PostStripeHook =
   "stripe"

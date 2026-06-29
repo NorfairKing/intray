@@ -25,26 +25,16 @@ import GHC.Generics (Generic)
 data Permission
   = PermitAdd
   | PermitShow
-  | PermitSize
   | PermitDelete
   | PermitGetItem
-  | PermitGetItems
-  | PermitGetItemUUIDs
   | PermitSync
   | PermitDeleteAccount
   | PermitGetAccountInfo
   | PermitPostChangePassphrase
   | PermitPostAddAccessKey
-  | PermitGetAccessKey
   | PermitGetAccessKeys
   | PermitDeleteAccessKey
-  | PermitGetPermissions
   | PermitInitiateCheckout
-  | PermitAdminDeleteAccount
-  | PermitAdminGetAccounts
-  | PermitAdminGetAccount
-  | PermitAdminGetStats
-  | PermitAdminPutAccountSubscription
   | PermitOther Text
   deriving stock (Show, Eq, Ord, Generic)
   deriving (FromJSON, ToJSON) via (Autodocodec Permission)
@@ -58,26 +48,16 @@ renderPermission :: Permission -> Text
 renderPermission = \case
   PermitAdd -> "PermitAdd"
   PermitShow -> "PermitShow"
-  PermitSize -> "PermitSize"
   PermitDelete -> "PermitDelete"
   PermitGetItem -> "PermitGetItem"
-  PermitGetItems -> "PermitGetItems"
-  PermitGetItemUUIDs -> "PermitGetItemUUIDs"
   PermitSync -> "PermitSync"
   PermitDeleteAccount -> "PermitDeleteAccount"
   PermitGetAccountInfo -> "PermitGetAccountInfo"
   PermitPostChangePassphrase -> "PermitPostChangePassphrase"
   PermitPostAddAccessKey -> "PermitPostAddAccessKey"
-  PermitGetAccessKey -> "PermitGetAccessKey"
   PermitGetAccessKeys -> "PermitGetAccessKeys"
   PermitDeleteAccessKey -> "PermitDeleteAccessKey"
-  PermitGetPermissions -> "PermitGetPermissions"
   PermitInitiateCheckout -> "PermitInitiateCheckout"
-  PermitAdminDeleteAccount -> "PermitAdminDeleteAccount"
-  PermitAdminGetAccounts -> "PermitAdminGetAccounts"
-  PermitAdminGetAccount -> "PermitAdminGetAccount"
-  PermitAdminGetStats -> "PermitAdminGetStats"
-  PermitAdminPutAccountSubscription -> "PermitAdminPutAccountSubscription"
   PermitOther t -> t
 
 -- This needs to be permissive to allow for deleting permissions without
@@ -86,26 +66,16 @@ parsePermission :: Text -> Permission
 parsePermission = \case
   "PermitAdd" -> PermitAdd
   "PermitShow" -> PermitShow
-  "PermitSize" -> PermitSize
   "PermitDelete" -> PermitDelete
   "PermitGetItem" -> PermitGetItem
-  "PermitGetItems" -> PermitGetItems
-  "PermitGetItemUUIDs" -> PermitGetItemUUIDs
   "PermitSync" -> PermitSync
   "PermitDeleteAccount" -> PermitDeleteAccount
   "PermitGetAccountInfo" -> PermitGetAccountInfo
   "PermitPostChangePassphrase" -> PermitPostChangePassphrase
   "PermitPostAddAccessKey" -> PermitPostAddAccessKey
-  "PermitGetAccessKey" -> PermitGetAccessKey
   "PermitGetAccessKeys" -> PermitGetAccessKeys
   "PermitDeleteAccessKey" -> PermitDeleteAccessKey
-  "PermitGetPermissions" -> PermitGetPermissions
   "PermitInitiateCheckout" -> PermitInitiateCheckout
-  "PermitAdminDeleteAccount" -> PermitAdminDeleteAccount
-  "PermitAdminGetAccounts" -> PermitAdminGetAccounts
-  "PermitAdminGetAccount" -> PermitAdminGetAccount
-  "PermitAdminGetStats" -> PermitAdminGetStats
-  "PermitAdminPutAccountSubscription" -> PermitAdminPutAccountSubscription
   t -> PermitOther t
 
 instance PersistField Permission where
@@ -122,47 +92,14 @@ userPermissions =
   S.fromList
     [ PermitAdd,
       PermitShow,
-      PermitSize,
       PermitDelete,
       PermitGetItem,
-      PermitGetItems,
-      PermitGetItemUUIDs,
       PermitSync,
       PermitDeleteAccount,
       PermitGetAccountInfo,
       PermitPostChangePassphrase,
       PermitPostAddAccessKey,
-      PermitGetAccessKey,
       PermitGetAccessKeys,
       PermitDeleteAccessKey,
-      PermitGetPermissions,
       PermitInitiateCheckout
-    ]
-
-adminPermissions :: Set Permission
-adminPermissions =
-  -- All permissions
-  S.fromList
-    [ PermitAdd,
-      PermitShow,
-      PermitSize,
-      PermitDelete,
-      PermitGetItem,
-      PermitGetItems,
-      PermitGetItemUUIDs,
-      PermitSync,
-      PermitDeleteAccount,
-      PermitGetAccountInfo,
-      PermitPostChangePassphrase,
-      PermitPostAddAccessKey,
-      PermitGetAccessKey,
-      PermitGetAccessKeys,
-      PermitDeleteAccessKey,
-      PermitGetPermissions,
-      PermitInitiateCheckout,
-      PermitAdminDeleteAccount,
-      PermitAdminGetAccounts,
-      PermitAdminGetAccount,
-      PermitAdminGetStats,
-      PermitAdminPutAccountSubscription
     ]
